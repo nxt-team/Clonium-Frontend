@@ -1,0 +1,21 @@
+.cell {
+    width: 12.5%;
+    height: 0;
+    padding-bottom: 12.5%;
+    background-color: var(--content_tint_background);
+    border-radius: 10px;
+    margin: 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cont {
+    padding: 4%;
+    width: 100%;
+}

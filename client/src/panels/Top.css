@@ -1,0 +1,188 @@
+.Persik {
+    display: block;
+    width: 40%;
+    max-width: 240px;
+    margin: 20px auto;
+}
+.j {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.l {
+    display: block;
+    max-height: 500px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+.u {
+    position: absolute;
+    bottom: 10px;
+}
+.k {
+    position: absolute;
+    left: 0px;
+}
+
+#center{
+    width: 90%;
+    height: 70%;
+    float: left;
+}
+
+#right {
+    margin-top: 52px;
+    width: 10%;
+    height: 100%;
+    float: left;
+}
+.lox {
+    margin-top: 70px;
+}
+.lox2 {
+
+
+    right: 0px;
+}
+.kkk {
+    margin-top: auto;
+    margin-bottom: 2px;
+}
+.kkk2 {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.forButton {
+    display: flex;
+    justify-content: center;
+}
+
+.RichCell {
+    display: flex;
+    min-height: 64px;
+    padding: 8px 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-decoration: none;
+    color: var(--text_primary);
+}
+
+.RichCell--mult {
+    white-space: normal;
+}
+
+.RichCell--mult .RichCell__children,
+.RichCell--mult .RichCell__caption,
+.RichCell--mult .RichCell__text {
+    text-overflow: initial;
+}
+
+.RichCell > .Avatar {
+    padding-right: 12px;
+    flex-shrink: 0;
+}
+
+.RichCell__in {
+    flex-grow: 1;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.RichCell__top {
+}
+
+.RichCell__top > :first-child:not(.RichCell__content) {
+    display: none;
+    pointer-events: none;
+}
+
+.RichCell__top > .Icon--28:first-child ~ * {
+    margin-right: 32px;
+}
+
+.RichCell__content {
+    display: flex;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.RichCell__after {
+    flex-shrink: 0;
+    padding-left: 4px;
+    white-space: nowrap;
+}
+
+.RichCell__after .Icon--28 {
+    position: absolute;
+    right: 0;
+    color: var(--accent);
+}
+
+.RichCell > .Avatar--sz-72 + .RichCell__in .RichCell__after .Icon--28 {
+    top: 22px;
+}
+
+.RichCell > .Avatar--sz-48 + .RichCell__in .RichCell__after .Icon--28 {
+    top: 10px;
+}
+
+.RichCell__children {
+    flex-grow: 1;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.RichCell__text {
+    font-size: 15px;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.RichCell__caption {
+    font-size: 13px;
+    line-height: 16px;
+    color: var(--text_secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.RichCell__bottom .UsersStack {
+    padding: 8px 0 0;
+}
+
+.RichCell__actions {
+    display: flex;
+    margin-top: 8px;
+}
+
+.RichCell__actions .Button:not(:last-child) {
+    margin-right: 8px;
+}
+
+/**
+ * iOS
+ */
+
+.RichCell--ios {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
+/**
+ * Android
+ */
+
+.RichCell--android {
+    padding-right: 16px;
+    padding-left: 16px;
+}

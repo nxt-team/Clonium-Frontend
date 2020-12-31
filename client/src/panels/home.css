@@ -1,0 +1,59 @@
+.Persik {
+  display: block;
+  width: 30%;
+  max-width: 240px;
+  margin: 20px auto;
+}
+
+.button {
+  background: linear-gradient(-45deg, #fafafa, #30e0ff, #fafafa, #2ee367,
+  #fafafa, #ffb327, #fafafa, #ff79cb, #fafafa);
+  background-size: 1100% 1100%;
+  animation: gradient 35s ease infinite;
+  left: 0;
+  color: black;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+
+.a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+}
+
+.box {
+  box-sizing: border-box;
+  padding: 18% 12px 8%;
+}
+
+.box2 {
+  padding: 0 16%;
+  text-align: center;
+}
+
+.mar {
+  margin-left: 12px;
+  margin-right: 18px;
+}
+
+.d {
+  text-align: center;
+}
+
+.Group--ios .Group__description {
+  padding: 4px 12px 12px;
+}
