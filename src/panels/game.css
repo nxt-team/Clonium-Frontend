@@ -1,0 +1,69 @@
+.cell {
+    background-color: var(--content_tint_background);
+    margin: 1px;
+}
+
+.cell2 {
+    width: 12px;
+    height: 12px;
+    background-color: var(--background_content);
+    border-radius: 4px;
+    margin: 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.cell3 {
+    width: 12px;
+    height: 12px;
+    background-color: var(--content_tint_background);
+    border-radius: 4px;
+    margin: 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cont {
+    width: 99%
+}
+
+.coneeet {
+    padding: 1px;
+    width: calc(100% - 1px);
+}
+
+
+.TicketContainer{
+    /* background-color:rgba(0,0,0,.5); */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bigTicketDiv{
+    width: 100vw;
+    height: 80vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.TicketTitle {
+    animation: show 2s;
+    margin-top: 36px;
+}
+
+@keyframes show {
+    from {opacity: 0;} to {opacity: 1;}
+}
+
+

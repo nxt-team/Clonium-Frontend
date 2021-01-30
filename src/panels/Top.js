@@ -41,7 +41,7 @@ let config = [
 
 
 
-const Home = ({ id, go, modalOn, fetchedUser }) => {
+const Home = ({ id, go, changeActiveModal, fetchedUser }) => {
 
     const [activeTab, setActiveTab] = useState('all');
 
@@ -162,7 +162,7 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                 actions={
                     <React.Fragment>
                         <Button mode="primary" >Участвовать</Button>
-                        <Button  mode="tertiary" size="l" onClick={modalOn} >Подробнее</Button>
+                        <Button  mode="tertiary" size="l" onClick={() => changeActiveModal('SuperFight')} >Подробнее</Button>
                     </React.Fragment>
                     }
             />

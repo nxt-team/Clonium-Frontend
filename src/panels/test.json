@@ -1,0 +1,82 @@
+[
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": "blue", "state": 3 },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": "red", "state": 3 },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": "green", "state": 3 },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": "yellow", "state": 3 },
+		{ "color": null, "state": null }
+	],
+	[
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null },
+		{ "color": null, "state": null }
+	]
+]

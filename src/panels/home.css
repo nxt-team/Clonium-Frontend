@@ -57,3 +57,34 @@
 .Group--ios .Group__description {
   padding: 4px 12px 12px;
 }
+
+
+.Banner__expand {
+  align-self: center;
+  margin-left: 0;
+}
+
+.Banner__subheader {
+  color: var(--text_primary);
+}
+
+.fullContainer {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background: var(--content_tint_background);
+  border-radius: 16px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.containerProfile {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.onlineHomePage {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}

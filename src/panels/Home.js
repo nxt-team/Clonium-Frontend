@@ -7,7 +7,6 @@ import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Gallery from '@vkontakte/vkui/dist/components/Gallery/Gallery';
 import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar';
 import './home.css';
-import './BannerIntro.css'
 import Icon20TicketOutline from '@vkontakte/icons/dist/20/ticket_outline';
 import Icon24CupOutline from '@vkontakte/icons/dist/24/cup_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';

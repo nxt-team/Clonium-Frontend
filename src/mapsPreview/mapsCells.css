@@ -1,0 +1,67 @@
+
+
+.cell2 {
+	width: 12px;
+	height: 12px;
+	background-color: var(--background_content);
+	border-radius: 4px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellDisabled {
+	width: 12px;
+	height: 12px;
+	background-color: var(--background_page);
+	border-radius: 4px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellSize6 {
+	width: 16px;
+	height: 16px;
+	background-color: var(--background_content);
+	border-radius: 5.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellDisabledSize6 {
+	width: 16px;
+	height: 16px;
+	background-color: var(--background_page);
+	border-radius: 5.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellSize10 {
+	width: 9.6px;
+	height: 9.6px;
+	background-color: var(--background_content);
+	border-radius: 3.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellDisabledSize10 {
+	width: 9.6px;
+	height: 9.6px;
+	background-color: var(--background_page);
+	border-radius: 3.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
