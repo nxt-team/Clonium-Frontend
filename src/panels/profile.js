@@ -13,6 +13,7 @@ import './game.css'
 import Icon28ShareOutline from '@vkontakte/icons/dist/28/share_outline';
 import './home.css';
 import './other.scss'
+import { Icon28PaletteOutline } from '@vkontakte/icons';
 import Icon28ServicesOutline from '@vkontakte/icons/dist/28/services_outline';
 import Icon28SettingsOutline from '@vkontakte/icons/dist/28/settings_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';
@@ -164,7 +165,7 @@ const Home = ({ id, go, fetchedUser }) => {
                 <div className={'fullContainer'} >
                     <SimpleCell before={<Icon28ServicesOutline  />} expandable >Добавь сервис в избранные</SimpleCell>
                     <SimpleCell before={<Icon28ShareOutline  />} expandable >Расскажи друзьям</SimpleCell>
-                    <SimpleCell before={<Icon28SettingsOutline  />} expandable >Настройки</SimpleCell>
+                    <SimpleCell before={<Icon28PaletteOutline  />} expandable >Кастомизация</SimpleCell>
                     <SimpleCell before={<Icon28EditOutline  />} expandable >Обратная связь</SimpleCell>
                 </div>
 

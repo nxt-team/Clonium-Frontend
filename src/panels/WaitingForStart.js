@@ -7,7 +7,19 @@ import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption'
 import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
 import Icon24NotificationOutline from '@vkontakte/icons/dist/24/notification_outline';
 import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
-import {Avatar, Div, FixedLayout, Group, IOS, Placeholder, platform, Separator, Tabs, TabsItem} from "@vkontakte/vkui";
+import {
+    Avatar,
+    Div,
+    FixedLayout,
+    Group,
+    IOS,
+    PanelHeaderButton,
+    Placeholder,
+    platform,
+    Separator,
+    Tabs,
+    TabsItem
+} from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
@@ -36,7 +48,7 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                         <Icon56Users3Outline  />
                     </div>
                 </div>
-                <Title level="1" weight="semibold" style={{ margin: 12, marginBottom: 8 }} >
+                <Title level="1" weight="semibold" style={{ margin: "16px 12px 6px"}} >
                     Ждём соперников
                 </Title>
                 <UsersStack
@@ -63,7 +75,7 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Button mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={go}  data-to="home2" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>

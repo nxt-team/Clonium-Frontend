@@ -22,8 +22,13 @@ import './mapsPreview/mapsCells.css'
 import './panels/home.css'
 import Profile from './panels/profile'
 import Top from './panels/Top'
+import { Icon56FavoriteOutline } from '@vkontakte/icons';
 import Loading from './panels/loading'
+import { Icon56VideoOutline } from '@vkontakte/icons';
+import Achievements from './panels/Achievements'
 import TicketAnimation from './panels/TicketAnimation'
+import { Icon56Users3Outline } from '@vkontakte/icons';
+import NoTickets from './panels/NoTickets'
 import WaitingForStart from './panels/WaitingForStart'
 
 import CreatingRoom from './panels/CreatingRoom'
@@ -38,7 +43,7 @@ import {
 	Select,
 	Root,
 	Gallery,
-	HorizontalScroll
+	HorizontalScroll, ModalCard
 } from "@vkontakte/vkui";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 
@@ -115,11 +120,67 @@ const App = () => {
 					<Button size="xl">Участвовать</Button>
 				</Div>
 			</ModalPage>
+			<ModalCard
+				id={"ticketFromAddToFavorites"}
+				onClose={() => setActiveModal(null)}
+				icon={<Icon56FavoriteOutline />}
+				header="Получи билет, добавив мини приложения в избранные"
+				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				actions={[{
+					title: 'Добавить',
+					mode: 'primary',
+					action: () => {
+						setActiveModal(null);
+						bridge.send("VKWebAppAddToFavorites");
+					}
+				}]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"ticketFromSubscribing"}
+				onClose={() => setActiveModal(null)}
+				icon={<Icon56Users3Outline />}
+				header="Получи билет, подписавшись на наш паблик"
+				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				actions={[{
+					title: 'Подписаться',
+					mode: 'primary',
+					action: () => {
+						setActiveModal(null);
+					}
+				}]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"ticketFromAd"}
+				onClose={() => setActiveModal(null)}
+				icon={<Icon56VideoOutline />}
+				header="Получи билет за просмотр рекламы"
+				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				actions={[{
+					title: 'Смотреть',
+					mode: 'primary',
+					action: () => {
+						setActiveModal(null);
+					}
+				}]}
+			>
+			</ModalCard>
 		</ModalRoot>
 	);
 
+	function arrayRandElement(arr) {
+		const rand = Math.floor(Math.random() * arr.length);
+		return arr[rand];
+	}
+
 	function changeActiveModal (newActiveModal) {
-		setActiveModal(newActiveModal)
+		if (newActiveModal === 'getTicket') {
+			setActiveModal(arrayRandElement(["ticketFromAddToFavorites", "ticketFromSubscribing", "ticketFromAd"]))
+		} else {
+			setActiveModal(newActiveModal)
+		}
+
 	}
 
 	function goToCreatingRoom () {
@@ -135,12 +196,14 @@ const App = () => {
 		<Root activeView={activeView} >
 			<View id='main' activePanel={activePanel} popout={popout} modal={modal}>
 				<Loading id={'loading'}/>
+				<Achievements id='achievements' go={go} />
 				<Home2 id={'home2'} go={go} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
 				<Game id={'game'} go={go} fetchedUser={fetchedUser} go={go} />
 				<Home id='home' go={go} fetchedUser={fetchedUser} />
 				<Profile id={'profile'} go={go} fetchedUser={fetchedUser}/>
 				<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 				<WaitingForStart id='waitingForStart' go={go} />
+				<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
 			</View>
 			<View activePanel={"creatingRoom"} id="creatingRoom">
 				<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />

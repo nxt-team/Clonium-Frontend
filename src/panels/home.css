@@ -88,3 +88,30 @@
   justify-content: center;
   padding-top: 8px;
 }
+
+.profile_preview {
+  overflow: hidden;
+  padding-top: 12px;
+  display: flex;
+  border-radius: 10px;
+  background-color: var(--content_tint_background);
+  flex-direction: column;
+  justify-content: center;
+  color: var(--text_primary);
+}
+
+.profile_preview_container {
+  display: flex;
+  position: relative;
+  border-radius: 10px;
+  background-color: var(--content_tint_background);
+}
+
+.profile_preview_icon {
+  width: 16px;
+  height: 24px;
+  position: absolute;
+  right: 6px;
+  top: calc(50% - 12px);
+  color: var(--icon_tertiary);
+}

@@ -531,23 +531,33 @@ const Game = ({id, go}) => {
 
 			<div
 				style={{
-					marginTop: 8,
 					marginBottom: 0,
 					display: 'flex',
 					justifyContent: 'center',
+					padding: 12,
 				}}
 			>
-				<Caption level="1" weight="regular">
-					Твой цвет:
-				</Caption>
-				<Caption level="1" style={{ marginLeft: 6, color: '#00D8FF' }}>
-					голубой
-				</Caption>
+				<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", borderRadius: 10, display: "flex"}} >
+					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
+						Твой цвет:
+					</Caption>
+					<Caption level="2" style={{ marginLeft: 6, color: '#00D8FF' }}>
+						голубой
+					</Caption>
+				</div>
+				<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", marginLeft: 10, borderRadius: 10, display: "flex"}} >
+					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
+						До цонца боя:
+					</Caption>
+					<Caption level="2" style={{ marginLeft: 6}}>
+						3 мин 10 сек
+					</Caption>
+				</div>
 			</div>
 
 			<div
 				style={{
-					marginTop: 16,
+					marginTop: 12,
 					display: 'flex',
 					justifyContent: 'center',
 				}}
