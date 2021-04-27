@@ -1,34 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
-import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
 import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
 import Icon24NotificationOutline from '@vkontakte/icons/dist/24/notification_outline';
 import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
 import {
-    Avatar,
-    Div,
     FixedLayout,
     Group,
-    IOS,
-    PanelHeaderButton,
-    Placeholder,
-    platform,
-    Separator,
-    Tabs,
-    TabsItem
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
-import Icon28Notifications from "@vkontakte/icons/dist/28/notifications";
-const osName = platform();
 
-
-
-const Home = ({ id, go, modalOn, fetchedUser }) => {
+const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
 
 
     return (
@@ -75,7 +59,7 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Button onClick={go}  data-to="home2" mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={go}  data-to="home" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>
@@ -84,4 +68,4 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
 
 
 
-export default Home;
+export default WaitingForStart;

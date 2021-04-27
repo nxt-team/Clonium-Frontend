@@ -18,7 +18,7 @@
     "react-scripts": "^3.4.1"
   },
   "dependencies": {
-    "@vkontakte/icons": "^1.18.2",
+    "@vkontakte/icons": "^1.93.0",
     "@vkontakte/vk-bridge": "^2.3.0",
     "@vkontakte/vk-miniapps-deploy": "0.0.17",
     "@vkontakte/vkui": "^3.13.1",
@@ -29,6 +29,7 @@
     "eruda-code": "^2.0.0",
     "eruda-dom": "^2.0.0",
     "gsap": "^3.5.1",
+    "imagenation": "^3.1.4",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",

@@ -1,0 +1,52 @@
+.circle {
+    background: var(--accent);
+    clip-path: circle(50%);
+    height: 50vw;
+    width: 50vw;
+}
+
+.circle_container {
+    height: calc(100vh - 82px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blur_container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: calc(100vh - 82px);
+    width: 100vw;
+    filter: blur(3.6em);
+}
+
+.img {
+    position: fixed;
+    animation-name: rotation;
+    animation-duration: 25s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    height: 80vw;
+    width: 80vw;
+}
+
+.placeholderPosition {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform:translate(-50%, calc(-50% - 40px));
+}
+
+.gallery_position {
+    height: calc(100vh - 82px);
+}
+
+@keyframes rotation {
+    0% {
+        transform:rotate(0deg);
+    }
+    100% {
+        transform:rotate(360deg);
+    }
+}

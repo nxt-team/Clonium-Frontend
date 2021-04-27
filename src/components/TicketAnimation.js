@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
-import './loading.css'
 import { gsap } from "gsap";
 
 function Ticket() {
@@ -81,12 +80,14 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
 
 
     return (
-        <div style={{backgroundColor: "rgba(0,0,0,.6)", height: "100%", width: "100%"}}>
+        <div style={{backgroundColor: "rgba(0,0,0,.6)", height: "100%", width: "100%"}} className={"hideTicketDiv"}>
             <div className='bigTicketDiv'>
-                <Ticket/>
-                <Title className='TicketTitle' level="1" weight="semibold" >
-                    -1 билет
-                </Title>
+                <div>
+                    <Ticket/>
+                    <Title className='TicketTitle' level="2" weight="regular" >
+                        -1 билет
+                    </Title>
+                </div>
             </div>
         </div>
     )

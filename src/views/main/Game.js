@@ -1,31 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
+import bridge from '@vkontakte/vk-bridge';
+
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Group from '@vkontakte/vkui/dist/components/Group/Group';
-import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
-import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
-import { gsap } from "gsap";
-import Icon28InfoOutline from '@vkontakte/icons/dist/28/info_outline';
-import { motion } from "framer-motion"
-import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import {IOS, platform, Caption} from "@vkontakte/vkui";
-import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
-import Icon24Back from "@vkontakte/icons/dist/24/back";
 import startJson from "./test.json";
-import PlayIcon from './playIcon'
-import AnimatedPlayIcon from './animatedPlayIcon'
-const osName = platform();
-const cellSize = (window.innerWidth - 24 - 9) / 8
+import PlayIcon from '../../components/playIcon'
+import AnimatedPlayIcon from '../../components/animatedPlayIcon'
+
+const cellSize = (window.innerWidth - 12 - 16) / 8 // число 16, т к у элементов задан margin 1px
 const cellStyle = {height: cellSize, width: cellSize}
 
-const Game = ({id, go}) => {
+function callTapticEngine (startupParameters) {
+	const user_platform = startupParameters.get('vk_platform')
+	if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone') {
+		bridge.send("VKWebAppTapticImpactOccurred", {"style": "light"});
+	}
+}
+
+function callHeavyTapticEngine (startupParameters) {
+	const user_platform = startupParameters.get('vk_platform')
+	if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone') {
+		bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+	}
+}
+
+const Game = ({id, go, startupParameters}) => {
 	const [map, setMap] = useState(startJson);
 	const [colorMotion, setColorMotion] = useState('голубого');
-	const [update, setUpdate] = useState(0)
-	console.log('changed')
+	// const [update, setUpdate] = useState(0)
+	console.log('rendered')
 
 	function changeColorMotion() {
 		console.log('changeColorMotion')
@@ -42,11 +49,11 @@ const Game = ({id, go}) => {
 
 	function getCellContet(row, column) {
 		if (map[row - 1][column - 1]['state'] === 'animate') {
-			const svgSize = (window.innerWidth - 24 - 9) * 0.125
-			console.log(svgSize)
-			return (
-				<>
+			const svgSize = (window.innerWidth - 12 - 16) / 8 // число 16, т к у элементов задан margin 1px
 
+			let animatedIcons = []
+			if (map[row - 1][column] !== undefined) {
+				animatedIcons.push(
 					<AnimatedPlayIcon
 						color={map[row - 1][column - 1]['color']}
 						svgSize={svgSize}
@@ -55,12 +62,15 @@ const Game = ({id, go}) => {
 						}}
 						end={{
 							rotationY: 360,
-							x: svgSize + 1,
+							x: svgSize + 2,
 							duration: 1,
 							scale: 1
 						}}
 						changed={true}
 					/>
+				)
+			} if (map[row - 2] !== undefined) {
+				animatedIcons.push(
 					<AnimatedPlayIcon
 						color={map[row - 1][column - 1]['color']}
 						svgSize={svgSize}
@@ -69,12 +79,15 @@ const Game = ({id, go}) => {
 						}}
 						end={{
 							rotationX: -360,
-							y: -svgSize - 1,
+							y: -svgSize - 2,
 							duration: 1,
 							scale: 1
 						}}
 						changed={true}
 					/>
+				)
+			} if (map[row - 1][column - 2] !== undefined) {
+				animatedIcons.push(
 					<AnimatedPlayIcon
 						color={map[row - 1][column - 1]['color']}
 						svgSize={svgSize}
@@ -83,12 +96,15 @@ const Game = ({id, go}) => {
 						}}
 						end={{
 							rotationY: -360,
-							x: -svgSize - 1,
+							x: -svgSize - 2,
 							duration: 1,
 							scale: 1
 						}}
 						changed={true}
 					/>
+				)
+			} if (map[row] !== undefined) {
+				animatedIcons.push(
 					<AnimatedPlayIcon
 						color={map[row - 1][column - 1]['color']}
 						svgSize={svgSize}
@@ -97,14 +113,15 @@ const Game = ({id, go}) => {
 						}}
 						end={{
 							rotationX: 360,
-							y: svgSize + 1,
+							y: svgSize + 2,
 							duration: 1,
 							scale: 1
 						}}
 						changed={true}
 					/>
-				</>
-			)
+				)
+			}
+			return animatedIcons
 		} else if (map[row - 1][column - 1]['color'] !== null) {
 			return <PlayIcon color={map[row - 1][column - 1]['color']} size={map[row - 1][column - 1]['state']} />
 		}
@@ -112,23 +129,24 @@ const Game = ({id, go}) => {
 
 	function onCellClick(row, column) {
 		if (0 < row < 9 && 0 < column < 9) {
-			let newMap = map;
+			let newMap = map.slice();
 			console.log('clicked');
 			if (map[row - 1][column - 1]['state'] === 1) {
+				// callTapticEngine(startupParameters)
 				newMap[row - 1][column - 1]['state'] = 2;
 				setMap(newMap);
-				changeColorMotion();
 			} else if (map[row - 1][column - 1]['state'] === 2) {
+				// callTapticEngine(startupParameters)
 				newMap[row - 1][column - 1]['state'] = 3;
 				setMap(newMap);
-				changeColorMotion();
 			} else if (map[row - 1][column - 1]['state'] === 3) {
 				const color = newMap[row - 1][column - 1]['color'];
 				newMap[row - 1][column - 1]['state'] = "animate";
 				setMap(newMap)
-				changeColorMotion()
+				// callHeavyTapticEngine(startupParameters)
 
 				setTimeout(() => {
+					newMap = map.slice()
 					newMap[row - 1][column - 1]['state'] = null;
 					newMap[row - 1][column - 1]['color'] = null;
 
@@ -174,7 +192,6 @@ const Game = ({id, go}) => {
 					setMap(newMap);
 					console.log('changed2')
 					console.log(map)
-					setUpdate(update + 1)
 					console.log(colorMotion)
 				}, 1500)
 
@@ -187,7 +204,12 @@ const Game = ({id, go}) => {
 		for (let row of map) {
 			for (let column of row) {
 				if (column['color'] === color) {
-					result += column['state'];
+					if (isNaN(column['state'])) {
+						result += 4; // animate
+					} else {
+						result += column['state'] // число
+					}
+
 				}
 			}
 		}
@@ -203,17 +225,12 @@ const Game = ({id, go}) => {
 	return (
 		<Panel id={id}>
 			<PanelHeader
-				left={
-					<PanelHeaderButton onClick={go}  data-to="home2">
-						{osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
-					</PanelHeaderButton>
-				}
+				separator={false}
+				transparent={true}
 			>
-				Бой id00124
 			</PanelHeader>
 			<div
 				style={{
-					marginTop: 20,
 					marginBottom: 8,
 					display: 'flex',
 					justifyContent: 'center',
@@ -226,7 +243,6 @@ const Game = ({id, go}) => {
 					{
 						//counter === 0 ? 'Time over' : counter
 					}
-					_
 				</Title>
 			</div>
 			<div
@@ -237,9 +253,6 @@ const Game = ({id, go}) => {
 					alignItems: 'center',
 				}}
 			>
-				<Title level="2" weight="semibold">
-					Очки:
-				</Title>
 				<svg
 					style={{ flexGrow: 1 }}
 					width="22"
@@ -315,164 +328,164 @@ const Game = ({id, go}) => {
 					/>
 					<circle cx="19" cy="19" r="3" fill="#F5F5F5" />
 				</svg>
-				<div>{count('red')}</div>
+				<div style={{ flexGrow: 0.5 }} >{count('red')}</div>
 			</div>
 
-			<div>
+			<div style={{marginLeft: 6}} > { /* */}
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'}  onClick={() => onCellClick(1, 1)}>
-						{getCellContet(1, 1)}{' '}
+						{getCellContet(1, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 2)}>
-						{getCellContet(1, 2)}{' '}
+						{getCellContet(1, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 3)}>
-						{getCellContet(1, 3)}{' '}
+						{getCellContet(1, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 4)}>
-						{getCellContet(1, 4)}{' '}
+						{getCellContet(1, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 5)}>
-						{getCellContet(1, 5)}{' '}
+						{getCellContet(1, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 6)}>
-						{getCellContet(1, 6)}{' '}
+						{getCellContet(1, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 7)}>
-						{getCellContet(1, 7)}{' '}
+						{getCellContet(1, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 8)}>
-						{getCellContet(1, 8)}{' '}
+						{getCellContet(1, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 1)}>
-						{getCellContet(2, 1)}{' '}
+						{getCellContet(2, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 2)}>
 						{getCellContet(2, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 3)}>
-						{getCellContet(2, 3)}{' '}
+						{getCellContet(2, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 4)}>
-						{getCellContet(2, 4)}{' '}
+						{getCellContet(2, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 5)}>
-						{getCellContet(2, 5)}{' '}
+						{getCellContet(2, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 6)}>
-						{getCellContet(2, 6)}{' '}
+						{getCellContet(2, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 7)}>
 						{getCellContet(2, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 8)}>
-						{getCellContet(2, 8)}{' '}
+						{getCellContet(2, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 1)}>
-						{getCellContet(3, 1)}{' '}
+						{getCellContet(3, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 2)}>
-						{getCellContet(3, 2)}{' '}
+						{getCellContet(3, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 3)}>
-						{getCellContet(3, 3)}{' '}
+						{getCellContet(3, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 4)}>
-						{getCellContet(3, 4)}{' '}
+						{getCellContet(3, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 5)}>
-						{getCellContet(3, 5)}{' '}
+						{getCellContet(3, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 6)}>
-						{getCellContet(3, 6)}{' '}
+						{getCellContet(3, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 7)}>
-						{getCellContet(3, 7)}{' '}
+						{getCellContet(3, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 8)}>
-						{getCellContet(3, 8)}{' '}
+						{getCellContet(3, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 1)}>
-						{getCellContet(4, 1)}{' '}
+						{getCellContet(4, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 2)}>
-						{getCellContet(4, 2)}{' '}
+						{getCellContet(4, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 3)}>
-						{getCellContet(4, 3)}{' '}
+						{getCellContet(4, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 4)}>
-						{getCellContet(4, 4)}{' '}
+						{getCellContet(4, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 5)}>
-						{getCellContet(4, 5)}{' '}
+						{getCellContet(4, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 6)}>
-						{getCellContet(4, 6)}{' '}
+						{getCellContet(4, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 7)}>
-						{getCellContet(4, 7)}{' '}
+						{getCellContet(4, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 8)}>
-						{getCellContet(4, 8)}{' '}
+						{getCellContet(4, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 1)}>
-						{getCellContet(5, 1)}{' '}
+						{getCellContet(5, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 2)}>
-						{getCellContet(5, 2)}{' '}
+						{getCellContet(5, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 3)}>
-						{getCellContet(5, 3)}{' '}
+						{getCellContet(5, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 4)}>
-						{getCellContet(5, 4)}{' '}
+						{getCellContet(5, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 5)}>
-						{getCellContet(5, 5)}{' '}
+						{getCellContet(5, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 6)}>
-						{getCellContet(5, 6)}{' '}
+						{getCellContet(5, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 7)}>
-						{getCellContet(5, 7)}{' '}
+						{getCellContet(5, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 8)}>
-						{getCellContet(5, 8)}{' '}
+						{getCellContet(5, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 1)}>
-						{getCellContet(6, 1)}{' '}
+						{getCellContet(6, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 2)}>
-						{getCellContet(6, 2)}{' '}
+						{getCellContet(6, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 3)}>
-						{getCellContet(6, 3)}{' '}
+						{getCellContet(6, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 4)}>
-						{getCellContet(6, 4)}{' '}
+						{getCellContet(6, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 5)}>
-						{getCellContet(6, 5)}{' '}
+						{getCellContet(6, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 6)}>
-						{getCellContet(6, 6)}{' '}
+						{getCellContet(6, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 7)}>
-						{getCellContet(6, 7)}{' '}
+						{getCellContet(6, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 8)}>
-						{getCellContet(6, 8)}{' '}
+						{getCellContet(6, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
@@ -483,48 +496,48 @@ const Game = ({id, go}) => {
 						{getCellContet(7, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 3)}>
-						{getCellContet(7, 3)}{' '}
+						{getCellContet(7, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 4)}>
-						{getCellContet(7, 4)}{' '}
+						{getCellContet(7, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 5)}>
-						{getCellContet(7, 5)}{' '}
+						{getCellContet(7, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 6)}>
-						{getCellContet(7, 6)}{' '}
+						{getCellContet(7, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 7)}>
 						{getCellContet(7, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 8)}>
-						{getCellContet(7, 8)}{' '}
+						{getCellContet(7, 8)}
 					</div>
 				</div>
 				<div style={{ display: 'flex' }}>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 1)}>
-						{getCellContet(8, 1)}{' '}
+						{getCellContet(8, 1)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 2)}>
-						{getCellContet(8, 2)}{' '}
+						{getCellContet(8, 2)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 3)}>
-						{getCellContet(8, 3)}{' '}
+						{getCellContet(8, 3)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 4)}>
-						{getCellContet(8, 4)}{' '}
+						{getCellContet(8, 4)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 5)}>
-						{getCellContet(8, 5)}{' '}
+						{getCellContet(8, 5)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 6)}>
-						{getCellContet(8, 6)}{' '}
+						{getCellContet(8, 6)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 7)}>
-						{getCellContet(8, 7)}{' '}
+						{getCellContet(8, 7)}
 					</div>
 					<div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 8)}>
-						{getCellContet(8, 8)}{' '}
+						{getCellContet(8, 8)}
 					</div>
 				</div>
 			</div>
@@ -550,7 +563,7 @@ const Game = ({id, go}) => {
 						До цонца боя:
 					</Caption>
 					<Caption level="2" style={{ marginLeft: 6}}>
-						3 мин 10 сек
+						3:10
 					</Caption>
 				</div>
 			</div>
@@ -562,7 +575,7 @@ const Game = ({id, go}) => {
 					justifyContent: 'center',
 				}}
 			>
-				<Button mode="tertiary">Сдаться</Button>
+				<Button onClick={go}  data-to="home" mode="tertiary">Сдаться</Button>
 			</div>
 		</Panel>
 	);

@@ -9,9 +9,9 @@ import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption'
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import './game.css'
+import '../views/main/game.css'
 import Icon28ShareOutline from '@vkontakte/icons/dist/28/share_outline';
-import './home.css';
+import '../views/main/home.css';
 import Icon28ServicesOutline from '@vkontakte/icons/dist/28/services_outline';
 import Icon28SettingsOutline from '@vkontakte/icons/dist/28/settings_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';

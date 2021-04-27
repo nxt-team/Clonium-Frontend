@@ -1,0 +1,14 @@
+.exp_block {
+    margin: auto 5px;
+    text-align: center;
+}
+
+.exp_block__count {
+    font-size: 18px;
+    color: #3f8ae0;
+}
+
+.exp_block__text {
+    font-size: 13px;
+    color: var(--text_secondary);
+}

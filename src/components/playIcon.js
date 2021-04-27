@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './game.css'
-import './home.css';
+import '../views/main/game.css'
+import '../views/main/home.css';
 const Home = ({ color, size }) => {
 
     let fill = ''
