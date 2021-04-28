@@ -6,7 +6,7 @@ import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import './Top.css'
-import { Icon28AddSquareOutline, Icon56UsersOutline, Icon28AchievementCircleFillBlue } from '@vkontakte/icons';
+import { Icon28AddSquareOutline, Icon56UsersOutline, Icon28AchievementCircleFillBlue, Icon28FireOutline } from '@vkontakte/icons';
 import LeaderBoardPlace from '../../components/leaderBoardPlace'
 import {
     Avatar,
@@ -20,13 +20,14 @@ import {
     SimpleCell,
     Tabs,
     Header,
-    TabsItem, FixedLayout
+    TabsItem, FixedLayout, Banner
 } from "@vkontakte/vkui";
 const osName = platform();
 
 const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
+    const [superFightBanner, setSuperFightBanner] = useState(true)
 
     return (
         <Panel id={id}>
@@ -99,6 +100,30 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                 </div>
                 <div>
                     <Search after={null}/>
+                    {superFightBanner&&
+                        <Banner
+                            mode="image"
+                            style={{margin: 0}}
+                            before={<Icon28FireOutline fill={'#fff'}/>}
+                            header={<span>Супер игра</span>}
+                            subheader={<span>Поле 10×17 и 10 игрков. Победитель получает стикерпак!</span>}
+                            asideMode="dismiss"
+                            onDismiss={() => setSuperFightBanner(false)}
+                            background={
+                                <div
+                                    style={{
+                                        backgroundColor: '#ec644c',
+                                    }}
+                                />
+                            }
+                            actions={
+                                <React.Fragment >
+                                    <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('SuperFight')} >Подробнее</Button>
+                                </React.Fragment>
+                            }
+                    />
+                    }
+
                     <LeaderBoardPlace place={1} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
                     <LeaderBoardPlace place={2} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
                     <LeaderBoardPlace place={3} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
@@ -140,25 +165,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                         >
                             {fetchedUser.first_name + ' ' + fetchedUser.last_name}
                         </SimpleCell>
-                        {/*<Banner*/}
-                        {/*    mode="image"*/}
-                        {/*    before={<Icon28FireOutline fill={'#fff'}/>}*/}
-                        {/*    header={<span>Супер игра</span>}*/}
-                        {/*    subheader={<span>Игра на поле 10 на 17 между 10 игроками. Победитель получает стикерпак!</span>}*/}
-                        {/*    background={*/}
-                        {/*        <div*/}
-                        {/*            style={{*/}
-                        {/*                backgroundColor: '#ec644c',*/}
-                        {/*            }}*/}
-                        {/*        />*/}
-                        {/*    }*/}
-                        {/*    actions={*/}
-                        {/*        <React.Fragment style={{backgroundColor: "#fff"}}>*/}
-                        {/*            <Button mode="primary" >Участвовать</Button>*/}
-                        {/*            <Button  mode="tertiary" size="l" onClick={() => changeActiveModal('SuperFight')} >Подробнее</Button>*/}
-                        {/*        </React.Fragment>*/}
-                        {/*    }*/}
-                        {/*/>*/}
+
                     </div>
                     </FixedLayout>
                 </>

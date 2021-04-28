@@ -26,6 +26,7 @@ import Customization from './views/main/Customization'
 import CreatingRoom from './views/creatingRoom/CreatingRoom'
 import imagenation from "imagenation";
 import RateFight from './views/rateFight/RateFight'
+import Offline from './views/offline/offline'
 
 import {
 	Div,
@@ -70,16 +71,20 @@ const App = () => {
 	}, []);
 
 	const go = e => {
-		if (e.currentTarget.dataset.to === 'game') {
-			setPopout(<TicketAnimation/>)
-			setTimeout(() => setPopout(null), 2700)
-		}
+		// if (e.currentTarget.dataset.to === 'game') {
+		// 	setPopout(<TicketAnimation/>)
+		// 	setTimeout(() => setPopout(null), 2700)
+		// }
 		setActivePanel(e.currentTarget.dataset.to);
 	};
 
 	const panel_go = panel => {
 		setActivePanel(panel)
 	}
+
+	window.addEventListener('offline', () => {
+		goToOffline()
+	})
 
 
 	const onChange_originalFile = async (e) => {
@@ -366,6 +371,10 @@ const App = () => {
 		setActiveView('main')
 	}
 
+	function goToOffline () {
+		setActiveView('offline')
+	}
+
 
 	return (
 		<Root activeView={activeView} >
@@ -386,6 +395,9 @@ const App = () => {
 			</View>
 			<View activePanel={"rateFight"} id="rateFight">
 				<RateFight id={'rateFight'} goToMainView={goToMainView} />
+			</View>
+			<View activePanel={"offline"} id="offline">
+				<Offline id={'offline'} goToMainView={goToMainView} />
 			</View>
 		</Root>
 	);

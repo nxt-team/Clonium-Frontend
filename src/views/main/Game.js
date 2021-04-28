@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-
+import { Icon28ErrorOutline } from '@vkontakte/icons';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
-import {IOS, platform, Caption} from "@vkontakte/vkui";
+import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
 import startJson from "./test.json";
 import PlayIcon from '../../components/playIcon'
 import AnimatedPlayIcon from '../../components/animatedPlayIcon'
+import Messenger from "../../components/Messenger";
 
 const cellSize = (window.innerWidth - 12 - 16) / 8 // число 16, т к у элементов задан margin 1px
 const cellStyle = {height: cellSize, width: cellSize}
@@ -571,11 +572,20 @@ const Game = ({id, go, startupParameters}) => {
 			<div
 				style={{
 					marginTop: 12,
+					marginBottom: 24,
 					display: 'flex',
 					justifyContent: 'center',
 				}}
 			>
 				<Button onClick={go}  data-to="home" mode="tertiary">Сдаться</Button>
+			</div>
+
+			<div className={'fullContainer'} >
+				<Title level="2" weight="regular" style={{ marginLeft: 16, marginBottom: 8}} >
+					Чат комнаты
+				</Title>
+				<Separator/>
+				<Messenger/>
 			</div>
 		</Panel>
 	);

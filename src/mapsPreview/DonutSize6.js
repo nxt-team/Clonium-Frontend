@@ -11,7 +11,7 @@ export default function donut() {
 				<div className={'cellSize6'}></div>
 			</div>
 			<div style={{ display: 'flex' }}>
-				<div className={'cellSize6'}></div>
+				<div className={'cellSize6'}/>
 				<div className={'cellSize6'}></div>
 				<div className={'cellSize6'}></div>
 				<div className={'cellSize6'}></div>

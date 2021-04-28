@@ -1,0 +1,19 @@
+.messenger {
+  width: 100%;
+  height: 400px;
+  overflow: auto;
+  -ms-overflow-style: none;
+}
+
+.messenger::-webkit-scrollbar {
+  width: 0;
+}
+
+.container {
+  padding: 10px;
+}
+
+.scrollable {
+  position: relative;
+
+}
