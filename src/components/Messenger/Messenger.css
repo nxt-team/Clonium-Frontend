@@ -1,13 +1,14 @@
 .messenger {
   width: 100%;
-  height: 400px;
-  overflow: auto;
-  -ms-overflow-style: none;
+  /*height: 400px;*/
+  height: calc(100vh - var(--safe-area-inset-top)
+  - var(--panelheader_height_ios)
+  - 52px
+  - var(--modalheader_height_ios)
+  - var(--safe-area-inset-bottom)
+  + 1px);
 }
 
-.messenger::-webkit-scrollbar {
-  width: 0;
-}
 
 .container {
   padding: 10px;
@@ -15,5 +16,16 @@
 
 .scrollable {
   position: relative;
+  overflow-y: scroll !important;
+  touch-action: auto !important;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+}
 
+/*body {*/
+/*  overflow-y: auto;*/
+/*}*/
+
+.write_bar_padding {
+  padding-bottom: var(--safe-area-inset-bottom);
 }

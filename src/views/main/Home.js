@@ -56,6 +56,7 @@ import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import Icon28ServicesOutline from "@vkontakte/icons/dist/28/services_outline";
 import { Icon24ChevronCompactRight } from '@vkontakte/icons';
 import { Icon28HistoryForwardOutline } from '@vkontakte/icons';
+import MainButtons from "../../components/MainButtons";
 const osName = platform();
 
 
@@ -293,10 +294,12 @@ const Home = props => (
         <div className={'onlineHomePage'} >
             10 online
         </div>
-        <Div style={{display: "flex", alignItems: "center"}}>
-            <Button size="xl" before={<Icon28Notifications />} stretched style={{ marginRight: 8 }} mode="secondary">Уведомления</Button>
-            <Button size="xl" before={<Icon24CupOutline width={28} height={28} />} onClick={props.go} data-to="top" stretched mode="secondary">Топ</Button>
-        </Div>
+        <MainButtons
+            go={props.go}
+            changeActiveModal={props.changeActiveModal}
+            areNotificationsEnabled={false}
+            isUserInSuperFight={false}
+        />
 
         <div className={'fullContainer'} >
             <Title level="1" weight="semibold" style={{ marginLeft: 16}} >

@@ -6,7 +6,7 @@ import {
 } from "@vkontakte/vkui";
 import { Icon32ErrorCircleOutline } from '@vkontakte/icons';
 
-const Home = ({ id, goToMainView}) => {
+const Home = ({ id, goToMainView, changeActiveModal}) => {
 
     const reconnecting = () => {
         if (window.navigator.onLine) {
@@ -21,7 +21,10 @@ const Home = ({ id, goToMainView}) => {
             <Placeholder
                 icon={<Icon32ErrorCircleOutline width={96} height={96} />}
                 header="Ну давай, работай"
-                action={<Button onClick={reconnecting} size="l" mode="primary">Переподключиться</Button>}
+                action={<Button
+                    // onClick={reconnecting}
+                    onClick={() => reconnecting()}
+                    size="l" mode="primary">Переподключиться</Button>}
                 stretched
             >
                 Приложение не может функционировать без интернет соединения

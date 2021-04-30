@@ -168,3 +168,29 @@
 .Slider__dragger::before {
   background: 0;
 }
+
+/*.ModalPage__content {*/
+/*  touch-action: auto !important;*/
+/*  pointer-events: auto !important;*/
+/*  overflow-y: auto !important;*/
+/*}*/
+
+/*.ModalPage__in {*/
+/*  pointer-events: auto !important;*/
+/*  overflow: auto !important;*/
+/*}*/
+
+/*.ModalPage {*/
+/*  pointer-events: auto !important;*/
+/*  overflow-y: auto !important;*/
+/*}*/
+
+/*.ModalRoot__modal--dragging {*/
+/*  touch-action: auto !important;*/
+/*  overflow-y: auto !important;*/
+/*}*/
+
+/*.ModalRoot__modal--viewport {*/
+/*  pointer-events: auto !important;*/
+/*}*/
+

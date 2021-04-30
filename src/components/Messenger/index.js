@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import MessageList from '../MessageList';
+import {ScrollOverflow} from "@gmelum/vkui";
 import './Messenger.css';
 import {WriteBar, WriteBarIcon} from "@vkontakte/vkui";
 
@@ -9,11 +10,11 @@ export default function Messenger(props) {
         <>
           <div className="messenger">
             <div className="scrollable content">
-              <MessageList />
+                <MessageList />
             </div>
           </div>
             <WriteBar
-                style={{background: "var(--content_tint_background)"}}
+                className={'write_bar_padding'}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 after={

@@ -27,6 +27,7 @@ import CreatingRoom from './views/creatingRoom/CreatingRoom'
 import imagenation from "imagenation";
 import RateFight from './views/rateFight/RateFight'
 import Offline from './views/offline/offline'
+import Messenger from "./components/Messenger";
 
 import {
 	Div,
@@ -37,6 +38,7 @@ import {
 	HorizontalScroll, ModalCard, File, Input
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
+import Message from "./components/Message";
 
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
@@ -337,6 +339,7 @@ const App = () => {
 				id={"promoСodeActivation"}
 				onClose={() => setActiveModal(null)}
 				header="Введи промокод"
+				caption="Промокод будет активирован за просмотр рекламы"
 				actions={[{
 					title: 'Активировать',
 					mode: 'primary',
@@ -346,6 +349,25 @@ const App = () => {
 				}]}>
 					<Input />
 			</ModalCard>
+			<ModalPage
+				id="messanger"
+				settlingHeight={100}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() => setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Чат
+					</ModalPageHeader>
+				}
+			>
+				<Messenger/>
+			</ModalPage>
+
 		</ModalRoot>
 	);
 
@@ -376,13 +398,14 @@ const App = () => {
 	}
 
 
+
 	return (
 		<Root activeView={activeView} >
 			<View id='main' activePanel={activePanel} popout={popout} modal={modal}>
 				<Achievements id='achievements' go={go} />
 				<History id='history' go={go} />
-				<Home id={'home'} go={go} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
-				<Game id={'game'} go={go} fetchedUser={fetchedUser} startupParameters={startupParameters} />
+				<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
+				<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} />
 				<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
 				<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 				<WaitingForStart id='waitingForStart' go={go} />
@@ -396,8 +419,8 @@ const App = () => {
 			<View activePanel={"rateFight"} id="rateFight">
 				<RateFight id={'rateFight'} goToMainView={goToMainView} />
 			</View>
-			<View activePanel={"offline"} id="offline">
-				<Offline id={'offline'} goToMainView={goToMainView} />
+			<View activePanel={"offline"} id="offline" modal={modal} >
+				<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>
 			</View>
 		</Root>
 	);

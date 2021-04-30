@@ -10,7 +10,10 @@ import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} f
 import startJson from "./test.json";
 import PlayIcon from '../../components/playIcon'
 import AnimatedPlayIcon from '../../components/animatedPlayIcon'
-import Messenger from "../../components/Messenger";
+import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
+import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Icon24Back from "@vkontakte/icons/dist/24/back";
+import { Icon28MessagesOutline } from '@vkontakte/icons';
 
 const cellSize = (window.innerWidth - 12 - 16) / 8 // число 16, т к у элементов задан margin 1px
 const cellStyle = {height: cellSize, width: cellSize}
@@ -29,7 +32,7 @@ function callHeavyTapticEngine (startupParameters) {
 	}
 }
 
-const Game = ({id, go, startupParameters}) => {
+const Game = ({id, go, startupParameters, changeActiveModal}) => {
 	const [map, setMap] = useState(startJson);
 	const [colorMotion, setColorMotion] = useState('голубого');
 	// const [update, setUpdate] = useState(0)
@@ -228,6 +231,9 @@ const Game = ({id, go, startupParameters}) => {
 			<PanelHeader
 				separator={false}
 				transparent={true}
+				left={<PanelHeaderButton onClick={() => changeActiveModal('messanger')}>
+					<Icon28MessagesOutline/>
+				</PanelHeaderButton>}
 			>
 			</PanelHeader>
 			<div
@@ -578,14 +584,6 @@ const Game = ({id, go, startupParameters}) => {
 				}}
 			>
 				<Button onClick={go}  data-to="home" mode="tertiary">Сдаться</Button>
-			</div>
-
-			<div className={'fullContainer'} >
-				<Title level="2" weight="regular" style={{ marginLeft: 16, marginBottom: 8}} >
-					Чат комнаты
-				</Title>
-				<Separator/>
-				<Messenger/>
 			</div>
 		</Panel>
 	);
