@@ -39,6 +39,7 @@ import {
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import Message from "./components/Message";
+import AnimatedErrorIcon from "./components/AnimateErrorIcon";
 
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
@@ -240,8 +241,8 @@ const App = () => {
 				id={"ticketFromAddToFavorites"}
 				onClose={() => setActiveModal(null)}
 				icon={<Icon56FavoriteOutline />}
-				header="Получи билет, добавив мини приложения в избранные"
-				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				header="Билет за добавление в избранные"
+				caption="Добавь мини-приложение в избранные и получи необходимый для игры билет"
 				actions={[{
 					title: 'Добавить',
 					mode: 'primary',
@@ -256,8 +257,8 @@ const App = () => {
 				id={"ticketFromSubscribing"}
 				onClose={() => setActiveModal(null)}
 				icon={<Icon56Users3Outline />}
-				header="Получи билет, подписавшись на наш паблик"
-				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				header="Билет за подписку"
+				caption="Подпишись на сообщество и получи необходимый для игры билет"
 				actions={[{
 					title: 'Подписаться',
 					mode: 'primary',
@@ -271,8 +272,8 @@ const App = () => {
 				id={"ticketFromAd"}
 				onClose={() => setActiveModal(null)}
 				icon={<Icon56VideoOutline />}
-				header="Получи билет за просмотр рекламы"
-				caption="Билеты нужны для игры. Но они у тебя закончались :("
+				header="Билет за просмотр рекламы"
+				caption="Посмотри рекламу и получи необходимый для игры билет"
 				actions={[{
 					title: 'Смотреть',
 					mode: 'primary',
@@ -367,6 +368,30 @@ const App = () => {
 			>
 				<Messenger/>
 			</ModalPage>
+			<ModalCard
+				id={"noTickets"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Нет билетов"
+				caption="У тебя закончались билеты, а они нужны для игры"
+				actions={[
+					{
+						title: 'Получить',
+						mode: 'primary',
+						action: () => {
+							changeActiveModal("getTicket")
+						}
+					},
+					{
+						title: 'Справка',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
 
 		</ModalRoot>
 	);

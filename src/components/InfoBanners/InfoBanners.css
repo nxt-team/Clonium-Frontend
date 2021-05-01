@@ -1,0 +1,92 @@
+.InfoBanner {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    /*width: 180px;*/
+    padding: 8px;
+    flex-direction: row;
+}
+
+.InfoBanner__TextContainer {
+    justify-content: center;
+    display: flex;
+    margin-left: 6px;
+    margin-right: 6px;
+    flex-direction: column;
+}
+
+.InfoBanner__Icon__Before__Red {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 4px;
+    background: rgba(255, 51, 71, 0.12);
+    z-index: 1;
+}
+
+.InfoBanner__Icon__Red {
+    color: #FF3347;
+    opacity: 1;
+    z-index: 2;
+}
+
+.InfoBanner__Icon__Before__Blue {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 4px;
+    background: rgba(39, 135, 245, 0.12);
+    z-index: 1;
+}
+
+.InfoBanner__Icon__Blue {
+    color: #2787f5;
+    opacity: 1;
+    z-index: 2;
+}
+
+.InfoBanner__Icon__Before__Green {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 4px;
+    background: rgba(61, 204, 75, 0.12);
+    z-index: 1;
+}
+
+.InfoBanner__Icon__Green {
+    color: #3dcc4b;
+    opacity: 1;
+    z-index: 2;
+}
+
+.InfoBanner__Icon__Before__Orange {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 4px;
+    background: rgba(255, 193, 7, 0.12);
+    z-index: 1;
+}
+
+.InfoBanner__Icon__Orange {
+    color: #ffc107;
+    opacity: 1;
+    z-index: 2;
+}

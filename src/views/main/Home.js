@@ -1,125 +1,44 @@
 import React from 'react';
+
 import {
-    platform,
-    IOS,
-    PanelHeaderSimple,
+    Panel,
+    PanelHeader,
     Card,
     Div,
-    Counter,
-    Cell,
-    FixedLayout,
-    Group,
-    TabbarItem,
+    Button,
+    Avatar,
+    Title,
+    Caption,
     CardScroll,
-    CellButton, Placeholder, Separator, SimpleCell, RichCell, Footer, PanelHeaderButton
+    Separator,
+    SimpleCell,
+    RichCell,
+    UsersStack,
+    PanelHeaderButton
 } from '@vkontakte/vkui';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Banner from '@vkontakte/vkui/dist/components/Banner/Banner';
-import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Gallery from '@vkontakte/vkui/dist/components/Gallery/Gallery';
-import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar';
+
+import {
+    Icon24AddSquareOutline,
+    Icon24FavoriteOutline,
+    Icon28ArrowDownOutline,
+    Icon28ArrowUpOutline,
+    Icon36GameOutline,
+    Icon28TicketOutline,
+    Icon20RecentOutline,
+    Icon20Users,
+    Icon28RadiowavesAroundOutline,
+    Icon28ChevronRightCircleOutline,
+    Icon28HistoryForwardOutline,
+    Icon24ChevronCompactRight,
+} from '@vkontakte/icons';
+
 import './home.css';
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
-import Subhead from '@vkontakte/vkui/dist/components/Typography/Subhead/Subhead';
-import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
-import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
 import './game.css'
 import './home.css';
-import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';
-import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline';
-import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
-import Icon28SwitchOutline from '@vkontakte/icons/dist/28/switch_outline';
 import { motion } from "framer-motion"
-import Icon24Chevron from '@vkontakte/icons/dist/24/chevron';
-import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
-import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
-import Icon20TicketOutline from '@vkontakte/icons/dist/20/ticket_outline';
-import Icon24CupOutline from '@vkontakte/icons/dist/24/cup_outline';
-import Icon28InfoOutline from '@vkontakte/icons/dist/28/info_outline';
-import Icon28ChatsOutline from '@vkontakte/icons/dist/28/chats_outline';
-import { Icon24AddSquareOutline } from '@vkontakte/icons';
-import {Icon20RecentOutline, Icon24Back, Icon28ChevronBack} from '@vkontakte/icons';
-import { Icon20Users, Icon28UserOutline } from '@vkontakte/icons';
-import { Icon28RadiowavesAroundOutline } from '@vkontakte/icons';
-import Icon20NotificationOutline from '@vkontakte/icons/dist/20/notification_outline';
-import Icon28ChevronRightOutline from '@vkontakte/icons/dist/28/chevron_right_outline';
-import Icon28AddSquareOutline from '@vkontakte/icons/dist/28/add_square_outline';
-import Icon28BombOutline from '@vkontakte/icons/dist/28/bomb_outline';
-import Icon28Users3Outline from '@vkontakte/icons/dist/28/users_3_outline';
-import Icon28Notifications from '@vkontakte/icons/dist/28/notifications';
-import { Icon28ChevronRightCircleOutline } from '@vkontakte/icons';
-import { Icon24ChevronRight } from '@vkontakte/icons';
-import Icon56AddCircleOutline from '@vkontakte/icons/dist/56/add_circle_outline';
-import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
-import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
-import Icon28ServicesOutline from "@vkontakte/icons/dist/28/services_outline";
-import { Icon24ChevronCompactRight } from '@vkontakte/icons';
-import { Icon28HistoryForwardOutline } from '@vkontakte/icons';
+
 import MainButtons from "../../components/MainButtons";
-const osName = platform();
-
-
-console.log(osName)
-
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
-
-const gal = [
-    <Banner
-        style={{ margin: 0, width: 220}}
-        before={<Icon28ChatsOutline width={34} height={34}/>}
-        header={<span>Беседа</span>}
-        subheader={<span>поболтай с другими <br/> игроками</span>}
-        background={
-            <div
-                style={{
-                    backgroundColor: 'var(--background_page)',
-                }}
-            />
-        }
-    />,
-    <Banner
-        style={{ margin: 0, width: 200}}
-        before={<Icon28Users3Outline width={34} height={34}/>}
-        header={<span>Сообщество</span>}
-        subheader={<span>будь в курсе нововстей</span>}
-        background={
-            <div
-                style={{
-                    backgroundColor: 'var(--background_page)',
-                }}
-            />
-        }
-    />,
-    <Banner
-        style={{ margin: 0, width: 200,}}
-        before={<Icon28InfoOutline width={34} height={34}/>}
-        header={<span>Спрвка</span>}
-        subheader={<span>об игре, правилах и нюансах</span>}
-        background={
-            <div
-                style={{
-                    backgroundColor: 'var(--background_page)',
-                }}
-            />
-        }
-    />,
-    <Banner
-        style={{ margin: 0, width: 220}}
-        before={<Icon28BombOutline style={{color: "#65c063"}} width={34} height={34}/>}
-        header={<span >Подписка</span>}
-        subheader={<span>специальные возможности</span>}
-        background={
-            <div
-                style={{
-                    backgroundColor: 'var(--background_page)',
-                }}
-            />
-        }
-    />
-]
+import InfoBanners from "../../components/InfoBanners"
 
 const Home = props => (
     <Panel id={props.id}  >
@@ -367,7 +286,9 @@ const Home = props => (
                 </RichCell>
             </SimpleCell>
             <Separator wide={true}/>
-            <SimpleCell onClick={props.go} data-to="noTickets" after={<Icon28ChevronRightCircleOutline/>} >
+            <SimpleCell
+                onClick={() => props.changeActiveModal('noTickets')}
+                after={<Icon28ChevronRightCircleOutline/>} >
                 <RichCell
                     style={{padding: 0}}
                     disabled
@@ -452,14 +373,10 @@ const Home = props => (
 
         <div
             style={{
-                marginTop: 24,
+                marginBottom: 12
             }}
         >
-            <Gallery
-                slideWidth="custom"
-            >
-                {shuffle(gal)}
-            </Gallery>
+            <InfoBanners/>
         </div>
 
 
