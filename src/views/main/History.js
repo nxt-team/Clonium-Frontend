@@ -23,7 +23,7 @@ const History = ({ id, go, modalOn, fetchedUser }) => {
             <PanelHeader
                 separator={false}
                 left={
-                    <PanelHeaderButton onClick={go} data-to="home">
+                    <PanelHeaderButton onClick={() => window.history.back()} data-to="home">
                         <Icon28ArrowRightOutline />
                     </PanelHeaderButton>
                 }

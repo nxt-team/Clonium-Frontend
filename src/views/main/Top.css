@@ -1,27 +1,16 @@
-.Persik {
-    display: block;
-    width: 40%;
-    max-width: 240px;
-    margin: 20px auto;
+.GlobalPlace__indicator {
+    color: var(--accent);
+
 }
-.j {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+
+.GlobalPlace__container {
+    display: flex;
+    align-items: center;
 }
-.l {
-    display: block;
-    max-height: 500px;
-    max-width: 600px;
-    margin: 20px auto;
-}
-.u {
-    position: absolute;
-    bottom: 10px;
-}
-.k {
-    position: absolute;
-    left: 0px;
+
+.GlobalPlace__avatar {
+    margin-right: 8px;
+    margin-left: 8px;
 }
 
 #center{
@@ -35,22 +24,6 @@
     width: 10%;
     height: 100%;
     float: left;
-}
-.lox {
-    margin-top: 70px;
-}
-.lox2 {
-
-
-    right: 0px;
-}
-.kkk {
-    margin-top: auto;
-    margin-bottom: 2px;
-}
-.kkk2 {
-    margin-top: auto;
-    margin-bottom: auto;
 }
 
 .forButton {

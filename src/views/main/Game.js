@@ -583,7 +583,7 @@ const Game = ({id, go, startupParameters, changeActiveModal}) => {
 					justifyContent: 'center',
 				}}
 			>
-				<Button onClick={go}  data-to="home" mode="tertiary">Сдаться</Button>
+				<Button onClick={() => window.history.back()}  data-to="home" mode="tertiary">Сдаться</Button>
 			</div>
 		</Panel>
 	);

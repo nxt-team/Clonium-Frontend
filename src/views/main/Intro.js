@@ -33,7 +33,7 @@ const Intro = ({ id, panel_go, changeActiveModal, fetchedUser }) => {
         if (slideIndex !== 2) {
             setSlideIndex(slideIndex + 1)
         } else {
-            panel_go("home")
+             window.history.back()
         }
     }
 

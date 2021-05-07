@@ -20,7 +20,7 @@
   "dependencies": {
     "@gmelum/vkui": "^3.14.2-beta.2",
     "@vkontakte/icons": "^1.93.0",
-    "@vkontakte/vk-bridge": "^2.3.0",
+    "@vkontakte/vk-bridge": "^2.4.1",
     "@vkontakte/vk-miniapps-deploy": "0.0.17",
     "@vkontakte/vkui": "^3.13.1",
     "axios": "^0.21.1",

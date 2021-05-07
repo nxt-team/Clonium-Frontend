@@ -6,8 +6,15 @@ import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import './Top.css'
-import { Icon28AddSquareOutline, Icon56UsersOutline, Icon28AchievementCircleFillBlue, Icon28FireOutline } from '@vkontakte/icons';
-import LeaderBoardPlace from '../../components/leaderBoardPlace'
+import {
+    Icon28AddSquareOutline,
+    Icon56UsersOutline,
+    Icon28AchievementCircleFillBlue,
+    Icon28FireOutline,
+    Icon201CircleFillGold
+} from '@vkontakte/icons';
+import LeaderBoardPlace from '../../components/LeaderBoardPlace'
+import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
 import {
     Avatar,
     Search,
@@ -32,7 +39,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
     return (
         <Panel id={id}>
             <PanelHeader
-                left={<PanelHeaderButton onClick={go} data-to="home">
+                left={<PanelHeaderButton onClick={() => window.history.back()} data-to="home">
                     {osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                 </PanelHeaderButton>}
             >
@@ -124,17 +131,16 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                     />
                     }
 
-                    <LeaderBoardPlace place={1} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={2} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={3} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={4} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={5} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={6} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={7} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={8} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={9} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-                    <LeaderBoardPlace place={10} avaUrl={"https://vk.com/images/camera_200.png"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={100}/>
-
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={100} place={1} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={97} place={2} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={83} place={3} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={69} place={4} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={54} place={5} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={51} place={6} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={48} place={7} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={45} place={8} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={43} place={9} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
+                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={37} place={10} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
                 </div>
                 <div>
                     <Placeholder
@@ -154,7 +160,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                     style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
                     vertical="bottom"
                 >
-                    <div className="end_block">
+                    <div style={{marginTop: 8}} className="end_block">
                         <SimpleCell
                             before={
                                 <div className="avatar">

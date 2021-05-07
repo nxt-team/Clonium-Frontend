@@ -59,7 +59,7 @@ const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Button onClick={go}  data-to="home" mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={() => window.history.back()} data-to="home" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>

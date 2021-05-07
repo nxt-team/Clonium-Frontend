@@ -17,7 +17,7 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser }) => {
             id={id}
         >
             <PanelHeader
-                left={<PanelHeaderButton onClick={go} data-to="profile">
+                left={<PanelHeaderButton onClick={() => window.history.back()} data-to="profile">
                     {osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                 </PanelHeaderButton>}
             >

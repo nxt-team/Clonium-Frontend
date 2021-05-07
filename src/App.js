@@ -25,9 +25,10 @@ import WaitingForStart from './views/main/WaitingForStart'
 import Customization from './views/main/Customization'
 import CreatingRoom from './views/creatingRoom/CreatingRoom'
 import imagenation from "imagenation";
-import RateFight from './views/rateFight/RateFight'
+import RateFight from './views/endFight/RateFight'
 import Offline from './views/offline/offline'
 import Messenger from "./components/Messenger";
+import FightResults from "./views/endFight/FightResults"
 
 import {
 	Div,
@@ -35,7 +36,10 @@ import {
 	ModalRoot,
 	Root,
 	Spinner,
-	HorizontalScroll, ModalCard, File, Input
+	ConfigProvider,
+	ModalCard,
+	File,
+	Input, ScreenSpinner
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import Message from "./components/Message";
@@ -44,50 +48,73 @@ import AnimatedErrorIcon from "./components/AnimateErrorIcon";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 const App = () => {
-	const [activePanel, setActivePanel] = useState('home');
+	const [activePanel, setActivePanel] = useState('rateFight');
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
-	const [popout, setPopout] = useState(null);
+	const [popout, setPopout] = useState(<ScreenSpinner/>);
 	const [activeModal, setActiveModal] = useState(null)
-	const [activeView, setActiveView] = useState('main')
+	const [activeView, setActiveView] = useState('endFight')
 	const [imgLink, setImgLink] = useState(null)
+	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
+	// const [scheme, setScheme] = useState('client_light');
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
-			if (type === 'VKWebAppUpdateConfig') {
-				const schemeAttribute = document.createAttribute('scheme');
-				schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-				document.body.attributes.setNamedItem(schemeAttribute);
-			} else if (type === 'VKWebAppGetUserInfoResult') {
-				setUser(data);
-				console.log('up')
-			} else {
-				console.log(type, data)
-			}
+			// if (type === 'VKWebAppUpdateConfig') {
+			// 	const schemeAttribute = document.createAttribute('scheme');
+			// 	schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+			// 	document.body.attributes.setNamedItem(schemeAttribute);
+			// 	// setScheme(data.scheme)
+			// }
 		});
+
 		async function fetchData() {
-			// setActivePanel('intro_1')
-			console.log(window.location.host)
+			const user = await bridge.send('VKWebAppGetUserInfo');
+			setUser(user)
+			setPopout(null)
 			// TODO: добавить метод инициализации
+			console.log("inited")
 
 		}
+
 		fetchData();
+
+		window.addEventListener('popstate', () => goBack());
 	}, []);
 
 	const go = e => {
+		const panel = e.currentTarget.dataset.to
 		// if (e.currentTarget.dataset.to === 'game') {
 		// 	setPopout(<TicketAnimation/>)
 		// 	setTimeout(() => setPopout(null), 2700)
 		// }
-		setActivePanel(e.currentTarget.dataset.to);
+		window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
+		setActivePanel( panel ); // Меняем активную панель
+		history.push( panel ); // Добавляем панель в историю
 	};
 
 	const panel_go = panel => {
-		setActivePanel(panel)
+		window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
+		setActivePanel( panel ); // Меняем активную панель
+		history.push( panel ); // Добавляем панель в историю
 	}
 
 	window.addEventListener('offline', () => {
 		goToOffline()
 	})
+
+	const goIsolated = e => {
+		const panel = e.currentTarget.dataset.to
+		setActivePanel( panel );
+	}
+
+	const goBack = () => {
+		if( history.length === 1 ) {  // Если в массиве одно значение:
+			bridge.send("VKWebAppClose", {"status": "success"}); // Отправляем bridge на закрытие сервиса.
+		} else if( history.length > 1) { // Если в массиве больше одного значения:
+			history.pop() // удаляем последний элемент в массиве.
+			setActivePanel( history[history.length - 1] ) // Изменяем массив с иторией и меняем активную панель.
+		}
+	}
 
 
 	const onChange_originalFile = async (e) => {
@@ -425,29 +452,34 @@ const App = () => {
 
 
 	return (
-		<Root activeView={activeView} >
-			<View id='main' activePanel={activePanel} popout={popout} modal={modal}>
-				<Achievements id='achievements' go={go} />
-				<History id='history' go={go} />
-				<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
-				<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} />
-				<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
-				<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
-				<WaitingForStart id='waitingForStart' go={go} />
-				<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
-				<Customization id='customization' go={go} changeActiveModal={changeActiveModal}/>
-				<Intro id='intro_1' panel_go={panel_go}/>
-			</View>
-			<View activePanel={"creatingRoom"} id="creatingRoom">
-				<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />
-			</View>
-			<View activePanel={"rateFight"} id="rateFight">
-				<RateFight id={'rateFight'} goToMainView={goToMainView} />
-			</View>
-			<View activePanel={"offline"} id="offline" modal={modal} >
-				<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>
-			</View>
-		</Root>
+		<ConfigProvider
+			// scheme={scheme}
+		>
+			<Root activeView={activeView} >
+				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
+					<Achievements id='achievements' go={go} />
+					<History id='history' go={go} />
+					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
+					<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} />
+					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
+					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
+					<WaitingForStart id='waitingForStart' go={go} />
+					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
+					<Customization id='customization' go={go} changeActiveModal={changeActiveModal}/>
+					<Intro id='intro_1' panel_go={panel_go}/>
+				</View>
+				<View activePanel={"creatingRoom"} id="creatingRoom">
+					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />
+				</View>
+				<View activePanel={activePanel} id="endFight">
+					<RateFight id={'rateFight'} goIsolated={goIsolated} />
+					<FightResults id={'fightResults'} goToMainView={goToMainView}/>
+				</View>
+				<View activePanel={"offline"} id="offline" modal={modal} >
+					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>
+				</View>
+			</Root>
+		</ConfigProvider>
 	);
 }
 
