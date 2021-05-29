@@ -18,6 +18,9 @@ import History from './views/main/History'
 import { Icon56FavoriteOutline } from '@vkontakte/icons';
 import { Icon56VideoOutline } from '@vkontakte/icons';
 import Achievements from './views/main/Achievements'
+import { Icon28Messages } from '@vkontakte/icons';
+import { Icon28StoryOutline } from '@vkontakte/icons';
+import { Icon28NewsfeedOutline } from '@vkontakte/icons';
 import TicketAnimation from './components/TicketAnimation'
 import { Icon56Users3Outline } from '@vkontakte/icons';
 import NoTickets from './views/main/NoTickets'
@@ -39,20 +42,29 @@ import {
 	ConfigProvider,
 	ModalCard,
 	File,
-	Input, ScreenSpinner
+	Input,
+	ScreenSpinner,
+	ActionSheetItem,
+	ActionSheet,
+	platform,
+	IOS
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
-import Message from "./components/Message";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
-
+import GameMechanicsModal from "./modals/GameMechanicsModal";
+import ExplosionMechanicsModal from "./modals/ExplosionMechanicsModal"
+import SuperFightModal from "./modals/SuperFightModal";
+import AboutVkDonutModal from "./modals/AboutVkDonutModal";
+import GrabRivalsModal from "./modals/GrabRivalsModal";
+const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 const App = () => {
-	const [activePanel, setActivePanel] = useState('rateFight');
+	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
-	const [popout, setPopout] = useState(<ScreenSpinner/>);
+	const [popout, setPopout] = useState(null); // <ScreenSpinner/>
 	const [activeModal, setActiveModal] = useState(null)
-	const [activeView, setActiveView] = useState('endFight')
+	const [activeView, setActiveView] = useState('main')
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
 	// const [scheme, setScheme] = useState('client_light');
@@ -200,70 +212,8 @@ const App = () => {
 			activeModal={activeModal}
 			onClose={() => setActiveModal(null)}
 		>
-			<ModalPage
-				id="SuperFight"
-				settlingHeight={100}
-				onClose={() => setActiveModal(null)}
-				header={
-					<ModalPageHeader
-						right={
-							<PanelHeaderButton onClick={() => setActiveModal(null)}>
-								<Icon24Dismiss />
-							</PanelHeaderButton>
-						}
-					>
-						Супер бой
-					</ModalPageHeader>
-				}
-			>
-				<Div>
-					<Text weight="regular" style={{ marginBottom: 16 }}>
-						Супер бой проходит на самой большой карте 10 на 17 клеток, в субботу
-						вечером. Игроки разделяются на 5 команд. Всего в игре может принять
-						участие максиму 10 человек.
-						<br />
-						<br />
-						Игроки находящиеся в топ 10 по опыту гарантированно имеют шанс
-						поучаствовать в супер боее. Остальные смогут принять участие, только
-						если место какого то игрока из топ 10 будет свободно.
-						<br />
-						<br />
-						Команда, победившая в супер бое, получает стикер пак (для каждого
-						члена команды). За подробностями супер боёв следите в нашей беседе и
-						в нашем сообществе.
-					</Text>
-					<Button size="xl">Участвовать</Button>
-				</Div>
-			</ModalPage>
-			<ModalPage
-				id="aboutVkDonut"
-				settlingHeight={100}
-				onClose={() => setActiveModal(null)}
-				header={
-					<ModalPageHeader
-						right={
-							<PanelHeaderButton onClick={() => setActiveModal(null)}>
-								<Icon24Dismiss />
-							</PanelHeaderButton>
-						}
-					>
-						VK Donut
-					</ModalPageHeader>
-				}
-			>
-				<Div>
-					<Text weight="regular" style={{ marginBottom: 16 }}>
-						Оформи подписку Vk Donut и получи следующее преимущества: <br/>
-						<br/>
-						• Возможность выбора аватарки для фишки <br/>
-						• Подсветка ходов соперников (видно кто куда тыкает) <br/>
-						• 5 билетов в день <br/>
-						• Звездочка рядом с именем в топе <br/>
-						• Никакой рекламы <br/>
-					</Text>
-					<Button size="xl">Оформить</Button>
-				</Div>
-			</ModalPage>
+			<SuperFightModal id='superFight' closeModal={() => setActiveModal(null)}/>
+			<AboutVkDonutModal id='aboutVkDonut' closeModal={() => setActiveModal(null)}/>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}
 				onClose={() => setActiveModal(null)}
@@ -419,6 +369,9 @@ const App = () => {
 				]}
 			>
 			</ModalCard>
+			<GameMechanicsModal id={"gameMechanicsModal"} closeModal={() => setActiveModal(null)}/>
+			<ExplosionMechanicsModal id={"explosionMechanicsModal"} closeModal={() => setActiveModal(null)}/>
+			<GrabRivalsModal id={"grabRivalsModal"} closeModal={() => setActiveModal(null)}/>
 
 		</ModalRoot>
 	);
@@ -445,8 +398,37 @@ const App = () => {
 		setActiveView('main')
 	}
 
+	function goToMainViewHome () {
+		setActivePanel('home')
+		setActiveView('main')
+		setHistory(['home'])
+	}
+
 	function goToOffline () {
 		setActiveView('offline')
+	}
+
+	function goToEndFight () {
+		setActivePanel("rateFight")
+		setActiveView("endFight")
+	}
+
+	function fightResultsSharing () {
+		console.log('clicked')
+		setPopout(
+			<ActionSheet onClose={() => setPopout(null)}>
+				<ActionSheetItem autoclose before={<Icon28StoryOutline/>}>
+					В историю
+				</ActionSheetItem>
+				<ActionSheetItem autoclose before={<Icon28NewsfeedOutline/>}>
+					На стену
+				</ActionSheetItem>
+				<ActionSheetItem autoclose before={<Icon28Messages/>}>
+					Картинкой в сообщения
+				</ActionSheetItem>
+				{osName === IOS && <ActionSheetItem autoclose mode="cancel">Отменить</ActionSheetItem>}
+			</ActionSheet>
+		)
 	}
 
 
@@ -460,20 +442,20 @@ const App = () => {
 					<Achievements id='achievements' go={go} />
 					<History id='history' go={go} />
 					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
-					<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} />
+					<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} goToEndFight={goToEndFight} />
 					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 					<WaitingForStart id='waitingForStart' go={go} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
 					<Customization id='customization' go={go} changeActiveModal={changeActiveModal}/>
-					<Intro id='intro_1' panel_go={panel_go}/>
+					<Intro id='intro_1' panel_go={panel_go} changeActiveModal={changeActiveModal}/>
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
 					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />
 				</View>
-				<View activePanel={activePanel} id="endFight">
+				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated} />
-					<FightResults id={'fightResults'} goToMainView={goToMainView}/>
+					<FightResults id={'fightResults'} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
 				</View>
 				<View activePanel={"offline"} id="offline" modal={modal} >
 					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>

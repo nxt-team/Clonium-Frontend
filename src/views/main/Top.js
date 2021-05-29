@@ -125,7 +125,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                             }
                             actions={
                                 <React.Fragment >
-                                    <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('SuperFight')} >Подробнее</Button>
+                                    <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('superFight')} >Подробнее</Button>
                                 </React.Fragment>
                             }
                     />

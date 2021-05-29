@@ -1,0 +1,56 @@
+.fight__title__container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.result__container {
+    padding: 32px 16px;
+    background: var(--content_tint_background);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    margin-top: 12px;
+    display: flex;
+}
+
+.buttons__container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon__container {
+    height: 52px;
+    width: 52px;
+    border-radius: 16px;
+    background: rgba(39, 135, 245, 0.12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.skip__button {
+    animation-name: show_skip_button;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    animation-delay: 3000ms;
+    animation-duration: 1s;
+}
+
+@keyframes show_skip_button {
+    from {opacity: 0;} to {opacity: 1;}
+}
+
+.result__container__vertical {
+    width: 100%;
+    padding: 32px 16px;
+    background: var(--content_tint_background);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    margin-top: 12px;
+}

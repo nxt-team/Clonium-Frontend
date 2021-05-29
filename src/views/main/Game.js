@@ -32,7 +32,7 @@ function callHeavyTapticEngine (startupParameters) {
 	}
 }
 
-const Game = ({id, go, startupParameters, changeActiveModal}) => {
+const Game = ({id, go, startupParameters, changeActiveModal, goToEndFight}) => {
 	const [map, setMap] = useState(startJson);
 	const [colorMotion, setColorMotion] = useState('голубого');
 	// const [update, setUpdate] = useState(0)
@@ -136,18 +136,18 @@ const Game = ({id, go, startupParameters, changeActiveModal}) => {
 			let newMap = map.slice();
 			console.log('clicked');
 			if (map[row - 1][column - 1]['state'] === 1) {
-				// callTapticEngine(startupParameters)
+				callTapticEngine(startupParameters)
 				newMap[row - 1][column - 1]['state'] = 2;
 				setMap(newMap);
 			} else if (map[row - 1][column - 1]['state'] === 2) {
-				// callTapticEngine(startupParameters)
+				callTapticEngine(startupParameters)
 				newMap[row - 1][column - 1]['state'] = 3;
 				setMap(newMap);
 			} else if (map[row - 1][column - 1]['state'] === 3) {
 				const color = newMap[row - 1][column - 1]['color'];
 				newMap[row - 1][column - 1]['state'] = "animate";
 				setMap(newMap)
-				// callHeavyTapticEngine(startupParameters)
+				callHeavyTapticEngine(startupParameters)
 
 				setTimeout(() => {
 					newMap = map.slice()
@@ -583,7 +583,7 @@ const Game = ({id, go, startupParameters, changeActiveModal}) => {
 					justifyContent: 'center',
 				}}
 			>
-				<Button onClick={() => window.history.back()}  data-to="home" mode="tertiary">Сдаться</Button>
+				<Button onClick={goToEndFight}  data-to="home" mode="tertiary">Сдаться</Button>
 			</div>
 		</Panel>
 	);

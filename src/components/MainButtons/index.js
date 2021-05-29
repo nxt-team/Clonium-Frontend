@@ -18,7 +18,7 @@ export default function MainButtons(props) {
             )
         } if (!isUserInSuperFight) {
             return (
-                <Button size="xl" before={<Icon28FireOutline />} stretched onClick={() => changeActiveModal('SuperFight')} style={{ marginRight: 8 }} mode="secondary">Супер бой</Button>
+                <Button size="xl" before={<Icon28FireOutline />} stretched onClick={() => changeActiveModal('superFight')} style={{ marginRight: 8 }} mode="secondary">Супер бой</Button>
             )
         } else {
             return (
