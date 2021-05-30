@@ -34,7 +34,7 @@ const osName = platform();
 
 
 
-const Home = ({ id, go, modalOn, fetchedUser }) => {
+const Home = ({ id, go, modalOn, openAchievementModal }) => {
 
     const [activeTab, setActiveTab] = useState('available');
     const [slideIndex, setSlideIndex] = useState(0);
@@ -89,6 +89,13 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                             </div>
                         }
                         description="Сыграть 1 игру"
+                        onClick={
+                            () => openAchievementModal(
+                                "Начинающий",
+                                "Сыграть 1 игру",
+                                false
+                            )
+                        }
                     >
                         Начинающий
                     </SimpleCell>
@@ -155,6 +162,13 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
                             </div>
                         }
                         description="Сыграть 1 игру"
+                        onClick={
+                            () => openAchievementModal(
+                                "Начинающий",
+                                "Сыграть 1 игру",
+                                true
+                            )
+                        }
                     >
                         Начинающий
                     </SimpleCell>

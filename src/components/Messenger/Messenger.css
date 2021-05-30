@@ -26,6 +26,6 @@
 /*  overflow-y: auto;*/
 /*}*/
 
-.write_bar_padding {
-  padding-bottom: var(--safe-area-inset-bottom);
-}
+/*.write_bar_padding {*/
+/*  padding-bottom: var(--safe-area-inset-bottom);*/
+/*}*/

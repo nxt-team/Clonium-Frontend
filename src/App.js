@@ -56,6 +56,8 @@ import ExplosionMechanicsModal from "./modals/ExplosionMechanicsModal"
 import SuperFightModal from "./modals/SuperFightModal";
 import AboutVkDonutModal from "./modals/AboutVkDonutModal";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
+import AchievementModal from "./modals/AchievmentModal";
+import UserProfile from "./views/main/UserProfile";
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
@@ -67,7 +69,7 @@ const App = () => {
 	const [activeView, setActiveView] = useState('main')
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
-	// const [scheme, setScheme] = useState('client_light');
+	const [achievementModalData, setAchievementModalData] = useState(["Титул", "Сабхидер", true])
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -372,6 +374,7 @@ const App = () => {
 			<GameMechanicsModal id={"gameMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<ExplosionMechanicsModal id={"explosionMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<GrabRivalsModal id={"grabRivalsModal"} closeModal={() => setActiveModal(null)}/>
+			<AchievementModal id={"achievementModal"} closeModal={() => setActiveModal(null)} data={achievementModalData} />
 
 		</ModalRoot>
 	);
@@ -431,7 +434,10 @@ const App = () => {
 		)
 	}
 
-
+	function openAchievementModal (title, caption, isCompleted) {
+		setAchievementModalData([title, caption, isCompleted])
+		setActiveModal('achievementModal')
+	}
 
 	return (
 		<ConfigProvider
@@ -439,7 +445,7 @@ const App = () => {
 		>
 			<Root activeView={activeView} >
 				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
-					<Achievements id='achievements' go={go} />
+					<Achievements id='achievements' go={go} openAchievementModal={openAchievementModal} />
 					<History id='history' go={go} />
 					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
 					<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} goToEndFight={goToEndFight} />
@@ -449,6 +455,7 @@ const App = () => {
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
 					<Customization id='customization' go={go} changeActiveModal={changeActiveModal}/>
 					<Intro id='intro_1' panel_go={panel_go} changeActiveModal={changeActiveModal}/>
+					<UserProfile id="userProfile" />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
 					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />

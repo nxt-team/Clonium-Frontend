@@ -186,7 +186,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
                     <SimpleCell before={<Icon28ServicesOutline  />} expandable onClick={() => bridge.send("VKWebAppAddToFavorites") /* bridge.send("VKWebAppAddToMenu")*/ }  >Добавь сервис в избранные</SimpleCell>
                     <SimpleCell before={<Icon28ShareOutline  />} onClick={() => bridge.send("VKWebAppShare", {"link": "https://vk.com/app7705406#invite=" + fetchedUser.id})} expandable >Расскажи друзьям</SimpleCell>
                     <SimpleCell before={<Icon28PaletteOutline  />} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
-                    <SimpleCell before={<Icon28EditOutline  />} target="_blank" href="https://vk.com/im?sel=-199025669" expandable >Обратная связь</SimpleCell>
+                    <SimpleCell before={<Icon28EditOutline  />} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
                     <SimpleCell before={<Icon28PincodeOutline  />} onClick={() => changeActiveModal("promoСodeActivation")} expandable >Активировать промокод</SimpleCell>
                 </div>
 
