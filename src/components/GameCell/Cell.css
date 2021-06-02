@@ -1,0 +1,16 @@
+.cell {
+    background-color: var(--content_tint_background);
+    margin: 1px;
+    border-radius: 10%;
+}
+
+.disabled_cell {
+    background-color: var(--background_content);
+    margin: 1px;
+}
+
+.active_cell {
+    background-color: var(--panel_tab_active_background);
+    margin: 1px;
+    border-radius: 10%;
+}

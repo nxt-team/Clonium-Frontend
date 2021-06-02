@@ -448,7 +448,7 @@ const App = () => {
 					<Achievements id='achievements' go={go} openAchievementModal={openAchievementModal} />
 					<History id='history' go={go} />
 					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
-					<Game id={'game'} go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} startupParameters={startupParameters} goToEndFight={goToEndFight} />
+					<Game id={'game'}  changeActiveModal={changeActiveModal}  startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={'GridSize8'} />
 					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 					<WaitingForStart id='waitingForStart' go={go} />

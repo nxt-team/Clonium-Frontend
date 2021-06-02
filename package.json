@@ -13,12 +13,14 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@react-spring/web": "^9.2.1",
     "cross-env": "^5.2.0",
     "react-hot-loader": "^4.9.0",
     "react-scripts": "^3.4.1"
   },
   "dependencies": {
     "@gmelum/vkui": "^3.14.2-beta.2",
+    "@use-it/interval": "^1.0.0",
     "@vkontakte/icons": "^1.93.0",
     "@vkontakte/vk-bridge": "^2.4.1",
     "@vkontakte/vk-miniapps-deploy": "0.0.17",

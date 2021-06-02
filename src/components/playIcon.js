@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../views/main/game.css'
 import '../views/main/home.css';
-const Home = ({ color, size }) => {
+const playIcon = ({ color, size }) => {
 
     let fill = ''
 
@@ -83,4 +83,4 @@ const Home = ({ color, size }) => {
 
 
 
-export default Home;
+export default playIcon;

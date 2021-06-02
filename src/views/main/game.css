@@ -1,9 +1,3 @@
-.cell {
-    background-color: var(--content_tint_background);
-    margin: 1px;
-    border-radius: 10%;
-}
-
 .cell2 {
     width: 12px;
     height: 12px;

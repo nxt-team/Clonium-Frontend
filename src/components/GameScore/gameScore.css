@@ -1,0 +1,6 @@
+.gameScore_container {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

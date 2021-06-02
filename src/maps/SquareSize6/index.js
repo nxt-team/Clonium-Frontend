@@ -1,0 +1,132 @@
+import React from 'react';
+
+const cellSize = (window.innerWidth - 12 - 12) / 6 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
+const cellStyle = {height: cellSize, width: cellSize}
+
+export default function Message({onCellClick, getCellContent}) {
+    
+    return (
+        <div style={{marginLeft: 6}} > 
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'}  onClick={() => onCellClick(1, 1)}>
+                    {getCellContent(1, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 2)}>
+                    {getCellContent(1, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 3)}>
+                    {getCellContent(1, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 4)}>
+                    {getCellContent(1, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 5)}>
+                    {getCellContent(1, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 6)}>
+                    {getCellContent(1, 6)}
+                </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 1)}>
+                    {getCellContent(2, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 2)}>
+                    {getCellContent(2, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 3)}>
+                    {getCellContent(2, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 4)}>
+                    {getCellContent(2, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 5)}>
+                    {getCellContent(2, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 6)}>
+                    {getCellContent(2, 6)}
+                </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 1)}>
+                    {getCellContent(3, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 2)}>
+                    {getCellContent(3, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 3)}>
+                    {getCellContent(3, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 4)}>
+                    {getCellContent(3, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 5)}>
+                    {getCellContent(3, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 6)}>
+                    {getCellContent(3, 6)}
+                </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 1)}>
+                    {getCellContent(4, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 2)}>
+                    {getCellContent(4, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 3)}>
+                    {getCellContent(4, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 4)}>
+                    {getCellContent(4, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 5)}>
+                    {getCellContent(4, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(4, 6)}>
+                    {getCellContent(4, 6)}
+                </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 1)}>
+                    {getCellContent(5, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 2)}>
+                    {getCellContent(5, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 3)}>
+                    {getCellContent(5, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 4)}>
+                    {getCellContent(5, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 5)}>
+                    {getCellContent(5, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 6)}>
+                    {getCellContent(5, 6)}
+                </div>
+            </div>
+            <div style={{ display: 'flex' }}>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 1)}>
+                    {getCellContent(6, 1)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 2)}>
+                    {getCellContent(6, 2)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 3)}>
+                    {getCellContent(6, 3)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 4)}>
+                    {getCellContent(6, 4)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 5)}>
+                    {getCellContent(6, 5)}
+                </div>
+                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 6)}>
+                    {getCellContent(6, 6)}
+                </div>
+            </div>
+        </div>
+    )
+}
