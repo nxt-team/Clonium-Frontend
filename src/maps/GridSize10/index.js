@@ -1,295 +1,132 @@
 import React from 'react';
+import GameCell from "../../components/GameCell";
 
 const cellSize = (window.innerWidth - 20 - 12) / 10 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
 const cellStyle = {height: cellSize, width: cellSize}
 
-export default function Message({onCellClick, getCellContent}) {
+export default function Message({onCellClick, getCellContent, colorMotion, map}) {
     
     return (
         <div style={{marginLeft: 6}} > { /* */}
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'}  onClick={() => onCellClick(1, 1)}>
-                    {getCellContent(1, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 2)}>
-                    {getCellContent(1, 2)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 3)}>
-                    {getCellContent(1, 3)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 4)}>
-                    {getCellContent(1, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 5)}>
-                    {getCellContent(1, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 6)}>
-                    {getCellContent(1, 6)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 7)}>
-                    {getCellContent(1, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 8)}>
-                    {getCellContent(1, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 9)}>
-                    {getCellContent(1, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 10)}>
-                    {getCellContent(1, 10)}
-                </div>
+                <GameCell row={1} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={1} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 1)}>
-                    {getCellContent(2, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 2)}>
-                    {getCellContent(2, 2)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 3)}>
-                    {getCellContent(2, 3)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 4)}>
-                    {getCellContent(2, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 5)}>
-                    {getCellContent(2, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 6)}>
-                    {getCellContent(2, 6)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 7)}>
-                    {getCellContent(2, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(2, 8)}>
-                    {getCellContent(2, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 9)}>
-                    {getCellContent(2, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(1, 10)}>
-                    {getCellContent(2, 10)}
-                </div>
+                <GameCell row={2} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={2} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 1)}>
-                    {getCellContent(3, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 2)}>
-                    {getCellContent(3, 2)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 4)}>
-                    {getCellContent(3, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 5)}>
-                    {getCellContent(3, 6)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 9)}>
-                    {getCellContent(3, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 10)}>
-                    {getCellContent(3, 10)}
-                </div>
+                <GameCell row={3} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={3} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={4} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={7} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={8} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={3} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 1)}>
-                    {getCellContent(4, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 2)}>
-                    {getCellContent(4, 2)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 5)}>
-                    {getCellContent(4, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 6)}>
-                    {getCellContent(4, 6)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 9)}>
-                    {getCellContent(4, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(3, 10)}>
-                    {getCellContent(4, 10)}
-                </div>
+                <GameCell row={4} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={3} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={4} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={7} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={8} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={4} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 1)}>
-                    {getCellContent(5, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 2)}>
-                    {getCellContent(5, 2)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 3)}>
-                    {getCellContent(5, 3)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 4)}>
-                    {getCellContent(5, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 5)}>
-                    {getCellContent(5, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 6)}>
-                    {getCellContent(5, 6)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 7)}>
-                    {getCellContent(5, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 8)}>
-                    {getCellContent(5, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 9)}>
-                    {getCellContent(5, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(5, 10)}>
-                    {getCellContent(5, 10)}
-                </div>
+                <GameCell row={5} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={5} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 1)}>
-                    {getCellContent(6, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 2)}>
-                    {getCellContent(6, 2)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 4)}>
-                    {getCellContent(6, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 5)}>
-                    {getCellContent(6, 5)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 7)}>
-                    {getCellContent(6, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 8)}>
-                    {getCellContent(6, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 9)}>
-                    {getCellContent(6, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(6, 10)}>
-                    {getCellContent(6, 10)}
-                </div>
+                <GameCell row={6} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={6} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 1)}>
-                    {getCellContent(7, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 2)}>
-                    {getCellContent(7, 2)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 5)}>
-                    {getCellContent(7, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 5)}>
-                    {getCellContent(7, 6)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 9)}>
-                    {getCellContent(7, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(7, 10)}>
-                    {getCellContent(7, 10)}
-                </div>
+                <GameCell row={7} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={3} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={4} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={7} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={8} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={7} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 1)}>
-                    {getCellContent(8, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 2)}>
-                    {getCellContent(8, 2)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 5)}>
-                    {getCellContent(8, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 6)}>
-                    {getCellContent(8, 6)}
-                </div>
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'disabled_cell'} />
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 9)}>
-                    {getCellContent(8, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(8, 10)}>
-                    {getCellContent(8, 10)}
-                </div>
+                <GameCell row={8} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={3} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={4} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={7} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={8} disabled={true} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={8} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 1)}>
-                    {getCellContent(9, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 2)}>
-                    {getCellContent(9, 2)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 3)}>
-                    {getCellContent(9, 3)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 4)}>
-                    {getCellContent(9, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 5)}>
-                    {getCellContent(9, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 6)}>
-                    {getCellContent(9, 6)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 7)}>
-                    {getCellContent(9, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 8)}>
-                    {getCellContent(9, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 9)}>
-                    {getCellContent(9, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(9, 10)}>
-                    {getCellContent(9, 10)}
-                </div>
+                <GameCell row={9} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={9} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
             <div style={{ display: 'flex' }}>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 1)}>
-                    {getCellContent(10, 1)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 2)}>
-                    {getCellContent(10, 2)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 3)}>
-                    {getCellContent(10, 3)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 4)}>
-                    {getCellContent(10, 4)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 5)}>
-                    {getCellContent(10, 5)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 6)}>
-                    {getCellContent(10, 6)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 7)}>
-                    {getCellContent(10, 7)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 8)}>
-                    {getCellContent(10, 8)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 9)}>
-                    {getCellContent(10, 9)}
-                </div>
-                <div style={cellStyle} className={'cell'} onClick={() => onCellClick(10, 10)}>
-                    {getCellContent(10, 10)}
-                </div>
+                <GameCell row={10} column={1} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={2} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={3} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={4} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={5} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={6} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={7} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={8} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={9} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
+                <GameCell row={10} column={10} disabled={false} cellStyle={cellStyle} colorMotion={colorMotion} map={map} getCellContent={getCellContent} onCellClick={onCellClick}/>
             </div>
         </div>
     )

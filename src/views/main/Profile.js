@@ -18,6 +18,7 @@ import { Icon56DonateOutline } from '@vkontakte/icons';
 import { Icon28PaletteOutline } from '@vkontakte/icons';
 import Icon28ServicesOutline from '@vkontakte/icons/dist/28/services_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';
+import { Icon28SmartphoneOutline } from '@vkontakte/icons';
 import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline';
 import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
 import Icon24StoryOutline from '@vkontakte/icons/dist/24/story_outline';
@@ -26,11 +27,57 @@ import { motion } from "framer-motion"
 
 import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
 import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
-import {Card, CardScroll, Input, FormLayoutGroup, Group, IOS, Placeholder, platform, SimpleCell} from "@vkontakte/vkui";
+import {Card, CardScroll, Input, FormLayoutGroup, Group, IOS, Placeholder, platform, SimpleCell, ANDROID} from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
+
+    function getTickets (tickets) {
+        if (tickets % 100 !== 11 && tickets % 10 === 1) {
+            return tickets + ' билет'
+        } if (tickets % 100 !== 12 && tickets % 100 !== 13 && tickets % 100 !== 14 && (tickets % 10 === 2 || tickets % 10 === 3 || tickets % 10 === 4)) {
+            return tickets + ' билета'
+        } else {
+            return tickets + ' билетов'
+        }
+    }
+
+    function getExp (exp) {
+        if (exp % 100 !== 11 && exp % 10 === 1) {
+            return exp + ' опыт набран'
+        } else {
+            return exp + ' опыта набрано'
+        }
+    }
+
+    function gamesCaption (games) {
+        if (games % 100 !== 11 && games % 10 === 1) {
+            return 'игра сыграна'
+        } else {
+            return 'игр сыграно'
+        }
+    }
+
+    function winsCaption (wins) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (wins % 100 !== 11 && wins % 10 === 1) {
+            return 'победа'
+        } if (wins % 100 !== 12 && wins % 100 !== 13 && wins % 100 !== 14 && (wins % 10 === 2 || wins % 10 === 3 || wins % 10 === 4)) {
+            return 'победы'
+        } else {
+            return 'побед'
+        }
+    }
+
+    function losesCaption (loses) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (loses % 100 !== 11 && loses % 10 === 1) {
+            return 'поражение'
+        } if (loses % 100 !== 12 && loses % 100 !== 13 && loses % 100 !== 14 && (loses % 10 === 2 || loses % 10 === 3 || loses % 10 === 4)) {
+            return 'поражения'
+        } else {
+            return 'поражений'
+        }
+    }
 
     return (
         <Panel id={id}>
@@ -76,9 +123,9 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
                                         marginLeft: 6,
                                         flexDirection: "column"}}
                                 >
-                                    <Caption level="1" weight="regular">180</Caption>
+                                    <Caption level="1" weight="regular">{userBalances["fights"]}</Caption>
                                     <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                             weight="regular">игр сграно</Caption>
+                                             weight="regular">{gamesCaption(userBalances["fights"])}</Caption>
                                 </div>
 
 
@@ -104,9 +151,9 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
                                         marginLeft: 6,
                                         flexDirection: "column"}}
                                 >
-                                    <Caption level="1" weight="regular">4</Caption>
+                                    <Caption level="1" weight="regular">{userBalances["wins"]}</Caption>
                                     <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                             weight="regular">победы</Caption>
+                                             weight="regular">{winsCaption(userBalances["wins"])}</Caption>
                                 </div>
 
 
@@ -132,9 +179,9 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
                                         marginLeft: 6,
                                         flexDirection: "column"}}
                                 >
-                                    <Caption level="1" weight="regular">7</Caption>
+                                    <Caption level="1" weight="regular">{userBalances["losses"]}</Caption>
                                     <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                             weight="regular">поражений</Caption>
+                                             weight="regular">{losesCaption(userBalances["losses"])}</Caption>
                                 </div>
 
 
@@ -146,13 +193,13 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
 
             <Banner
                 before={<Avatar style={{boxShadow: "inset 0 0 0 1px rgb(0 0 0 / 8%) !important"}} mode="app"><Icon28TicketOutline style={{color: "var(--text_primary)"}} /></Avatar>}
-                header={<span >14 билетов</span>}
+                header={<span >{getTickets(userBalances["tickets"])}</span>}
                 subheader={<span>Билеты нужны для игры. 1 билет = 1 игра. Каждый день тебе будут доваться 5 билетеков. Дополнительно билетики можно получить за просмотр рекламы</span>}
                 actions={<Button mode="primary"  >Получить билетик</Button>}
             />
             <Banner
                 before={<Avatar mode="app"><Icon24FavoriteOutline width={28} height={28} style={{color: "var(--text_primary)"}} /></Avatar>}
-                header={<span >223 опыта </span>}
+                header={<span >{getExp(userBalances["exp"])}</span>}
                 subheader={<span>Опыт даётся за сыгранный бой. За преждевременный выход из боя мы отберём у тебя 2 опыта. </span>}
                 actions={<Button mode="primary" >Подробнее</Button>}
             />
@@ -183,11 +230,14 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal }) => {
             </Title>
             <div className={"containerProfile"}>
                 <div className={'fullContainer'} >
-                    <SimpleCell before={<Icon28ServicesOutline  />} expandable onClick={() => bridge.send("VKWebAppAddToFavorites") /* bridge.send("VKWebAppAddToMenu")*/ }  >Добавь сервис в избранные</SimpleCell>
-                    <SimpleCell before={<Icon28ShareOutline  />} onClick={() => bridge.send("VKWebAppShare", {"link": "https://vk.com/app7705406#invite=" + fetchedUser.id})} expandable >Расскажи друзьям</SimpleCell>
-                    <SimpleCell before={<Icon28PaletteOutline  />} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
-                    <SimpleCell before={<Icon28EditOutline  />} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
-                    <SimpleCell before={<Icon28PincodeOutline  />} onClick={() => changeActiveModal("promoСodeActivation")} expandable >Активировать промокод</SimpleCell>
+                    <SimpleCell before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites") /* bridge.send("VKWebAppAddToMenu")*/ }  >Добавь сервис в избранные</SimpleCell>
+                    <SimpleCell before={<Icon28ShareOutline/>} onClick={() => bridge.send("VKWebAppShare", {"link": "https://vk.com/app7705406#invite=" + fetchedUser.id})} expandable >Рассказать друзьям</SimpleCell>
+                    <SimpleCell before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
+                    <SimpleCell before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
+                    <SimpleCell before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promoСodeActivation")} expandable >Активировать промокод</SimpleCell>
+                    {osName === ANDROID &&
+                        <SimpleCell before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
+                    }
                 </div>
 
             <div className="Other__notify">

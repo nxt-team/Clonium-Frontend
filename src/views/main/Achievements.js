@@ -30,6 +30,7 @@ import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import { Icon28GhostSimleOutline, Icon28ChevronBack, Icon24Back } from '@vkontakte/icons';
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
 import Icon28Notifications from "@vkontakte/icons/dist/28/notifications";
+import {getUserBalances} from "../../api/api";
 const osName = platform();
 
 
@@ -38,6 +39,10 @@ const Home = ({ id, go, modalOn, openAchievementModal }) => {
 
     const [activeTab, setActiveTab] = useState('available');
     const [slideIndex, setSlideIndex] = useState(0);
+
+    useEffect(() => {
+        console.log("achievements")
+    }, []);
 
     return (
         <Panel

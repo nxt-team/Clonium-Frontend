@@ -20,6 +20,7 @@ import {
     Icon28FavoriteOutline, Icon28TicketOutline, Icon36GameOutline
 } from '@vkontakte/icons';
 import Icon24Back from "@vkontakte/icons/dist/24/back";
+import UserStat from "../../components/UserStat";
 
 const osName = platform();
 
@@ -85,142 +86,7 @@ const UserProfile = ({id}) => {
             <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
                 Статистика
             </Title>
-            <CardScroll style={{marginTop: 12, marginBottom: 12}}>
-                <Card style={{backgroundColor: "var(--content_tint_background)"}}>
-                        <div style={{
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            display: "flex",
-                            width: 156,
-                            height: 44,
-                            padding: 4,
-                            flexDirection: "row"
-                        }}>
-                            <Icon24FavoriteOutline width={32} height={32}/>
-                            <div
-                                style={{
-                                    justifyContent: 'center',
-                                    display: "flex",
-                                    marginLeft: 6,
-                                    flexDirection: "column"
-                                }}
-                            >
-                                <Caption level="1" weight="regular">267</Caption>
-                                <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular">опыта
-                                    набрано</Caption>
-                            </div>
-
-
-                        </div>
-                </Card>
-                <Card style={{backgroundColor: "var(--content_tint_background)"}}>
-                        <div style={{
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            display: "flex",
-                            width: 128,
-                            height: 44,
-                            padding: 4,
-                            flexDirection: "row"
-                        }}>
-                            <Icon28TicketOutline width={32} height={32}/>
-                            <div
-                                style={{
-                                    justifyContent: 'center',
-                                    display: "flex",
-                                    marginLeft: 6,
-                                    flexDirection: "column"
-                                }}
-                            >
-                                <Caption level="1" weight="regular">13</Caption>
-                                <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                         weight="regular">билетов</Caption>
-                            </div>
-
-
-                        </div>
-                </Card>
-                <Card style={{backgroundColor: "var(--content_tint_background)"}}>
-                        <div style={{
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            display: "flex",
-                            width: 144,
-                            height: 44,
-                            padding: 4,
-                            flexDirection: "row"
-                        }}>
-                            <Icon36GameOutline/>
-                            <div
-                                style={{
-                                    justifyContent: 'center',
-                                    display: "flex",
-                                    marginLeft: 6,
-                                    flexDirection: "column"
-                                }}
-                            >
-                                <Caption level="1" weight="regular">180</Caption>
-                                <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular">игр
-                                    сыграно</Caption>
-                            </div>
-
-
-                        </div>
-                </Card>
-                <Card style={{backgroundColor: "var(--content_tint_background)"}}>
-                        <div style={{
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            display: "flex",
-                            width: 128,
-                            height: 44,
-                            padding: 4,
-                            flexDirection: "row"
-                        }}>
-                            <Icon28ArrowUpOutline width={36} height={36}/>
-                            <div
-                                style={{
-                                    justifyContent: 'center',
-                                    display: "flex",
-                                    marginLeft: 6,
-                                    flexDirection: "column"
-                                }}
-                            >
-                                <Caption level="1" weight="regular">4</Caption>
-                                <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                         weight="regular">победы</Caption>
-                            </div>
-
-
-                        </div>
-                </Card>
-                <Card style={{backgroundColor: "var(--content_tint_background)"}}>
-                        <div style={{
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            display: "flex",
-                            width: 144,
-                            height: 44,
-                            padding: 4,
-                            flexDirection: "row"
-                        }}>
-                            <Icon28ArrowDownOutline width={36} height={36}/>
-                            <div
-                                style={{
-                                    justifyContent: 'center',
-                                    display: "flex",
-                                    marginLeft: 6,
-                                    flexDirection: "column"
-                                }}
-                            >
-                                <Caption level="1" weight="regular">6</Caption>
-                                <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                         weight="regular">поражений</Caption>
-                            </div>
-
-                        </div>
-                </Card>
-            </CardScroll>
+            <UserStat exp={0} games={0} loses={0} tickets={0} wins={0}/>
             <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
                 Достижения
             </Title>

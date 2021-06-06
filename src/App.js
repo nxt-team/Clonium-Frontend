@@ -32,7 +32,7 @@ import RateFight from './views/endFight/RateFight'
 import Offline from './views/offline/offline'
 import Messenger from "./components/Messenger";
 import FightResults from "./views/endFight/FightResults"
-
+import {fightResultsPostShare} from './sharing/sharing'
 import {
 	Div,
 	ModalPage,
@@ -47,7 +47,7 @@ import {
 	ActionSheetItem,
 	ActionSheet,
 	platform,
-	IOS
+	IOS, Panel
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
@@ -58,18 +58,26 @@ import AboutVkDonutModal from "./modals/AboutVkDonutModal";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
 import UserProfile from "./views/main/UserProfile";
+import {init} from "./api/api";
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
-	const [popout, setPopout] = useState(null); // <ScreenSpinner/>
+	const [popout, setPopout] = useState(<ScreenSpinner/>); // <ScreenSpinner/>
 	const [activeModal, setActiveModal] = useState(null)
-	const [activeView, setActiveView] = useState('main')
+	const [activeView, setActiveView] = useState('loading')
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
 	const [achievementModalData, setAchievementModalData] = useState(["Титул", "Сабхидер", true])
+	const [userBalances, setUserBalances] = useState({
+		"tickets": 0,
+		"exp": 5,
+		"fights": 0,
+		"losses": 0,
+		"wins": 0
+	})
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -80,13 +88,21 @@ const App = () => {
 			// 	// setScheme(data.scheme)
 			// }
 		});
-
 		async function fetchData() {
-			const user = await bridge.send('VKWebAppGetUserInfo');
+			let user = await bridge.send('VKWebAppGetUserInfo');
 			setUser(user)
+			user = await init(user)
+			console.log(user)
+			if (user["status"] === "success") {
+				setActivePanel("intro_1")
+				setActiveView("main")
+			} else {
+				setActiveView("main")
+				setUserBalances(user)
+			}
 			setPopout(null)
-			// TODO: добавить метод инициализации
 			console.log("inited")
+
 
 		}
 
@@ -444,12 +460,15 @@ const App = () => {
 			// scheme={scheme}
 		>
 			<Root activeView={activeView} >
+				<View activePanel={"loading"} id="loading" popout={popout}>
+					<Panel id={"loading"}/>
+				</View>
 				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
 					<Achievements id='achievements' go={go} openAchievementModal={openAchievementModal} />
-					<History id='history' go={go} />
-					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} />
+					<History id='history' go={go} fetchedUser={fetchedUser} />
+					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
 					<Game id={'game'}  changeActiveModal={changeActiveModal}  startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={'GridSize8'} />
-					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser}/>
+					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser} userBalances={userBalances}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 					<WaitingForStart id='waitingForStart' go={go} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />

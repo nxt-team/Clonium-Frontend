@@ -1,0 +1,6 @@
+.UserStat_text_box {
+    justify-content: center;
+    display: flex;
+    margin-left: 6px;
+    flex-direction: column;
+}

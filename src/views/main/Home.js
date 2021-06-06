@@ -1,15 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
     Panel,
     PanelHeader,
-    Card,
     Div,
     Button,
     Avatar,
     Title,
     Caption,
-    CardScroll,
     Separator,
     SimpleCell,
     RichCell,
@@ -19,11 +17,6 @@ import {
 
 import {
     Icon24AddSquareOutline,
-    Icon24FavoriteOutline,
-    Icon28ArrowDownOutline,
-    Icon28ArrowUpOutline,
-    Icon36GameOutline,
-    Icon28TicketOutline,
     Icon20RecentOutline,
     Icon20Users,
     Icon28RadiowavesAroundOutline,
@@ -39,19 +32,30 @@ import { motion } from "framer-motion"
 
 import MainButtons from "../../components/MainButtons";
 import InfoBanners from "../../components/InfoBanners"
+import UserStat from "../../components/UserStat";
 import bridge from "@vkontakte/vk-bridge";
+import {getUserBalances, init} from "../../api/api";
 
-const Home = props => {
+const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances}) => {
+
+    const [fights, setFights] = useState([])
+
+    useEffect(() => {
+        async function getFights() {
+        }
+        getFights();
+
+    }, []);
 
     return (
-        <Panel id={props.id}>
+        <Panel id={id}>
             <PanelHeader
                 left={
                     <React.Fragment>
-                        <PanelHeaderButton onClick={props.go} data-to="achievements">
+                        <PanelHeaderButton onClick={go} data-to="achievements">
                             <Icon28RadiowavesAroundOutline/>
                         </PanelHeaderButton>
-                        <PanelHeaderButton onClick={props.go} data-to="history">
+                        <PanelHeaderButton onClick={go} data-to="history">
                             <Icon28HistoryForwardOutline style={{padding: 9}} width={26} height={26}/>
                         </PanelHeaderButton>
                     </React.Fragment>
@@ -62,7 +66,7 @@ const Home = props => {
             </PanelHeader>
 
             <Div>
-                <div className={"profile_preview_container"} onClick={props.go}
+                <div className={"profile_preview_container"} onClick={go}
                      data-to="profile">
                     <div className={'profile_preview'}>
                         <div style={{
@@ -71,171 +75,11 @@ const Home = props => {
                             flexDirection: "column",
                             justifyContent: "center"
                         }}>
-                            <Avatar size={64} src={props.fetchedUser.photo_200}/>
+                            <Avatar size={64} src={fetchedUser.photo_200}/>
                             <Title style={{marginTop: 8}} level="1"
-                                   weight="semibold">{props.fetchedUser.first_name + ' ' + props.fetchedUser.last_name}</Title>
+                                   weight="semibold">{fetchedUser.first_name + ' ' + fetchedUser.last_name}</Title>
                         </div>
-                        <CardScroll style={{marginTop: 12, marginBottom: 12}}>
-                            <Card style={{backgroundColor: "var(--background_content)"}}>
-                                <motion.div
-                                    whileHover={{scale: 1.1}}
-                                    whileTap={{scale: 0.9}}
-                                >
-                                    <div style={{
-                                        justifyContent: 'center',
-                                        alignItems: "center",
-                                        display: "flex",
-                                        width: 156,
-                                        height: 44,
-                                        padding: 4,
-                                        flexDirection: "row"
-                                    }}>
-                                        <Icon24FavoriteOutline width={32} height={32}/>
-                                        <div
-                                            style={{
-                                                justifyContent: 'center',
-                                                display: "flex",
-                                                marginLeft: 6,
-                                                flexDirection: "column"
-                                            }}
-                                        >
-                                            <Caption level="1" weight="regular">267</Caption>
-                                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular">опыта
-                                                набрано</Caption>
-                                        </div>
-
-
-                                    </div>
-                                </motion.div>
-                            </Card>
-                            <Card style={{backgroundColor: "var(--background_content)"}}>
-                                <motion.div
-                                    whileHover={{scale: 1.1}}
-                                    whileTap={{scale: 0.9}}
-                                >
-                                    <div style={{
-                                        justifyContent: 'center',
-                                        alignItems: "center",
-                                        display: "flex",
-                                        width: 128,
-                                        height: 44,
-                                        padding: 4,
-                                        flexDirection: "row"
-                                    }}>
-                                        <Icon28TicketOutline width={32} height={32}/>
-                                        <div
-                                            style={{
-                                                justifyContent: 'center',
-                                                display: "flex",
-                                                marginLeft: 6,
-                                                flexDirection: "column"
-                                            }}
-                                        >
-                                            <Caption level="1" weight="regular">13</Caption>
-                                            <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                                     weight="regular">билетов</Caption>
-                                        </div>
-
-
-                                    </div>
-                                </motion.div>
-                            </Card>
-                            <Card style={{backgroundColor: "var(--background_content)"}}>
-                                <motion.div
-                                    whileHover={{scale: 1.1}}
-                                    whileTap={{scale: 0.9}}
-                                >
-                                    <div style={{
-                                        justifyContent: 'center',
-                                        alignItems: "center",
-                                        display: "flex",
-                                        width: 144,
-                                        height: 44,
-                                        padding: 4,
-                                        flexDirection: "row"
-                                    }}>
-                                        <Icon36GameOutline/>
-                                        <div
-                                            style={{
-                                                justifyContent: 'center',
-                                                display: "flex",
-                                                marginLeft: 6,
-                                                flexDirection: "column"
-                                            }}
-                                        >
-                                            <Caption level="1" weight="regular">180</Caption>
-                                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular">игр
-                                                сыграно</Caption>
-                                        </div>
-
-
-                                    </div>
-                                </motion.div>
-                            </Card>
-                            <Card style={{backgroundColor: "var(--background_content)"}}>
-                                <motion.div
-                                    whileHover={{scale: 1.1}}
-                                    whileTap={{scale: 0.9}}
-                                >
-                                    <div style={{
-                                        justifyContent: 'center',
-                                        alignItems: "center",
-                                        display: "flex",
-                                        width: 128,
-                                        height: 44,
-                                        padding: 4,
-                                        flexDirection: "row"
-                                    }}>
-                                        <Icon28ArrowUpOutline width={36} height={36}/>
-                                        <div
-                                            style={{
-                                                justifyContent: 'center',
-                                                display: "flex",
-                                                marginLeft: 6,
-                                                flexDirection: "column"
-                                            }}
-                                        >
-                                            <Caption level="1" weight="regular">4</Caption>
-                                            <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                                     weight="regular">победы</Caption>
-                                        </div>
-
-
-                                    </div>
-                                </motion.div>
-                            </Card>
-                            <Card style={{backgroundColor: "var(--background_content)"}}>
-                                <motion.div
-                                    whileHover={{scale: 1.1}}
-                                    whileTap={{scale: 0.9}}
-                                >
-                                    <div style={{
-                                        justifyContent: 'center',
-                                        alignItems: "center",
-                                        display: "flex",
-                                        width: 144,
-                                        height: 44,
-                                        padding: 4,
-                                        flexDirection: "row"
-                                    }}>
-                                        <Icon28ArrowDownOutline width={36} height={36}/>
-                                        <div
-                                            style={{
-                                                justifyContent: 'center',
-                                                display: "flex",
-                                                marginLeft: 6,
-                                                flexDirection: "column"
-                                            }}
-                                        >
-                                            <Caption level="1" weight="regular">6</Caption>
-                                            <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                                     weight="regular">поражений</Caption>
-                                        </div>
-
-                                    </div>
-                                </motion.div>
-                            </Card>
-                        </CardScroll>
+                        <UserStat exp={userBalances["exp"]} games={userBalances["fights"]} loses={userBalances["losses"]} tickets={userBalances["tickets"]} wins={userBalances["wins"]}/>
                     </div>
                     <div
                         className={"profile_preview_icon"}>
@@ -248,8 +92,8 @@ const Home = props => {
                 10 online
             </div>
             <MainButtons
-                go={props.go}
-                changeActiveModal={props.changeActiveModal}
+                go={go}
+                changeActiveModal={changeActiveModal}
                 areNotificationsEnabled={false}
                 isUserInSuperFight={false}
             />
@@ -258,7 +102,7 @@ const Home = props => {
                 <Title level="1" weight="semibold" style={{marginLeft: 16}}>
                     Доступные комнаты
                 </Title>
-                <SimpleCell style={{marginTop: 12}} onClick={props.go} data-to="game"
+                <SimpleCell style={{marginTop: 12}} onClick={go} data-to="game"
                             after={<Icon28ChevronRightCircleOutline/>}>
                     <RichCell
                         style={{padding: 0}}
@@ -290,7 +134,7 @@ const Home = props => {
                     </RichCell>
                 </SimpleCell>
                 <Separator wide={true}/>
-                <SimpleCell onClick={props.go} data-to="waitingForStart" after={<Icon28ChevronRightCircleOutline/>}>
+                <SimpleCell onClick={go} data-to="waitingForStart" after={<Icon28ChevronRightCircleOutline/>}>
                     <RichCell
                         style={{padding: 0}}
                         disabled
@@ -322,7 +166,7 @@ const Home = props => {
                 </SimpleCell>
                 <Separator wide={true}/>
                 <SimpleCell
-                    onClick={() => props.changeActiveModal('noTickets')}
+                    onClick={() => changeActiveModal('noTickets')}
                     after={<Icon28ChevronRightCircleOutline/>}>
                     <RichCell
                         style={{padding: 0}}
@@ -354,7 +198,7 @@ const Home = props => {
                     </RichCell>
                 </SimpleCell>
                 <Separator wide={true}/>
-                <SimpleCell onClick={props.go} data-to="intro_1" after={<Icon28ChevronRightCircleOutline/>}>
+                <SimpleCell onClick={go} data-to="intro_1" after={<Icon28ChevronRightCircleOutline/>}>
                     <RichCell
                         style={{padding: 0}}
                         disabled
@@ -397,7 +241,7 @@ const Home = props => {
                         mode="secondary"
                         size='l'
                         before={<Icon24AddSquareOutline/>}
-                        onClick={() => props.goToCreatingRoom()}
+                        onClick={() => goToCreatingRoom()}
                     >
                         Создать комнату
                     </Button>

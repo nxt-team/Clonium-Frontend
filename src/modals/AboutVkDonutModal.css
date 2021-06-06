@@ -1,0 +1,15 @@
+.VK_Donut_container {
+    background-color: var(--content_tint_background);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+    margin-right: 12px;
+    margin-left: 12px;
+    overflow: hidden;
+    width: auto;
+}
+
+.VK_Donut_slide {
+    height: 100%;
+    width: 100%;
+}
