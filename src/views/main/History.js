@@ -7,6 +7,7 @@ import { Icon28Dice4Outline } from '@vkontakte/icons';
 import { Icon28ArrowRightOutline } from '@vkontakte/icons';
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
 import {
+    Footer,
     PanelHeaderButton,
     SimpleCell,
     Spinner,
@@ -24,7 +25,11 @@ const History = ({ id, fetchedUser }) => {
     useEffect(() => {
         async function getHistory() {
             const history = await getUserHistory(fetchedUser)
-            setHistory(history)
+            if (history.length === 0) {
+                setHistory([null])
+            } else {
+                setHistory(history)
+            }
         }
         getHistory();
     }, []);
@@ -37,6 +42,8 @@ const History = ({ id, fetchedUser }) => {
                     <Spinner size="regular" style={{ marginTop: 20 }} />
                 </div>
             )
+        } else if (history[0] === null) {
+            return <Footer>Здесь будет отображаться твоя история</Footer>
         } else {
             let content = []
             history.forEach((item, index, array) => {

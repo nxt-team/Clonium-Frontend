@@ -86,3 +86,95 @@ export async function getUserHistory (fetchedUser) {
     return  await response.json()
 
 }
+
+export async function getUserAchievements (fetchedUser) {
+    const data = {
+        "vk_id": fetchedUser.id
+    }
+
+    const response = await fetch('https://gamebot.site:8000/api/user/get/achievements', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
+}
+
+export async function changeUserRank (fetchedUser, achievement_id) {
+    const data = {
+        "vk_id": fetchedUser.id,
+        "achievement_id": +achievement_id
+    }
+
+    const response = await fetch('https://gamebot.site:8000/api/user/change/rank', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
+}
+
+
+export async function createFight (fetchedUser, map_id, max_user_number, is_private, turn_time, game_time) {
+
+    const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10"]
+
+    const data = {
+        "vk_id_creator": fetchedUser.id,
+        "map_name": maps[map_id],
+        "max_user_number": max_user_number,
+        "is_private": is_private,
+        "turn_time": turn_time, // boolean | true - ограничено
+        "game_time": game_time // -1 если бесконечное
+
+    }
+
+    const response = await fetch('https://gamebot.site:8000/api/fights/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
+}
+
+export async function getGlobalTop (fetchedUser) {
+    const data = {
+        "vk_id": fetchedUser.id
+    }
+
+    const response = await fetch('https://gamebot.site:8000/api/user/get/top', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getFriendsTop (fetchedUser, friends) {
+    const data = {
+        "vk_id": fetchedUser.id,
+        "friends": friends
+    }
+
+    const response = await fetch('https://gamebot.site:8000/api/user/get/friendsTop', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}

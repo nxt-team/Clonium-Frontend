@@ -22,7 +22,7 @@ import { Icon28Messages } from '@vkontakte/icons';
 import { Icon28StoryOutline } from '@vkontakte/icons';
 import { Icon28NewsfeedOutline } from '@vkontakte/icons';
 import TicketAnimation from './components/TicketAnimation'
-import { Icon56Users3Outline } from '@vkontakte/icons';
+import { Icon56Users3Outline, Icon16Done } from '@vkontakte/icons';
 import NoTickets from './views/main/NoTickets'
 import WaitingForStart from './views/main/WaitingForStart'
 import Customization from './views/main/Customization'
@@ -47,7 +47,10 @@ import {
 	ActionSheetItem,
 	ActionSheet,
 	platform,
-	IOS, Panel
+	IOS,
+	Panel,
+	Snackbar,
+	Avatar
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
@@ -390,7 +393,7 @@ const App = () => {
 			<GameMechanicsModal id={"gameMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<ExplosionMechanicsModal id={"explosionMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<GrabRivalsModal id={"grabRivalsModal"} closeModal={() => setActiveModal(null)}/>
-			<AchievementModal id={"achievementModal"} closeModal={() => setActiveModal(null)} data={achievementModalData} />
+			<AchievementModal id={"achievementModal"} closeModal={() => setActiveModal(null)} data={achievementModalData} fetchedUser={fetchedUser} completeSnackBar={completeSnackBar} />
 
 		</ModalRoot>
 	);
@@ -455,6 +458,19 @@ const App = () => {
 		setActiveModal('achievementModal')
 	}
 
+	function completeSnackBar (text) {
+		setPopout(
+			<Snackbar
+				layout="vertical"
+				duration={2000}
+				onClose={() => setPopout(null)}
+				before={<Avatar size={24} style={{backgroundColor: 'var(--accent)'}}><Icon16Done fill="#fff" width={14} height={14} /></Avatar>}
+			>
+				{text}
+			</Snackbar>
+		)
+	}
+
 	return (
 		<ConfigProvider
 			// scheme={scheme}
@@ -464,7 +480,7 @@ const App = () => {
 					<Panel id={"loading"}/>
 				</View>
 				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
-					<Achievements id='achievements' go={go} openAchievementModal={openAchievementModal} />
+					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} />
 					<History id='history' go={go} fetchedUser={fetchedUser} />
 					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
 					<Game id={'game'}  changeActiveModal={changeActiveModal}  startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={'GridSize8'} />
@@ -477,7 +493,7 @@ const App = () => {
 					<UserProfile id="userProfile" />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
-					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} />
+					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} fetchedUser={fetchedUser} />
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated} />

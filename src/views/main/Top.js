@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
@@ -27,14 +27,124 @@ import {
     SimpleCell,
     Tabs,
     Header,
-    TabsItem, FixedLayout, Banner
+    TabsItem, FixedLayout, Banner, Spinner
 } from "@vkontakte/vkui";
+import {getFriendsTop, getGlobalTop, getUserHistory} from "../../api/api";
+import bridge from '@vkontakte/vk-bridge';
 const osName = platform();
 
 const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
     const [superFightBanner, setSuperFightBanner] = useState(true)
+    const [globalTop, setGlobalTop] = useState([])
+    const [friendsTop, setFriendsTop] = useState([])
+
+    async function getFriendsTopByBridge () {
+        const token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7848428, "scope": "friends"})
+            .catch(() => setFriendsTop(["client_error"]))
+        console.log(token)
+        if (token !== undefined) {
+            const friends = await bridge.send("VKWebAppCallAPIMethod", {
+                "method": "friends.get", "request_id": "1", "params":
+                    {
+                        "user_id": fetchedUser.id,
+                        "order": "hints",
+                        // "fields": "photo_200_orig",
+                        "v": "5.131",
+                        "access_token": token["access_token"]
+                    }
+            });
+            console.log(friends["response"]["items"])
+            const friendsTop = await getFriendsTop(fetchedUser, friends["response"]["items"])
+            setFriendsTop(friendsTop)
+        }
+    }
+
+    useEffect(() => {
+        async function getTops() {
+            const globalTop = await getGlobalTop(fetchedUser)
+            setGlobalTop(globalTop)
+            await getFriendsTopByBridge()
+        }
+        getTops();
+    }, []);
+
+    function renderGlobalTop () {
+        if (globalTop.length === 0) {
+            return (
+                <div style={{ display: 'flex', alignItems: 'center'}}>
+                    <Spinner size="regular" style={{ marginTop: 20 }} />
+                </div>
+            )
+        } else {
+            let content = []
+            console.log(globalTop)
+            console.log(globalTop[0])
+            globalTop[0].forEach((item, index, array) => {
+                content.push(
+                    <GlobalLeaderBoardPlace
+                        avaUrl={item["avatar"]}
+                        exp={item["exp"]}
+                        place={index + 1}
+                        rank={item["user_rank"]}
+                        userName={item["username"]}
+                    />
+                )
+            })
+
+            return content
+        }
+    }
+
+    function renderFriendsTop () {
+        if (friendsTop.length === 0) {
+            return (
+                <div style={{ display: 'flex', alignItems: 'center'}}>
+                    <Spinner size="regular" style={{ margin: 20 }} />
+                </div>
+            )
+        } else if (friendsTop[0] === "client_error") {
+            return (
+                <Placeholder
+                    icon={<Icon56UsersOutline />}
+                    header="Нет доступа к друзьям"
+                    action={<Button size="l" onClick={async () => {setFriendsTop([]); await getFriendsTopByBridge()}} >Дать доступ</Button>}
+                >
+                    Сначала дай нам доступ к друзьям, и только потом мы покажем их топ
+                </Placeholder>
+            )
+        } else {
+            let content = []
+            friendsTop[0].forEach((item, index, array) => {
+                content.push(
+                    <LeaderBoardPlace
+                        place={index + 1}
+                        avaUrl={item["avatar"]}
+                        userName={item["username"]}
+                        exp={item["exp"]}/>
+                )
+            })
+            return (
+                <>
+                    <Placeholder
+                        icon={<Icon28AchievementCircleFillBlue height={56} width={56} />}
+                        header={friendsTop[1] + " место"}
+                    >
+                        в топе среди друзей
+                    </Placeholder>
+                    <Separator/>
+                    <Group header={
+                        <Header>
+                            Играющие друзья
+                        </Header>
+                    }>
+                        {content}
+                    </Group>
+                </>
+            )
+        }
+    }
 
     return (
         <Panel id={id}>
@@ -59,12 +169,6 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                 >
                     Все
                 </TabsItem>
-                <TabsItem
-                    onClick={() => setSlideIndex(2)}
-                    selected={slideIndex === 2}
-                >
-                    Друзья2
-                </TabsItem>
             </Tabs>
             <Gallery
                 slideWidth="100%"
@@ -74,36 +178,20 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                 onChange={slideIndex => setSlideIndex(slideIndex)}
             >
                 <div>
-                    <Placeholder
-                        icon={<Icon28AchievementCircleFillBlue height={56} width={56} />}
-                        header="I место"
-                    >
-                        в топе среди друзей
-                    </Placeholder>
-                    <Separator/>
-                    <Group header={
-                        <Header>
-                            Играющие друзья
-                        </Header>
-                    }>
-                        <LeaderBoardPlace place={1} avaUrl={fetchedUser.photo_200} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name} exp={150}/>
-                        <LeaderBoardPlace place={2} avaUrl={"https://sun1-83.userapi.com/s/v1/ig2/JS57hZzqjd_faSZrR9m3P7W_-fFbo7PUWOBTsfyKMA5O1sRHcvIyU83LibkB696aWN_iFG9jrV6-71dHsZDxzsCv.jpg?size=200x0&quality=96&crop=59,3,963,963&ava=1"} userName={"Фёдор Темников"} exp={59}/>
-                        <LeaderBoardPlace place={3} avaUrl={"https://sun1-95.userapi.com/s/v1/ig2/zC9hZf5wO-uV0H6uePP6m1o5DvVX23XU3mpmWCYx3oZdVZsl9kxts4s_MQ85brgMY3qK_xsT1mKxF-H713SXZDZB.jpg?size=200x0&quality=96&crop=105,0,915,915&ava=1"} userName={"Ярик Кращук"} exp={15}/>
+                    {renderFriendsTop()}
+                    {/*<Separator/>*/}
+                    {/*<Group header={*/}
+                    {/*    <Header>*/}
+                    {/*        Неиграющие друзья*/}
+                    {/*    </Header>*/}
+                    {/*}>*/}
+                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-65.userapi.com/Jm47wQlR6z_R_rbAd_7LUf0NQg7QAv35MpvNhA/Ht8eYywub4o.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Игорь Фёдоров</SimpleCell>*/}
+                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-61.userapi.com/O-2f7t0yecmx38WXoF37RkhkJTG2rcjL4Yq88w/J39s0u1f90c.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Иван Засыпкин</SimpleCell>*/}
+                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-34.userapi.com/c857132/v857132690/49628/r4wBoWw0mJI.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Илья Гришин</SimpleCell>*/}
+                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-60.userapi.com/c851416/v851416327/be840/bnUHAblZoBY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Тимофей Чаптыков</SimpleCell>*/}
+                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-49.userapi.com/c850332/v850332555/115030/JyNJrr4cytY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Михаил Лихачёв</SimpleCell>*/}
 
-                    </Group>
-                    <Separator/>
-                    <Group header={
-                        <Header>
-                            Неиграющие друзья
-                        </Header>
-                    }>
-                        <SimpleCell before={<Avatar size={40} src={"https://sun9-65.userapi.com/Jm47wQlR6z_R_rbAd_7LUf0NQg7QAv35MpvNhA/Ht8eYywub4o.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Игорь Фёдоров</SimpleCell>
-                        <SimpleCell before={<Avatar size={40} src={"https://sun9-61.userapi.com/O-2f7t0yecmx38WXoF37RkhkJTG2rcjL4Yq88w/J39s0u1f90c.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Иван Засыпкин</SimpleCell>
-                        <SimpleCell before={<Avatar size={40} src={"https://sun9-34.userapi.com/c857132/v857132690/49628/r4wBoWw0mJI.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Илья Гришин</SimpleCell>
-                        <SimpleCell before={<Avatar size={40} src={"https://sun9-60.userapi.com/c851416/v851416327/be840/bnUHAblZoBY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Тимофей Чаптыков</SimpleCell>
-                        <SimpleCell before={<Avatar size={40} src={"https://sun9-49.userapi.com/c850332/v850332555/115030/JyNJrr4cytY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Михаил Лихачёв</SimpleCell>
-
-                    </Group>
+                    {/*</Group>*/}
                 </div>
                 <div>
                     <Search after={null}/>
@@ -130,27 +218,8 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                             }
                     />
                     }
-
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={100} place={1} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={97} place={2} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={83} place={3} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={69} place={4} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={54} place={5} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={51} place={6} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={48} place={7} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={45} place={8} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={43} place={9} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                    <GlobalLeaderBoardPlace avaUrl={"https://vk.com/images/camera_200.png"} exp={37} place={10} rank={"Властелин"} userName={fetchedUser.first_name + ' ' + fetchedUser.last_name}/>
-                </div>
-                <div>
-                    <Placeholder
-                        icon={<Icon56UsersOutline />}
-                        header="Нет доступа к друзьям"
-                        action={<Button size="l" >Дать доступ</Button>}
-                    >
-                        Сначала дай нам доступ к друзьям, и только потом мы покажем их топ
-                    </Placeholder>
-                </div>
+                    {renderGlobalTop()}
+                    </div>
             </Gallery>
 
             {slideIndex === 1 &&
@@ -167,7 +236,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                                     <Avatar size={48} src={fetchedUser.photo_200} className="avatar__photo" />
                                 </div>
                             }
-                            description={"7 опыта · 1456 место"}
+                            description={globalTop[1]["exp"] + " опыта · " + globalTop[1]["position"] + " место"}
                         >
                             {fetchedUser.first_name + ' ' + fetchedUser.last_name}
                         </SimpleCell>

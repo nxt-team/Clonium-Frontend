@@ -39,16 +39,7 @@ import SquareSize8 from '../../mapsPreview/SquareSize8';
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import Icon24Back from "@vkontakte/icons/dist/24/back";
-
-const PluginGavnoSannoe = [
-    'var(--dynamic_blue)',
-    'var(--field_border)',
-    'var(--field_border)',
-    'var(--field_border)',
-    'var(--field_border)',
-    'var(--field_border)',
-    'var(--field_border)',
-];
+import {createFight} from "../../api/api";
 
 const selected = {
     border: '1px solid var(--dynamic_blue)',
@@ -60,10 +51,14 @@ const unselcted = {
     backgroundColor: 'var(--background_page)',
 }
 
-const Home = ({ id, go, goToMainView, fetchedUser }) => {
+let turnTime = true // ограничено
+let gameTime = 600
+
+const CreatingRoom = ({ id, go, goToMainView, fetchedUser }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
+    const [isPrivate, setIsPrivate] = useState(false)
 
     const changeMapSelect = (mapId) => {
         setMapsSelect(mapId);
@@ -73,6 +68,18 @@ const Home = ({ id, go, goToMainView, fetchedUser }) => {
     const changePlayersNumber = (playersNumber) => {
         setPlayersNumber(playersNumber);
         bridge.send("VKWebAppTapticSelectionChanged", {});
+    }
+
+    const privateChanged = () => {
+        setIsPrivate(!isPrivate)
+        if (!isPrivate) {
+            turnTime = true
+        }
+        console.log(turnTime)
+    }
+
+    const gameTimeChanged = (event) => {
+        gameTime = event.target.value
     }
 
     return (
@@ -286,22 +293,22 @@ const Home = ({ id, go, goToMainView, fetchedUser }) => {
                 </FormLayoutGroup>
 
                 <FormLayoutGroup top="Время игры">
-                    <Radio name="time" value={10} defaultChecked >
+                    <Radio name="time" onChange={gameTimeChanged} value={600} defaultChecked >
                         10 минут
                     </Radio>
-                    <Radio name="time" value={15} >
+                    <Radio name="time" onChange={gameTimeChanged} value={900} >
                         15 минут
                     </Radio>
-                    <Radio name="time" value={0 }>
+                    <Radio name="time" onChange={gameTimeChanged} value={-1}>
                         Бесконечное время
                     </Radio>
                 </FormLayoutGroup>
 
                 <FormLayoutGroup top="Дополнительно">
-                    <Checkbox>Приватно</Checkbox>
-                    <Checkbox disabled >Время хода не ограничено</Checkbox>
+                    <Checkbox onChange={privateChanged} >Приватно</Checkbox>
+                    <Checkbox onChange={() => turnTime = !turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
                 </FormLayoutGroup>
-                <Button size="xl">Создать</Button>
+                <Button size="xl" onClick={() => createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)}  >Создать</Button>
             </FormLayout>
         </Panel>
     )
@@ -309,4 +316,4 @@ const Home = ({ id, go, goToMainView, fetchedUser }) => {
 
 
 
-export default Home;
+export default CreatingRoom;
