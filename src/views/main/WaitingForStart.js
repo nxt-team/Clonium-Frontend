@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
@@ -11,8 +11,18 @@ import {
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
+import {leaveFight, socket} from "../../api/socket";
 
 const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
+
+    const [photos, setPhotos] = useState([])
+
+    useEffect(() => {
+        socket.once("avatars", (data) => {
+            setPhotos(data)
+            console.log("avatars", data)
+        });
+    })
 
 
     return (
@@ -36,11 +46,8 @@ const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
                     Ждём соперников
                 </Title>
                 <UsersStack
-                    photos={[
-                        'https://sun9-72.userapi.com/impg/SbMjjzso9KKdQ3mIiA2-5Tnm4ELIxymXLuaZpw/YcOTTuPNMis.jpg?size=400x500&quality=96&proxy=1&sign=4288dd5469ddee6547094663a5622f37&type=album',
-                        'https://sun9-52.userapi.com/impf/c858236/v858236506/14e9ae/Gvh9pbVxcTM.jpg?size=879x736&quality=96&proxy=1&sign=561e152a479caf41c706ef7882073d65&type=album',
-                    ]}
-                >Ожидают 2 игроков</UsersStack>
+                    photos={photos}
+                >Ожидаем 2 игроков</UsersStack>
                 <div style={{display: "flex", marginTop: 8}}>
                     <Button size="l" before={<Icon24ShareOutline/>} >Позвать друзей</Button>
                     <Button size="l" style={{ marginLeft: 8 }} mode="secondary"><Icon24NotificationOutline /></Button>
@@ -59,7 +66,7 @@ const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Button onClick={() => window.history.back()} data-to="home" mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={() => {leaveFight(fetchedUser); setTimeout(() => window.history.back(), 300)}} data-to="home" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>

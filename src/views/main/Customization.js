@@ -1,16 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import {Avatar, Div, Group, IOS, FormLayoutGroup, platform, Radio, FormLayout, TabsItem, Button} from "@vkontakte/vkui";
+import {
+    Avatar,
+    Div,
+    Group,
+    IOS,
+    FormLayoutGroup,
+    platform,
+    Radio,
+    FormLayout,
+    TabsItem,
+    Button,
+    Spinner, SimpleCell, Placeholder
+} from "@vkontakte/vkui";
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import Icon24Back from "@vkontakte/icons/dist/24/back";
+import {getGlobalTop, isDonut, isPieceAvatar, updatePieceAvatar} from "../../api/api";
+import {Icon28CancelCircleFillRed, Icon32ErrorCircleOutline} from "@vkontakte/icons";
+import { Icon56LockOutline } from '@vkontakte/icons';
 const osName = platform();
 
 
 
-const Customization = ({ id, go, changeActiveModal, fetchedUser }) => {
+const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
+    const [isDon, setIsDon] = useState(null)
+    const [isPieceAvatarPhoto, setIsPieceAvatarPhoto] = useState(false)
 
+    useEffect(() => {
+        async function updateIsDonut() {
+            const isPieceAvatarPhoto = await isPieceAvatar(fetchedUser)
+            console.log(isPieceAvatarPhoto)
+            setIsPieceAvatarPhoto(isPieceAvatarPhoto)
+            const isDon = await isDonut(fetchedUser)
+            setIsDon(isDon)
+        }
+        updateIsDonut();
+    }, []);
+
+    console.log(isPieceAvatarPhoto)
+
+    async function changeIsPieceAvatarPhoto () {
+        setIsPieceAvatarPhoto(!isPieceAvatarPhoto)
+        if (isPieceAvatarPhoto) {
+            await updatePieceAvatar(fetchedUser, "0")
+        }
+    }
+
+    function renderCustomization () {
+        if (isDon === null) {
+            return (
+                <div style={{ display: 'flex', alignItems: 'center'}}>
+                    <Spinner size="regular" style={{ marginTop: 20 }} />
+                </div>
+            )
+        } else if (isDon) {
+            return (
+                <FormLayout>
+                    <FormLayoutGroup top="Аватарка фишки">
+                        <Radio name="radio"
+                               onChange={changeIsPieceAvatarPhoto}
+                               checked={!isPieceAvatarPhoto}
+                               value="1" description="Цвет фишки будет задан игрой" defaultChecked>Цветная</Radio>
+                        <Radio checked={isPieceAvatarPhoto} name="radio" onChange={changeIsPieceAvatarPhoto} onClick={() => {changeActiveModal('uploadingPhoto'); setIsPieceAvatarPhoto(true)}} value="2" description="Ты можешь загрузить фотографию, и она станет аватаркой твоих фишек " >Фотография</Radio>
+
+                    </FormLayoutGroup>
+                </FormLayout>
+            )
+        } else {
+            return (
+                <>
+                    <Placeholder
+                        icon={<Icon56LockOutline />}
+                    >
+                        Вам не хватает прав доступа
+                    </Placeholder>
+                    <SimpleCell before={<Icon28CancelCircleFillRed/>} >Платная подписка VK Donut</SimpleCell>
+                </>
+            )
+        }
+    }
 
     return (
         <Panel
@@ -23,13 +93,7 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser }) => {
             >
                 Кастомизация
             </PanelHeader>
-            <FormLayout>
-                <FormLayoutGroup top="Аватарка фишки">
-                    <Radio name="radio" value="1" description="Цвет фишки будет задан игрой" defaultChecked>Цветная</Radio>
-                    <Radio name="radio" onClick={() => changeActiveModal('uploadingPhoto')} value="2" description="Ты можешь загрузить фотографию, и она станет аватаркой твоих фишек " >Фотография</Radio>
-
-                </FormLayoutGroup>
-            </FormLayout>
+            {renderCustomization()}
             {/*<svg*/}
             {/*    className="cont"*/}
             {/*    viewBox="0 0 38 38"*/}

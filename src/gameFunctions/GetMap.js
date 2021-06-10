@@ -7,21 +7,20 @@ import PassageSize10 from '../maps/PassageSize10'
 import SquareSize6 from '../maps/SquareSize6'
 import SquareSize8 from '../maps/SquareSize8'
 
-export default function GetMap({mapName, getCellContent, onCellClick}) {
-    console.log('GetMap')
+export default function GetMap({mapName, getCellContent, onCellClickFromUser, map, colorMotion}) {
     if (mapName === 'DonutSize6') {
-        return <DonutSize6 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <DonutSize6 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'DonutSize8') {
-        return <DonutSize8 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <DonutSize8 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'GridSize8') {
-        return <GridSize8 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <GridSize8 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'GridSize10') {
-        return <GridSize10 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <GridSize10 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'PassageSize10') {
-        return <PassageSize10 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <PassageSize10 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'SquareSize6') {
-        return <SquareSize6 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <SquareSize6 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'SquareSize8') {
-        return <SquareSize8 getCellContent={getCellContent} onCellClick={onCellClick} />
+        return <SquareSize8 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     }
 }

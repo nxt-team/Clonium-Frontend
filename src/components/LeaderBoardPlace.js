@@ -1,37 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Banner from '@vkontakte/vkui/dist/components/Banner/Banner';
-import UsersStack from '@vkontakte/vkui/dist/components/UsersStack/UsersStack';
-import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
-import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
-import Icon24Back from '@vkontakte/icons/dist/24/back';
+import React from 'react';
 import '../views/main/Top.css'
-import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
-import RichCell from "@vkontakte/vkui/dist/components/RichCell/RichCell";
-import Icon28FireOutline from '@vkontakte/icons/dist/28/fire_outline';
-import Icon56UsersOutline from '@vkontakte/icons/dist/56/users_outline';
-import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
-import { motion } from "framer-motion"
 
 import { Icon201CircleFillGold, Icon202CircleFillSilver, Icon203CircleFillBronze} from '@vkontakte/icons';
 
 import {
     Avatar,
-    Div,
-    Counter,
-    Gallery,
-    Group,
-    IOS,
-    Placeholder,
-    platform,
-    Separator,
     SimpleCell,
-    Tabs,
-    TabsItem
 } from "@vkontakte/vkui";
-const osName = platform();
 
 const numericIndicator = {
     height: 20,

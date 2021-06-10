@@ -40,6 +40,7 @@ import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import Icon24Back from "@vkontakte/icons/dist/24/back";
 import {createFight} from "../../api/api";
+import {joinRoom} from "../../api/socket";
 
 const selected = {
     border: '1px solid var(--dynamic_blue)',
@@ -54,7 +55,7 @@ const unselcted = {
 let turnTime = true // ограничено
 let gameTime = 600
 
-const CreatingRoom = ({ id, go, goToMainView, fetchedUser }) => {
+const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
@@ -80,6 +81,13 @@ const CreatingRoom = ({ id, go, goToMainView, fetchedUser }) => {
 
     const gameTimeChanged = (event) => {
         gameTime = event.target.value
+    }
+
+    async function createFightAndGo () {
+        const fight = await createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)
+        joinRoom(fetchedUser, fight["secret_id"])
+        goToMainView()
+        goToPage("waitingForStart")
     }
 
     return (
@@ -308,7 +316,7 @@ const CreatingRoom = ({ id, go, goToMainView, fetchedUser }) => {
                     <Checkbox onChange={privateChanged} >Приватно</Checkbox>
                     <Checkbox onChange={() => turnTime = !turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
                 </FormLayoutGroup>
-                <Button size="xl" onClick={() => createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)}  >Создать</Button>
+                <Button size="xl" onClick={createFightAndGo}  >Создать</Button>
             </FormLayout>
         </Panel>
     )

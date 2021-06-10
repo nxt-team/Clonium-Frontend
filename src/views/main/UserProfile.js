@@ -10,14 +10,13 @@ import {
     RichCell,
     Avatar,
     Div,
-    Banner, Card, Caption, CardScroll, SimpleCell
+    Banner,
+    SimpleCell
 } from "@vkontakte/vkui";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import {
-    Icon202CircleFillSilver,
-    Icon24FavoriteOutline, Icon28ArrowDownOutline, Icon28ArrowUpOutline,
     Icon28DonateCircleFillYellow,
-    Icon28FavoriteOutline, Icon28TicketOutline, Icon36GameOutline
+    Icon28FavoriteOutline,
 } from '@vkontakte/icons';
 import Icon24Back from "@vkontakte/icons/dist/24/back";
 import UserStat from "../../components/UserStat";

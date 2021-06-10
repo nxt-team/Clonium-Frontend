@@ -1,11 +1,16 @@
 .pulse {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    animation: pulse 1s infinite;
 }
 
 .pulseHover {
     border-radius: 50%;
-    animation: pulseHover 2s infinite;
+    animation: pulseHover 1s infinite;
 }
 
 

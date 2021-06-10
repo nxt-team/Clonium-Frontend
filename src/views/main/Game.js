@@ -16,53 +16,134 @@ import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
 import GetMap from "../../gameFunctions/GetMap";
 import Timer from "../../components/Timer";
-import GridSize8 from '../../maps/GridSize8'
 import GridSize8Map from "../../maps/GridSize8/map.json"
-const userColor = "blue"
-const colors = ["red", "blue", "green", "yellow"]
+import DonutSize6Map from "../../maps/DonutSize6/map.json";
+import DonutSize8Map from "../../maps/DonutSize8/map.json";
+import GridSize10Map from "../../maps/GridSize10/map.json";
+import PassageSize10Map from "../../maps/PassageSize10/map.json";
+import SquareSize6Map from "../../maps/SquareSize6/map.json";
+import SquareSize8Map from "../../maps/SquareSize8/map.json";
+import {getFight} from "../../api/api";
+import {clickMap, socket} from "../../api/socket";
+let userColor = ""
+let colors = ["red", "blue", "green", "yellow"]
 
 let isRecursion = false
+let otherMotion = false
 
 function getStartJson(mapName) {
 	if (mapName === "GridSize8") {
 		return GridSize8Map
+	} else if (mapName === 'DonutSize6') {
+		return DonutSize6Map
+	} else if (mapName === 'DonutSize8') {
+		return DonutSize8Map
+	} else if (mapName === 'GridSize8') {
+		return GridSize8Map
+	} else if (mapName === 'GridSize10') {
+		return GridSize10Map
+	} else if (mapName === 'PassageSize10') {
+		return PassageSize10Map
+	} else if (mapName === 'SquareSize6') {
+		return SquareSize6Map
+	} else if (mapName === 'SquareSize8') {
+		return SquareSize8Map
 	}
 }
 
-const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName}) => {
+function getColorInfo (color) {
+	if (color === "blue") {
+		return (
+			<Caption level="2" style={{ marginLeft: 6, color: '#00D8FF' }}>
+				синий
+			</Caption>
+		)
+	} else if (color === "red") {
+		return (
+			<Caption level="2" style={{ marginLeft: 6, color: '#FF79CB' }}>
+				красный
+			</Caption>
+		)
+	} else if (color === "green") {
+		return (
+			<Caption level="2" style={{ marginLeft: 6, color: '#2EE367' }}>
+				зелёный
+			</Caption>
+		)
+	} else if (color === "yellow") {
+		return (
+			<Caption level="2" style={{ marginLeft: 6, color: '#FFB327' }}>
+				жёлтый
+			</Caption>
+		)
+	}
+}
+
+const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, secretId, fetchedUser}) => {
 	const [map, setMap] = useState(getStartJson(mapName));
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false);
-	console.log('rendered')
+
+	console.log(
+		" Color motion: " + colorMotion,
+		" User color:" + userColor,
+		" Other motion: " + otherMotion,
+		"-------------!!!!!-------------"
+	)
 
 	useEffect(() => {
 
-		let newMap = map.slice();
-		const len = map.length
-		if (colors.length === 2) {
-			newMap[1][1]['color'] = "red"
-			newMap[1][1]['state'] = 3
-			newMap[len - 2][len - 2]['color'] = "blue"
-			newMap[len - 2][len - 2]['state'] = 3
-		} else if (colors.length === 3) {
-			newMap[1][1]['color'] = "red"
-			newMap[1][1]['state'] = 3
-			newMap[len - 2][len - 2]['color'] = "blue"
-			newMap[len - 2][len - 2]['state'] = 3
-			newMap[1][len - 2]['color'] = "green"
-			newMap[1][len - 2]['state'] = 3
-		} else if (colors.length === 4) {
-			newMap[1][1]['color'] = "red"
-			newMap[1][1]['state'] = 3
-			newMap[len - 2][len - 2]['color'] = "blue"
-			newMap[len - 2][len - 2]['state'] = 3
-			newMap[1][len - 2]['color'] = "green"
-			newMap[1][len - 2]['state'] = 3
-			newMap[len - 2][1]['color'] = "yellow"
-			newMap[len - 2][1]['state'] = 3
+		socket.on("cords", (data) => {
+			const coords = data
+			console.log("cords " + coords)
+			otherMotion = true
+			console.log(
+				" Color motion: " + colorMotion,
+				" User color:" + userColor,
+				" Other motion: " + otherMotion,
+				"----------------------------"
+			)
+			onCellClick(data[0], data[1])
+		});
+
+		async function getFightInfo () {
+			const fight = await getFight(secretId)
+			fight.users.forEach((item, i) => {
+				if (item.vk_id === fetchedUser.id) {
+					userColor = item.color
+				}
+			})
+
+			colors.length = fight.max_user_number
+			console.log(userColor, colors)
+			let newMap = map.slice();
+			const len = map.length
+			if (colors.length === 2) {
+				newMap[1][1]['color'] = "red"
+				newMap[1][1]['state'] = 3
+				newMap[len - 2][len - 2]['color'] = "blue"
+				newMap[len - 2][len - 2]['state'] = 3
+			} else if (colors.length === 3) {
+				newMap[1][1]['color'] = "red"
+				newMap[1][1]['state'] = 3
+				newMap[len - 2][len - 2]['color'] = "blue"
+				newMap[len - 2][len - 2]['state'] = 3
+				newMap[1][len - 2]['color'] = "green"
+				newMap[1][len - 2]['state'] = 3
+			} else if (colors.length === 4) {
+				newMap[1][1]['color'] = "red"
+				newMap[1][1]['state'] = 3
+				newMap[len - 2][len - 2]['color'] = "blue"
+				newMap[len - 2][len - 2]['state'] = 3
+				newMap[1][len - 2]['color'] = "green"
+				newMap[1][len - 2]['state'] = 3
+				newMap[len - 2][1]['color'] = "yellow"
+				newMap[len - 2][1]['state'] = 3
+			}
+			setMap(newMap)
 		}
-		console.log(newMap)
-		setMap(newMap)
+
+		getFightInfo()
 	}, [])
 
 	function changeColorMotion () {
@@ -92,7 +173,10 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 			isRecursion = false
 			changeColorMotion()
 			setIsAnimation(false)
+			otherMotion = false
 		}
+
+		console.log("FLag: " + flag)
 
 		// TODO: здесб же сделать функцию, которая проверяет, не сажрали кого. Перебирает массив колорс и чекает наличие фишек для каждого цвета
 	}
@@ -102,16 +186,28 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 	}
 
 	function onCellClick(row, column) {
-		console.log(map)
+		console.log(
+			" Color motion: " + colorMotion,
+			" User color:" + userColor,
+			" Other motion: " + otherMotion,
+			"----------------------------"
+		)
 
-		if ( map[row - 1][column - 1]['color'] === colorMotion) {
+		if ( map[row - 1][column - 1]['color'] === colorMotion
+			&& colorMotion === userColor
+			|| otherMotion) {
+			console.log("making onCellClick")
 			if (map[row - 1][column - 1]['state'] === 3) {
 				isRecursion = true
 				setIsAnimation(true)
 			}
+			if (!otherMotion) {
+				clickMap(secretId, fetchedUser, row, column)
+			}
 			basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
 			if (!isAnimation) {
 				changeColorMotion()
+				otherMotion = false
 			}
 		}
 	}
@@ -155,22 +251,22 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 	}
 
 	function kickUser () {
-		if (!isAnimation) {
-			console.log('нужно кинкнуть ' + colorMotion)
-			let newMap = map.slice()
-			map.forEach(function(row, rowIndex, array) {
-				row.forEach(function(cell, cellIndex, array) {
-					if (cell['color'] === colorMotion) {
-						newMap[rowIndex][cellIndex]['color'] = null
-						newMap[rowIndex][cellIndex]['state'] = null
-					}
-				});
-			});
-			const colorMotionIndex = colors.indexOf(colorMotion)
-			colors.splice(colorMotionIndex, 1)
-			setMap(newMap)
-			setColorMotion(colors[colorMotionIndex])
-		}
+		// if (!isAnimation) {
+		// 	console.log('нужно кинкнуть ' + colorMotion)
+		// 	let newMap = map.slice()
+		// 	map.forEach(function(row, rowIndex, array) {
+		// 		row.forEach(function(cell, cellIndex, array) {
+		// 			if (cell['color'] === colorMotion) {
+		// 				newMap[rowIndex][cellIndex]['color'] = null
+		// 				newMap[rowIndex][cellIndex]['state'] = null
+		// 			}
+		// 		});
+		// 	});
+		// 	const colorMotionIndex = colors.indexOf(colorMotion)
+		// 	colors.splice(colorMotionIndex, 1)
+		// 	setMap(newMap)
+		// 	setColorMotion(colors[colorMotionIndex])
+		// }
 	}
 
 	function getMapInfo () {
@@ -220,8 +316,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 			{getMapInfo()}
 
 			<GameScore count={count}/>
-			{/*<GetMap onCellClick={onCellClick} getCellContent={getCellContent} mapName={mapName}/>*/}
-			<GridSize8 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion}/>
+			<GetMap onCellClickFromUser={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
 			<div
 				style={{
@@ -235,9 +330,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
 						Твой цвет:
 					</Caption>
-					<Caption level="2" style={{ marginLeft: 6, color: '#00D8FF' }}>
-						голубой
-					</Caption>
+					{getColorInfo(userColor)}
 				</div>
 				<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", marginLeft: 10, borderRadius: 10, display: "flex"}} >
 					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
@@ -257,7 +350,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName})
 					justifyContent: 'center',
 				}}
 			>
-				<Button onClick={goToEndFight}  data-to="home" mode="tertiary">Сдаться</Button>
+				<Button onClick={goToEndFight} mode="tertiary">Сдаться</Button>
 			</div>
 		</Panel>
 	);

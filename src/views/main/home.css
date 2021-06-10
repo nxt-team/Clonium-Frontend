@@ -194,3 +194,19 @@
 /*  pointer-events: auto !important;*/
 /*}*/
 
+.twombly {
+  width: 100%;
+}
+
+.UsersStack--size-s:not(.UsersStack--simple) .UsersStack__photo + .UsersStack__photo {
+  clip-path: none !important;
+}
+
+.UsersStack--size-m:not(.UsersStack--simple) .UsersStack__photo + .UsersStack__photo {
+  clip-path: none !important;
+}
+
+.UsersStack--size-m.UsersStack--others:not(.UsersStack--simple) .UsersStack__photo {
+  clip-path: none !important;
+}
+

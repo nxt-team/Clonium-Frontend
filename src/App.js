@@ -61,10 +61,17 @@ import AboutVkDonutModal from "./modals/AboutVkDonutModal";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
 import UserProfile from "./views/main/UserProfile";
-import {init} from "./api/api";
+import {addReferral, init} from "./api/api";
+import UploadingPhotoModal from "./modals/UploadingPhotoModal";
+import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
+import WaitingForTheFight from "./views/main/WaitingForTheFight";
+import {socket} from "./api/socket";
+
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
+let mapName = ""
+let secretId = ""
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
@@ -74,6 +81,7 @@ const App = () => {
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
 	const [achievementModalData, setAchievementModalData] = useState(["Титул", "Сабхидер", true])
+	const [photos, setPhotos] = useState([])
 	const [userBalances, setUserBalances] = useState({
 		"tickets": 0,
 		"exp": 5,
@@ -82,21 +90,47 @@ const App = () => {
 		"wins": 0
 	})
 
+	console.log("PANEL: " + activePanel)
+
+	function updateStatusPanel (newStatus) {
+		const status = newStatus.split('-')
+		console.log("status on front ", status[0])
+
+		if (status[0] === "waiting_for_players") {
+			setActivePanel("waitingForStart")
+		} else if (status[0] === "waiting_for_the_fight") {
+			setActivePanel("waitingForTheFight")
+		} else if (status[0] === "fight") {
+			mapName = status[1]
+			secretId = status[2]
+			setActivePanel("game")
+		}
+	}
+
 	useEffect(() => {
-		bridge.subscribe(({ detail: { type, data }}) => {
-			// if (type === 'VKWebAppUpdateConfig') {
-			// 	const schemeAttribute = document.createAttribute('scheme');
-			// 	schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-			// 	document.body.attributes.setNamedItem(schemeAttribute);
-			// 	// setScheme(data.scheme)
-			// }
+		console.log("CONNECTED SOCKETS")
+		socket.on("status", (data) => {
+			console.log("NEW STATUS", data)
+			updateStatusPanel(data)
 		});
+
+		bridge.subscribe(({ detail: { type, data }}) => {});
+
 		async function fetchData() {
-			let user = await bridge.send('VKWebAppGetUserInfo');
-			setUser(user)
-			user = await init(user)
-			console.log(user)
+			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
+			setUser(fetchUser)
+			let user = await init(fetchUser)
 			if (user["status"] === "success") {
+
+				let hash = window.location.hash
+
+				if (hash.indexOf("#invite=") !== -1) {
+					hash = parseInt(hash.slice(8))
+					if (typeof (hash) !== NaN) {
+						await addReferral(fetchUser, hash)
+					}
+				}
+
 				setActivePanel("intro_1")
 				setActiveView("main")
 			} else {
@@ -125,6 +159,12 @@ const App = () => {
 		history.push( panel ); // Добавляем панель в историю
 	};
 
+	const goToPage = (panel) => {
+		window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
+		setActivePanel( panel ); // Меняем активную панель
+		history.push( panel ); // Добавляем панель в историю
+	}
+
 	const panel_go = panel => {
 		window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
 		setActivePanel( panel ); // Меняем активную панель
@@ -149,84 +189,6 @@ const App = () => {
 		}
 	}
 
-
-	const onChange_originalFile = async (e) => {
-		setImgLink('loading')
-		let image = e.target.files;
-		if (image && image.length > 0) {
-			if ((image[0].type.indexOf("image/") + 1) !== 0) {
-				try {
-					let img = await imagenation(image[0], 1500);
-					if (img) {
-						console.log('everything is okay')
-						// if (token === null) {
-						//     token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7622545, "scope": "photos"});
-						//     console.log('result', token["access_token"])
-						// }
-
-						// const linkForUpload = await bridge.send("VKWebAppCallAPIMethod", {"method": "photos.getUploadServer", "request_id": "32test", "params": {"album_id": 278829270, "group_id": 201110393, "v":"5.126", "access_token": token["access_token"]}});
-						// console.log(linkForUpload)
-
-
-						const fd = new FormData()
-						fd.append('file', image[0], 'image')
-						// fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
-						var request = new XMLHttpRequest()
-
-						request.open('POST', "https://gamebot.site:3000/uploadPhoto", false);
-						request.onload = async function () {
-							if (request.status >= 200 && request.status < 400) {
-								var data = JSON.parse(request.responseText)
-								console.log(data["result"])
-								let sizeLetter = 'w'
-								let url = null
-
-								while (url === null) {
-									for (let size of data["result"]) {
-										if (size["type"] === sizeLetter) {
-											url = size["url"]
-										}
-									}
-
-									if (sizeLetter === 'w') {
-										sizeLetter = 'z'
-									} else if (sizeLetter === 'z') {
-										sizeLetter = 'y'
-									} else if (sizeLetter === 'y') {
-										sizeLetter = 'x'
-									} else if (sizeLetter === 'x') {
-										sizeLetter = 'm'
-									} else {
-										sizeLetter = 's'
-									}
-								}
-
-								setImgLink(url)
-								changeActiveModal("showImgPlayIcon")
-
-							} else {
-								console.log('err2')
-							}
-						}
-						console.log(fd)
-						request.send(fd)
-
-
-					}
-					else {
-						alert(<><h2>Упс, файл не удалось прочитать</h2><p>Для продолжения вы должны выбрать корректный файл формата JPEG, PNG, или GIF!</p></>);
-					}
-				}
-				catch (error) {
-					console.log(error)
-					alert(<><h2>Упс, файл не удалось прочитать</h2><p>Для продолжения вы должны выбрать корректный файл формата JPEG, PNG, или GIF!</p></>);
-				}
-			}
-			else {
-				alert(<><h2>Ошибка в выборе файла</h2><p>Для продолжения вы должны выбрать файл формата JPEG, PNG, или GIF!</p></>);
-			}
-		}
-	}
 
 	const modal = (
 		<ModalRoot
@@ -281,59 +243,15 @@ const App = () => {
 				}]}
 			>
 			</ModalCard>
-			<ModalCard
+			<UploadingPhotoModal
 				id={"uploadingPhoto"}
-				onClose={() => setActiveModal(null)}
-				icon={<Icon56GalleryOutline />}
-				header="Загрузи фотографию"
-				caption="Смени аватарку фишки на любую картинку"
-			>
-				<File
-					accept="image/*"
-					mode="primary"
-					controlSize="xl"
-					disabled={imgLink === "loading"}
-					style={{marginTop: 16}}
-					onChange={(e) => onChange_originalFile(e)}
-				>
-					{imgLink === "loading" ? <Spinner size="regular" /> : "Загрузить"}
-				</File>
-			</ModalCard>
-			<ModalCard
-				id={"showImgPlayIcon"}
-				onClose={() => setActiveModal(null)}
-				icon={
-					<svg
-						style={{color: "var(--text_primary)"}}
-						className="cont"
-						viewBox="0 0 38 38"
-						fill="none"
-						width="76"
-						height="76"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<defs>
-							<pattern id="img1" patternUnits="userSpaceOnUse" width="100%" height="100%">
-								<image className='twombly' xlinkHref={imgLink}
-									   x="0" y="0"/>
-							</pattern>
-
-						</defs>
-						<circle cx="19" cy="19" r="18" fill="url(#img1)" stroke="currentColor" stroke-width="2"/>
-						<circle cx="19" cy="19" r="3" fill="#F5F5F5" stroke="#232324"/>
-					</svg>
-				}
-				header="Твоя фишка"
-				caption="Теперь так будут выглядить твои фишки во время игры"
-				actions={[{
-					title: 'Хорошо',
-					mode: 'primary',
-					action: () => {
-						setActiveModal(null);
-					}
-				}]}
-			>
-			</ModalCard>
+				closeModal={() => setActiveModal(null)}
+				imgLink={imgLink}
+				fetchedUser={fetchedUser}
+				changeActiveModal={(newModal) => setActiveModal(newModal)}
+				setImgLink={(newImgLink) => setImgLink(newImgLink)}
+			/>
+			<ShowImgPlayIconModal id={"showImgPlayIcon"} imgLink={imgLink} closeModal={() => {setImgLink(null); setActiveModal(null)}} />
 			<ModalCard
 				id={"promoСodeActivation"}
 				onClose={() => setActiveModal(null)}
@@ -482,18 +400,19 @@ const App = () => {
 				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
 					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} />
 					<History id='history' go={go} fetchedUser={fetchedUser} />
-					<Home id={'home'} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
-					<Game id={'game'}  changeActiveModal={changeActiveModal}  startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={'GridSize8'} />
+					<Home id={'home'} goToPage={goToPage} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
+					<WaitingForStart id={'waitingForStart'} go={go} fetchedUser={fetchedUser} />
+					<WaitingForTheFight id={"waitingForTheFight"} />
+					<Game id={'game'}  changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} secretId={secretId} startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={mapName} />
 					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser} userBalances={userBalances}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
-					<WaitingForStart id='waitingForStart' go={go} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
-					<Customization id='customization' go={go} changeActiveModal={changeActiveModal}/>
+					<Customization id='customization' go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} imgLink={imgLink} />
 					<Intro id='intro_1' panel_go={panel_go} changeActiveModal={changeActiveModal}/>
 					<UserProfile id="userProfile" />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
-					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} fetchedUser={fetchedUser} />
+					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} goToPage={goToPage} fetchedUser={fetchedUser} />
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated} />

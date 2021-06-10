@@ -7,11 +7,9 @@ import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import './Top.css'
 import {
-    Icon28AddSquareOutline,
     Icon56UsersOutline,
     Icon28AchievementCircleFillBlue,
     Icon28FireOutline,
-    Icon201CircleFillGold
 } from '@vkontakte/icons';
 import LeaderBoardPlace from '../../components/LeaderBoardPlace'
 import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
@@ -29,7 +27,7 @@ import {
     Header,
     TabsItem, FixedLayout, Banner, Spinner
 } from "@vkontakte/vkui";
-import {getFriendsTop, getGlobalTop, getUserHistory} from "../../api/api";
+import {getFriendsTop, getGlobalTop} from "../../api/api";
 import bridge from '@vkontakte/vk-bridge';
 const osName = platform();
 
