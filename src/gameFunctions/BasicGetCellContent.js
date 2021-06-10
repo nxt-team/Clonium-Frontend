@@ -11,6 +11,7 @@ export default function BasicGetCellContent({row, column, map}) {
         if (map[row - 1][column] !== undefined && map[row - 1][column]["color"] !== "disabled") {
             animatedIcons.push(
                 <AnimatedPlayIcon
+                    key={1}
                     color={map[row - 1][column - 1]['color']}
                     svgSize={svgSize}
                     start={{
@@ -28,6 +29,7 @@ export default function BasicGetCellContent({row, column, map}) {
         } if (map[row - 2] !== undefined && map[row - 2][column - 1]["color"] !== "disabled") {
             animatedIcons.push(
                 <AnimatedPlayIcon
+                    key={2}
                     color={map[row - 1][column - 1]['color']}
                     svgSize={svgSize}
                     start={{
@@ -45,6 +47,7 @@ export default function BasicGetCellContent({row, column, map}) {
         } if (map[row - 1][column - 2] !== undefined && map[row - 1][column - 2]["color"] !== "disabled") {
             animatedIcons.push(
                 <AnimatedPlayIcon
+                    key={3}
                     color={map[row - 1][column - 1]['color']}
                     svgSize={svgSize}
                     start={{
@@ -62,6 +65,7 @@ export default function BasicGetCellContent({row, column, map}) {
         } if (map[row] !== undefined && map[row][column - 1]["color"] !== "disabled") {
             animatedIcons.push(
                 <AnimatedPlayIcon
+                    key={4}
                     color={map[row - 1][column - 1]['color']}
                     svgSize={svgSize}
                     start={{

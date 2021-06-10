@@ -101,7 +101,7 @@ function basicOnCellClick(row, column, map, startupParameters, setMap, onCellCli
                 } catch (err) {}
 
                 setMap(newMap);
-                findAnimateIcons()
+                findAnimateIcons(row, column)
             }, 1500)
 
         }

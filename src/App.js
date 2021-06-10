@@ -81,7 +81,6 @@ const App = () => {
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
 	const [achievementModalData, setAchievementModalData] = useState(["Титул", "Сабхидер", true])
-	const [photos, setPhotos] = useState([])
 	const [userBalances, setUserBalances] = useState({
 		"tickets": 0,
 		"exp": 5,
@@ -113,6 +112,8 @@ const App = () => {
 			console.log("NEW STATUS", data)
 			updateStatusPanel(data)
 		});
+
+
 
 		bridge.subscribe(({ detail: { type, data }}) => {});
 
@@ -403,7 +404,14 @@ const App = () => {
 					<Home id={'home'} goToPage={goToPage} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
 					<WaitingForStart id={'waitingForStart'} go={go} fetchedUser={fetchedUser} />
 					<WaitingForTheFight id={"waitingForTheFight"} />
-					<Game id={'game'}  changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} secretId={secretId} startupParameters={startupParameters} goToEndFight={goToEndFight} mapName={mapName} />
+					<Game
+						id={'game'}
+						changeActiveModal={changeActiveModal}
+						fetchedUser={fetchedUser}
+						secretId={secretId}
+						startupParameters={startupParameters}
+						goToEndFight={goToEndFight}
+						mapName={mapName} />
 					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser} userBalances={userBalances}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />

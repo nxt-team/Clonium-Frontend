@@ -29,7 +29,7 @@ let userColor = ""
 let colors = ["red", "blue", "green", "yellow"]
 
 let isRecursion = false
-let otherMotion = false
+let lastColorMotion = "red"
 
 function getStartJson(mapName) {
 	if (mapName === "GridSize8") {
@@ -82,30 +82,31 @@ function getColorInfo (color) {
 const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, secretId, fetchedUser}) => {
 	const [map, setMap] = useState(getStartJson(mapName));
 	const [colorMotion, setColorMotion] = useState("red");
-	const [isAnimation, setIsAnimation] = useState(false);
+	const [isAnimation, setIsAnimation] = useState(false)
+
 
 	console.log(
 		" Color motion: " + colorMotion,
-		" User color:" + userColor,
-		" Other motion: " + otherMotion,
 		"-------------!!!!!-------------"
 	)
 
 	useEffect(() => {
+		console.log("CONNECTED COORDS")
 
 		socket.on("cords", (data) => {
-			const coords = data
-			console.log("cords " + coords)
-			otherMotion = true
+			console.log("cords " + data)
+
 			console.log(
 				" Color motion: " + colorMotion,
-				" User color:" + userColor,
-				" Other motion: " + otherMotion,
 				"----------------------------"
 			)
 			onCellClick(data[0], data[1])
-		});
+			changeColorMotion(lastColorMotion, ("line 103 " + data))
 
+		});
+	}, [])
+
+	useEffect(() => {
 		async function getFightInfo () {
 			const fight = await getFight(secretId)
 			fight.users.forEach((item, i) => {
@@ -113,7 +114,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 					userColor = item.color
 				}
 			})
-
+			// setColorMotion(colors[0])
 			colors.length = fight.max_user_number
 			console.log(userColor, colors)
 			let newMap = map.slice();
@@ -142,19 +143,31 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 			}
 			setMap(newMap)
 		}
-
 		getFightInfo()
-	}, [])
+	},[])
 
-	function changeColorMotion () {
-		if (colors.indexOf(colorMotion) + 1 === colors.length) {
-			setColorMotion(colors[0])
+	function changeColorMotion (color, source) {
+
+		// if (colors.indexOf(colorMotion) + 1 === colors.length) {
+		// 	setColorMotion(colors[0])
+		// } else {
+		// 	setColorMotion(colors[colors.indexOf(colorMotion) + 1])
+		// }
+
+		if (color === "red") {
+			console.log("COLOR MOTION CHANGED from red to blue by ", source)
+			setColorMotion("blue")
+			lastColorMotion = "blue"
+		} else if (color === "blue") {
+			console.log("COLOR MOTION CHANGED from blue to red by ", source)
+			setColorMotion( "red")
+			lastColorMotion = "red"
 		} else {
-			setColorMotion(colors[colors.indexOf(colorMotion) + 1])
+			console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
 		}
 	}
 
-	function findAnimateIcons () {
+	function findAnimateIcons (row, column) {
 		let flag = false
 		map.forEach(function(row, index, array) {
 			row.forEach(function(cell, index, array) {
@@ -171,9 +184,8 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 
 		if (!flag) {
 			isRecursion = false
-			changeColorMotion()
+			// changeColorMotion(("line 181 " + row + " " + column))
 			setIsAnimation(false)
-			otherMotion = false
 		}
 
 		console.log("FLag: " + flag)
@@ -187,34 +199,30 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 
 	function onCellClick(row, column) {
 		console.log(
+			"main on cell click" + row, column + " \n",
 			" Color motion: " + colorMotion,
-			" User color:" + userColor,
-			" Other motion: " + otherMotion,
 			"----------------------------"
 		)
 
-		if ( map[row - 1][column - 1]['color'] === colorMotion
-			&& colorMotion === userColor
-			|| otherMotion) {
-			console.log("making onCellClick")
+		// if ( map[row - 1][column - 1]['color'] === colorMotion) { //  && colorMotion === userColor
+		// 	console.log("making onCellClick")
 			if (map[row - 1][column - 1]['state'] === 3) {
 				isRecursion = true
 				setIsAnimation(true)
 			}
-			if (!otherMotion) {
-				clickMap(secretId, fetchedUser, row, column)
-			}
 			basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
 			if (!isAnimation) {
-				changeColorMotion()
-				otherMotion = false
+				// changeColorMotion(("line 212 " + row + " " + column))
 			}
-		}
+		// }
 	}
 
 	function onCellClickFromUser (row, column) {
-		if (!isAnimation) {
+		console.log("click from user \n", "is animation: ", isAnimation)
+		if (!isAnimation && map[row - 1][column - 1]['color'] === colorMotion && colorMotion === userColor ) {
 			onCellClick(row, column)
+			clickMap(secretId, fetchedUser, row, column)
+			changeColorMotion(lastColorMotion, ("line 217 " + row + " " + column))
 		}
 	}
 

@@ -23,6 +23,7 @@ export function leaveFight (fetchedUser) {
 }
 
 export function clickMap (secretId, fetchedUser, row, column) {
+    console.log("MAP CLICKED ", secretId)
     socket.emit("click map", {
         "vk_id": fetchedUser.id,
         "secret_id": secretId,
