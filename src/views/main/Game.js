@@ -24,7 +24,7 @@ import PassageSize10Map from "../../maps/PassageSize10/map.json";
 import SquareSize6Map from "../../maps/SquareSize6/map.json";
 import SquareSize8Map from "../../maps/SquareSize8/map.json";
 import {getFight} from "../../api/api";
-import {clickMap, socket} from "../../api/socket";
+import {clickMap, leaveFight, socket} from "../../api/socket";
 let userColor = ""
 let colors = ["red", "blue", "green", "yellow"]
 
@@ -79,10 +79,15 @@ function getColorInfo (color) {
 	}
 }
 
-const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, secretId, fetchedUser}) => {
+const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapName, secretId, fetchedUser, goToEndFight, finishData}) => {
 	const [map, setMap] = useState(getStartJson(mapName));
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
+
+	if (finishData.length !== 0 && !isAnimation) {
+		goToEndFight()
+		// todo: добавить сет тайм аут
+	}
 
 
 	console.log(
@@ -108,6 +113,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 
 	useEffect(() => {
 		async function getFightInfo () {
+			setMap(getStartJson(mapName))
 			const fight = await getFight(secretId)
 			fight.users.forEach((item, i) => {
 				if (item.vk_id === fetchedUser.id) {
@@ -184,6 +190,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 
 		if (!flag) {
 			isRecursion = false
+			console.log("finish data", finishData)
 			// changeColorMotion(("line 181 " + row + " " + column))
 			setIsAnimation(false)
 		}
@@ -206,14 +213,15 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 
 		// if ( map[row - 1][column - 1]['color'] === colorMotion) { //  && colorMotion === userColor
 		// 	console.log("making onCellClick")
-			if (map[row - 1][column - 1]['state'] === 3) {
-				isRecursion = true
-				setIsAnimation(true)
-			}
-			basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
-			if (!isAnimation) {
-				// changeColorMotion(("line 212 " + row + " " + column))
-			}
+		if (map[row - 1][column - 1]['state'] === 3) {
+			isRecursion = true
+			setIsAnimation(true)
+		}
+		basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
+		if (!isAnimation) {
+			// changeColorMotion(("line 212 " + row + " " + column))
+
+		}
 		// }
 	}
 
@@ -358,7 +366,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToEndFight, mapName, 
 					justifyContent: 'center',
 				}}
 			>
-				<Button onClick={goToEndFight} mode="tertiary">Сдаться</Button>
+				<Button onClick={() => {leaveFight(fetchedUser); setTimeout(() => goToMainViewHome(), 300)}} mode="tertiary">Сдаться</Button>
 			</div>
 		</Panel>
 	);

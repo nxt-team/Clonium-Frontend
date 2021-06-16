@@ -7,6 +7,7 @@ export default function Online() {
     const [ online, setOnline] = useState(1)
 
     useEffect(() => {
+        // TODO: добавить сюда сокет офф и потестить
         socket.once("online", (data) => {
             setOnline(data)
             console.log("new Online", data)

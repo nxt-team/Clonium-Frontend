@@ -8,9 +8,9 @@ import {
 } from "@vkontakte/vkui";
 import useInterval from "@use-it/interval";
 
-const WaitingForTheFight = ({ id}) => {
+const WaitingForTheFight = ({ id, startCount}) => {
 
-    const [count, setCount] = useState(13);
+    const [count, setCount] = useState(startCount);
 
     useInterval(() => {
         setCount((currentCount) => currentCount - 1);

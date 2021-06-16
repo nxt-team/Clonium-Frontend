@@ -1,6 +1,6 @@
 import React from 'react';
 import './InfoBanners.css';
-import {Div, Button, Card, Caption} from "@vkontakte/vkui";
+import {Text, CardScroll, Card, Caption, Link} from "@vkontakte/vkui";
 import {
     Icon28RadiowavesAroundOutline,
     Icon28BombOutline,
@@ -8,7 +8,6 @@ import {
     Icon28InfoOutline,
     Icon28ChatsOutline, Icon28TicketOutline, Icon36GameOutline, Icon28ArrowUpOutline, Icon28ArrowDownOutline
 } from '@vkontakte/icons';
-import {CardScroll, Text} from "@gmelum/vkui";
 import { motion } from "framer-motion"
 
 export default function InfoBanners(props) {
@@ -21,18 +20,22 @@ export default function InfoBanners(props) {
 
     return (
         <CardScroll>
-            <Card >
-                <div className="InfoBanner" >
-                    <div className="InfoBanner__Icon__Before__Green" >
-                        <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
+            <Card  >
+                <Link target="_blank" href="https://vk.com/@nxt.team-clonium" >
+                    <div className="InfoBanner"  >
+                        <div className="InfoBanner__Icon__Before__Green" >
+                            <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
+                        </div>
+                        <div className="InfoBanner__TextContainer" >
+                            <Text weight="regular" >Справка</Text>
+                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >об игре, правилах <br/> и нюансах</Caption>
+                        </div>
                     </div>
-                    <div className="InfoBanner__TextContainer" >
-                        <Text weight="regular" >Справка</Text>
-                        <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >об игре, правилах <br/> и нюансах</Caption>
-                    </div>
-                </div>
+                </Link>
+
             </Card>
-            <Card >
+            <Card  >
+                <Link target="_blank" href="https://vk.com/nxt.team" >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Blue" >
                         <Icon28Users3Outline className="InfoBanner__Icon__Blue" width={32} height={32}/>
@@ -42,8 +45,10 @@ export default function InfoBanners(props) {
                         <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >будь в курсе <br/> новостей</Caption>
                     </div>
                 </div>
+                </Link>
             </Card>
-            <Card >
+            <Card  >
+                <Link target="_blank" href="https://vk.me/join/zJ8DxkYAjOlAxQX/y74M/HYEjtfHxOWCMIM=" >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Red" >
                         <Icon28ChatsOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
@@ -53,8 +58,9 @@ export default function InfoBanners(props) {
                         <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >общение с другими <br/> игроками</Caption>
                     </div>
                 </div>
+                </Link>
             </Card>
-            <Card >
+            <Card onClick={() => changeActiveModal("aboutVkDonut")} >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Orange" >
                         <Icon28BombOutline className="InfoBanner__Icon__Orange" width={32} height={32}/>

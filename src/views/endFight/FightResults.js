@@ -16,7 +16,7 @@ import { Icon24CupOutline } from '@vkontakte/icons';
 import { Icon28PollSquareOutline } from '@vkontakte/icons';
 
 
-const FightResults = ({ id, goToMainView, fightResultsSharing }) => {
+const FightResults = ({ id, goToMainView, fightResultsSharing, finishData }) => {
 
 
     return (
@@ -42,7 +42,7 @@ const FightResults = ({ id, goToMainView, fightResultsSharing }) => {
                     </div>
                     <div>
                         <Title level="1" weight="semibold">
-                            4
+                            {finishData[2]}
                         </Title>
                         <Text style={{color: "var(--text_secondary)", marginTop: 4}}>
                             опыта ты получаешь
@@ -55,7 +55,7 @@ const FightResults = ({ id, goToMainView, fightResultsSharing }) => {
                     </div>
                     <div>
                         <Title level="1" weight="semibold">
-                            1
+                            {finishData[0]}
                         </Title>
                         <Text style={{color: "var(--text_secondary)", marginTop: 4}}>
                             место занял
@@ -68,7 +68,7 @@ const FightResults = ({ id, goToMainView, fightResultsSharing }) => {
                     </div>
                     <div>
                         <Title level="1" weight="semibold">
-                            3
+                            {finishData[1] - finishData[0]}
                         </Title>
                         <Text style={{color: "var(--text_secondary)", marginTop: 4}}>
                             игроков обыграл

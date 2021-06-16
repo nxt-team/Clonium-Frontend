@@ -94,7 +94,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
                 header={fetchedUser.first_name + ' ' + fetchedUser.last_name}
                 action={<Button size="l" before={<Icon24StoryOutline/>} >Попонтаваться</Button>}
             >
-                начинающий
+                {userBalances["user_rank"]}
             </Placeholder>
             <Title level="1" weight="semibold" style={{ marginLeft: 16 }} >
                 Статистика

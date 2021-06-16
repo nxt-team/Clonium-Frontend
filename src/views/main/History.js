@@ -28,7 +28,7 @@ const History = ({ id, fetchedUser }) => {
             if (history.length === 0) {
                 setHistory([null])
             } else {
-                setHistory(history)
+                setHistory(history.reverse())
             }
         }
         getHistory();

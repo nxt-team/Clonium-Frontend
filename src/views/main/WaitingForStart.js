@@ -12,17 +12,41 @@ import {
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
 import {leaveFight, socket} from "../../api/socket";
+import {fightInviteShare} from "../../sharing/sharing";
 
-const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
+const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight }) => {
 
     const [photos, setPhotos] = useState([])
 
     useEffect(() => {
         socket.once("avatars", (data) => {
             setPhotos(data)
-            console.log("avatars", data)
         });
     })
+
+    function getNeedPlayers () {
+        let needPlayers = needUsersInFight - photos.length
+
+        switch (needPlayers) {
+            case 0:
+                needPlayers = ""
+                break;
+            case 1:
+                needPlayers = "ожидаем 1 игрока"
+                break;
+            case 2:
+                needPlayers = "ожидаем 2 игроков"
+                break;
+            case 3:
+                needPlayers = "ожидаем 3 игроков"
+                break;
+            case 4:
+                needPlayers = "ожидаем 4 игроков"
+                break;
+        }
+
+        return needPlayers
+    }
 
 
     return (
@@ -47,9 +71,9 @@ const WaitingForStart = ({ id, go, modalOn, fetchedUser }) => {
                 </Title>
                 <UsersStack
                     photos={photos}
-                >Ожидаем 2 игроков</UsersStack>
+                >{getNeedPlayers()}</UsersStack>
                 <div style={{display: "flex", marginTop: 8}}>
-                    <Button size="l" before={<Icon24ShareOutline/>} >Позвать друзей</Button>
+                    <Button size="l" before={<Icon24ShareOutline/>} onClick={() => fightInviteShare(secretId)} >Позвать друзей</Button>
                     <Button size="l" style={{ marginLeft: 8 }} mode="secondary"><Icon24NotificationOutline /></Button>
                 </div>
                 <Group

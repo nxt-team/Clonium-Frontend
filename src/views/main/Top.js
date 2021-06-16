@@ -87,6 +87,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                         place={index + 1}
                         rank={item["user_rank"]}
                         userName={item["username"]}
+                        vkDonut={item["vk_donut"]}
                     />
                 )
             })

@@ -61,19 +61,32 @@ import AboutVkDonutModal from "./modals/AboutVkDonutModal";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
 import UserProfile from "./views/main/UserProfile";
-import {addReferral, init} from "./api/api";
+import {addReferral, getFight, init} from "./api/api";
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {socket} from "./api/socket";
+import {joinRoom, rejoinRoom, socket} from "./api/socket";
+import RejoinedGame from "./views/main/RejoinedGame";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 let mapName = ""
 let secretId = ""
+let needUsersInFight = 0
+let startCount = 13
+
+let colorMotion = ""
+let turnTime = true
+let map = []
+let colors = []
+let fightStart = new Date()
+let gameTime = 0
+let userColor = ""
+
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
+	const [finishData, setFinishData] = useState([])
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
 	const [popout, setPopout] = useState(<ScreenSpinner/>); // <ScreenSpinner/>
 	const [activeModal, setActiveModal] = useState(null)
@@ -86,23 +99,32 @@ const App = () => {
 		"exp": 5,
 		"fights": 0,
 		"losses": 0,
-		"wins": 0
+		"wins": 0,
+		"vk_donut": 0,
+		"user_rank": "",
+		"status": ""
 	})
 
-	console.log("PANEL: " + activePanel)
+	console.log("PANEL: ", activePanel, "\n", "FINISHDATA: ", finishData)
 
 	function updateStatusPanel (newStatus) {
 		const status = newStatus.split('-')
 		console.log("status on front ", status[0])
 
 		if (status[0] === "waiting_for_players") {
+			setFinishData([])
+			map = []
 			setActivePanel("waitingForStart")
 		} else if (status[0] === "waiting_for_the_fight") {
+			startCount = 13
 			setActivePanel("waitingForTheFight")
 		} else if (status[0] === "fight") {
 			mapName = status[1]
 			secretId = status[2]
 			setActivePanel("game")
+		} else if (status[0] === "finish") {
+			const data = JSON.parse(status[1])
+			setFinishData(data)
 		}
 	}
 
@@ -115,7 +137,11 @@ const App = () => {
 
 
 
-		bridge.subscribe(({ detail: { type, data }}) => {});
+		bridge.subscribe(({ detail: { type, data }}) => {
+			if (type === 'VKWebAppAddToFavoritesResult') {
+				completeSnackBar("Мини приложение в избранных")
+			}
+		});
 
 		async function fetchData() {
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
@@ -134,14 +160,76 @@ const App = () => {
 
 				setActivePanel("intro_1")
 				setActiveView("main")
-			} else {
+			} else if (user["status"].split("_")[0] === "fight") {
+				console.log("rejoin fight")
+
+				socket.emit("rejoin room", {
+					"secret_id": user["status"].split("_")[1],
+					"vk_id": fetchUser.id,
+					"avatar": fetchUser.photo_max_orig,
+				}, (data) => {
+					console.log(data)
+					if (data[0] === "waiting_for_players") {
+						secretId = user["status"].split("_")[1]
+						needUsersInFight = data[2]
+						goToPage("waitingForStart")
+					} else if (data[0] === "waiting_for_the_fight") {
+						const now = new Date();
+						const fightStart = new Date(data[1])
+						const time = new Date(fightStart - now)
+						startCount = time.getSeconds()
+						goToPage("waitingForTheFight")
+					} else if (data[0] === "fight") {
+						mapName = data[7]
+						colorMotion = data[1]
+						turnTime = data[2]
+						map = data[3]
+						colors = data[4]
+						fightStart = data[5]
+						gameTime = new Date(data[6])
+						userColor = data[8]
+						secretId = user["status"].split("_")[1]
+						goToPage("rejoinedGame")
+
+					}
+					// todo: доделать остальные статусы
+				})
+
 				setActiveView("main")
 				setUserBalances(user)
+			} else {
+
+				let newActiveModal = null
+
+				let hash = window.location.hash
+				console.log(hash)
+
+				if (hash.indexOf("#fight=") !== -1) {
+					console.log(hash)
+					hash = hash.slice(7)
+					console.log(hash)
+					if (typeof (hash) !== NaN) {
+						console.log(hash)
+						const fight = await getFight(hash)
+						if (fight === null) {
+							console.log("NULLLL")
+							newActiveModal = "noFight"
+						} else if (fight["status"] === "waiting_for_players") {
+							needUsersInFight = fight["max_user_number"]
+							secretId = hash
+							setTimeout(() => {joinRoom(fetchUser, hash); goToPage("waitingForStart")}, 300);
+						} else {
+							newActiveModal = "fightStarted"
+						}
+					}
+				}
+
+				setActiveView("main")
+				setUserBalances(user)
+				console.log(newActiveModal)
+				setTimeout(() => setActiveModal(newActiveModal), 300)
 			}
 			setPopout(null)
-			console.log("inited")
-
-
 		}
 
 		fetchData();
@@ -187,6 +275,23 @@ const App = () => {
 		} else if( history.length > 1) { // Если в массиве больше одного значения:
 			history.pop() // удаляем последний элемент в массиве.
 			setActivePanel( history[history.length - 1] ) // Изменяем массив с иторией и меняем активную панель.
+		}
+	}
+
+	const goBackBySwipeBack = () => {
+		if (history[history.length - 1] !== "history" || history[history.length - 1] !== "achievements") {
+			if (history.length === 1) {  // Если в массиве одно значение:
+				bridge.send("VKWebAppClose", {"status": "success"}); // Отправляем bridge на закрытие сервиса.
+			} else if (history.length > 1) { // Если в массиве больше одного значения:
+				history.pop() // удаляем последний элемент в массиве.
+				setActivePanel(history[history.length - 1]) // Изменяем массив с иторией и меняем активную панель.
+			}
+		}
+	}
+
+	const getSwipeBackHistory = () => {
+		if (history[history.length - 1] !== "history" || history[history.length - 1] !== "achievements") {
+			return ["home"]
 		}
 	}
 
@@ -309,6 +414,40 @@ const App = () => {
 				]}
 			>
 			</ModalCard>
+			<ModalCard
+				id={"fightStarted"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Бой уже начался"
+				caption="Места для вас в этом бою не нашлось :("
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"noFight"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Такого боя нет"
+				caption="Бой не найден"
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
 			<GameMechanicsModal id={"gameMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<ExplosionMechanicsModal id={"explosionMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<GrabRivalsModal id={"grabRivalsModal"} closeModal={() => setActiveModal(null)}/>
@@ -398,12 +537,22 @@ const App = () => {
 				<View activePanel={"loading"} id="loading" popout={popout}>
 					<Panel id={"loading"}/>
 				</View>
-				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
+				<View id='main' history={getSwipeBackHistory()} onSwipeBack={goBackBySwipeBack} activePanel={activePanel} popout={popout} modal={modal}>
 					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} />
 					<History id='history' go={go} fetchedUser={fetchedUser} />
-					<Home id={'home'} goToPage={goToPage} go={go} changeActiveModal={changeActiveModal} goToCreatingRoom={goToCreatingRoom} fetchedUser={fetchedUser} userBalances={userBalances} />
-					<WaitingForStart id={'waitingForStart'} go={go} fetchedUser={fetchedUser} />
-					<WaitingForTheFight id={"waitingForTheFight"} />
+					<Home
+						id={'home'}
+						goToPage={goToPage}
+						updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
+						updateSecretId={(newId) => secretId = newId }
+						go={go}
+						changeActiveModal={changeActiveModal}
+						goToCreatingRoom={goToCreatingRoom}
+						fetchedUser={fetchedUser}
+						userBalances={userBalances}
+					/>
+					<WaitingForStart id={'waitingForStart'} go={go} secretId={secretId} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
+					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} />
 					<Game
 						id={'game'}
 						changeActiveModal={changeActiveModal}
@@ -411,7 +560,25 @@ const App = () => {
 						secretId={secretId}
 						startupParameters={startupParameters}
 						goToEndFight={goToEndFight}
-						mapName={mapName} />
+						mapName={mapName}
+						goToMainViewHome={goToMainViewHome}
+						finishData={finishData}
+					/>
+					<RejoinedGame
+						id={'rejoinedGame'}
+						changeActiveModal={changeActiveModal}
+						fetchedUser={fetchedUser}
+						secretId={secretId}
+						startupParameters={startupParameters}
+						goToEndFight={goToEndFight}
+						mapName={mapName}
+						goToMainViewHome={goToMainViewHome}
+						startMap={map}
+						startColorMotion={colorMotion}
+						startColors={colors}
+						startUserColor={userColor}
+						finishData={finishData}
+					/>
 					<Profile id={'profile'} changeActiveModal={changeActiveModal} go={go} fetchedUser={fetchedUser} userBalances={userBalances}/>
 					<Top go={go} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser}/>
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
@@ -420,11 +587,14 @@ const App = () => {
 					<UserProfile id="userProfile" />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
-					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} goToPage={goToPage} fetchedUser={fetchedUser} />
+					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} goToPage={goToPage} fetchedUser={fetchedUser}
+								  updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
+								  updateSecretId={(newId) => secretId = newId }
+					/>
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated} />
-					<FightResults id={'fightResults'} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
+					<FightResults id={'fightResults'} finishData={finishData} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
 				</View>
 				<View activePanel={"offline"} id="offline" modal={modal} >
 					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>

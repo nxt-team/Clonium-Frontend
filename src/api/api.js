@@ -45,7 +45,10 @@ export async function init (fetchedUser) {
         "exp": result[0]["exp"],
         "fights": result[0]["stats"][0]["fights"],
         "losses": result[0]["stats"][0]["losses"],
-        "wins": result[0]["stats"][0]["wins"]
+        "wins": result[0]["stats"][0]["wins"],
+        "vk_donut": result[0]["vk_donut"],
+        "user_rank": result[0]["user_rank"],
+        "status": result[0]["status"]
     }
 }
 
@@ -68,7 +71,9 @@ export async function getUserBalances (fetchedUser) {
         "exp": result[0]["exp"],
         "fights": result[0]["stats"][0]["fights"],
         "losses": result[0]["stats"][0]["losses"],
-        "wins": result[0]["stats"][0]["wins"]
+        "wins": result[0]["stats"][0]["wins"],
+        "vk_donut": result[0]["vk_donut"],
+        "user_rank": result[0]["user_rank"]
     }
 }
 

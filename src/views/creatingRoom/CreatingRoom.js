@@ -55,7 +55,7 @@ const unselcted = {
 let turnTime = true // ограничено
 let gameTime = 600
 
-const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser }) => {
+const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
@@ -85,6 +85,8 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser }) => {
 
     async function createFightAndGo () {
         const fight = await createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)
+        updateNeedUsersInFight(playersNumber)
+        updateSecretId(fight["secret_id"])
         joinRoom(fetchedUser, fight["secret_id"])
         goToMainView()
         goToPage("waitingForStart")

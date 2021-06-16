@@ -5,6 +5,7 @@
     /*width: 180px;*/
     padding: 8px;
     flex-direction: row;
+    color: var(--text_primary);
 }
 
 .InfoBanner__TextContainer {

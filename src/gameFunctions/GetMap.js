@@ -8,6 +8,7 @@ import SquareSize6 from '../maps/SquareSize6'
 import SquareSize8 from '../maps/SquareSize8'
 
 export default function GetMap({mapName, getCellContent, onCellClickFromUser, map, colorMotion}) {
+    // console.log(mapName, getCellContent, onCellClickFromUser, onCellClickFromUser, map, colorMotion)
     if (mapName === 'DonutSize6') {
         return <DonutSize6 onCellClick={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'DonutSize8') {
