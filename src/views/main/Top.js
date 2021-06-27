@@ -31,7 +31,7 @@ import {getFriendsTop, getGlobalTop} from "../../api/api";
 import bridge from '@vkontakte/vk-bridge';
 const osName = platform();
 
-const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
+const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVkId }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
     const [superFightBanner, setSuperFightBanner] = useState(true)
@@ -82,6 +82,11 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
             globalTop[0].forEach((item, index, array) => {
                 content.push(
                     <GlobalLeaderBoardPlace
+                        onClick={() => {
+                            console.log("clicked")
+                            updateUserProfileVkId(item["vk_id"])
+                            goToPage("userProfile")
+                        }}
                         avaUrl={item["avatar"]}
                         exp={item["exp"]}
                         place={index + 1}
@@ -97,7 +102,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
     }
 
     function renderFriendsTop () {
-        if (friendsTop.length === 0) {
+        if (friendsTop.length === 0 ) {
             return (
                 <div style={{ display: 'flex', alignItems: 'center'}}>
                     <Spinner size="regular" style={{ margin: 20 }} />
@@ -118,6 +123,11 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
             friendsTop[0].forEach((item, index, array) => {
                 content.push(
                     <LeaderBoardPlace
+                        onClick={() => {
+                            console.log("clicked")
+                            updateUserProfileVkId(item["vk_id"])
+                            goToPage("userProfile")
+                        }}
                         place={index + 1}
                         avaUrl={item["avatar"]}
                         userName={item["username"]}
@@ -178,19 +188,6 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
             >
                 <div>
                     {renderFriendsTop()}
-                    {/*<Separator/>*/}
-                    {/*<Group header={*/}
-                    {/*    <Header>*/}
-                    {/*        Неиграющие друзья*/}
-                    {/*    </Header>*/}
-                    {/*}>*/}
-                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-65.userapi.com/Jm47wQlR6z_R_rbAd_7LUf0NQg7QAv35MpvNhA/Ht8eYywub4o.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Игорь Фёдоров</SimpleCell>*/}
-                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-61.userapi.com/O-2f7t0yecmx38WXoF37RkhkJTG2rcjL4Yq88w/J39s0u1f90c.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Иван Засыпкин</SimpleCell>*/}
-                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-34.userapi.com/c857132/v857132690/49628/r4wBoWw0mJI.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Илья Гришин</SimpleCell>*/}
-                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-60.userapi.com/c851416/v851416327/be840/bnUHAblZoBY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Тимофей Чаптыков</SimpleCell>*/}
-                    {/*    <SimpleCell before={<Avatar size={40} src={"https://sun9-49.userapi.com/c850332/v850332555/115030/JyNJrr4cytY.jpg?ava=1"} />} after={<Icon28AddSquareOutline />}>Михаил Лихачёв</SimpleCell>*/}
-
-                    {/*</Group>*/}
                 </div>
                 <div>
                     <Search after={null}/>
@@ -221,7 +218,7 @@ const Top = ({ id, go, changeActiveModal, fetchedUser }) => {
                     </div>
             </Gallery>
 
-            {slideIndex === 1 &&
+            {(slideIndex === 1 && globalTop.length !== 0)&&
                 <>
                 <div style={{height: 110}} />
                 <FixedLayout

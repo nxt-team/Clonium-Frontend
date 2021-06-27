@@ -30,15 +30,15 @@ import { Icon28AddSquareOutline } from '@vkontakte/icons';
 import { Icon28FavoriteOutline } from '@vkontakte/icons';
 
 let fluidClass = "show"
-const Intro = ({ id, panel_go, changeActiveModal, fetchedUser }) => {
+const Intro = ({ id, panel_go, changeActiveModal, endIntro }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
     const [galleryContent, setGalleryContent] = useState([])
 
     const clickChangeSlideIndex = () => {
-        console.log(slideIndex)
+        console.log(slideIndex, galleryContent.length)
         if (slideIndex - 2 === galleryContent.length) {
-            window.history.back()
+            endIntro()
         } else {
             setSlideIndex(slideIndex + 1)
         }

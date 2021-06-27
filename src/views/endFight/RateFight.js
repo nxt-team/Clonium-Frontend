@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import {
     PanelHeader,
     Title,
@@ -9,12 +9,14 @@ import {
     WriteBarIcon,
     Gallery,
     Text,
+    Button,
 } from "@vkontakte/vkui";
 import './RateFight.css'
+import {rateFight} from "../../api/api";
 
 const adjectives = ["Супер-пупер", "Круто", "Классно", "Хорошо", "Нормально", "Так себе", "Не очень", "Плохо", "Ужасно"]
 
-const RateFight = ({ id, goIsolated }) => {
+const RateFight = ({ id, goIsolated, screenSpinnerOn, screenSpinnerOff, fetchedUser }) => {
 
     const [slideIndex, setSlideIndex] = useState(4)
     const [comment, setComment] = useState('')
@@ -25,6 +27,14 @@ const RateFight = ({ id, goIsolated }) => {
             setInteracted(true)
         }
     }
+
+    async function sendCommentAndGo () {
+        screenSpinnerOn()
+        await rateFight(fetchedUser, 9 - slideIndex + 1, comment)
+        goIsolated("fightResults")
+        screenSpinnerOff()
+    }
+
 
     return (
         <Panel
@@ -99,16 +109,24 @@ const RateFight = ({ id, goIsolated }) => {
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         placeholder="Ваш комментарий"
-                        after={
+                        after={comment.length !== 0 ?
                             <WriteBarIcon
                                 mode="send"
                                 disabled={!interacted}
                                 data-to="fightResults"
-                                onClick={goIsolated}
+                                onClick={sendCommentAndGo}
                             />
+                            :
+                            <div style={{width: 8}} />
                         }
                     />
+                    {(comment.length === 0)&&
+                        <div style={{padding: "0 12px"}}>
+                            <Button size="xl" disabled={!interacted} onClick={sendCommentAndGo}>Отправить</Button>
+                        </div>
+                    }
                 </div>
+
             </div>
 
         </Panel>

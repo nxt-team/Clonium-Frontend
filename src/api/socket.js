@@ -22,6 +22,13 @@ export function leaveFight (fetchedUser) {
     })
 }
 
+export function kickUserSend (color, secretId) {
+    socket.emit("kick user", {
+        "color": color,
+        "secret_id": secretId
+    })
+}
+
 export function clickMap (secretId, fetchedUser, row, column) {
     console.log("MAP CLICKED ", secretId)
     // TODO: добавить таймаут

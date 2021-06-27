@@ -56,7 +56,7 @@ export default function AboutVkDonutModal({id, closeModal}) {
                             • Секретные прмокоды<br/>
                         </Text>
                         <div >
-                            <Button size="xl">Оформить VK Donut</Button>
+                            <Button size="xl" href="https://vk.com/donut/nxt.team" target="_blank" >Оформить VK Donut</Button>
                             <Footer style={{margin: "8px 0"}} >от 99₽</Footer>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export default function AboutVkDonutModal({id, closeModal}) {
                             Все тежи приемущества <br/>
                             + создание своих карт (скоро) <br/>
                             + ракета рядом с именем в топе, <br/>
-                            но с единоразовым платежём и навсегда.
+                            но с единоразовым платежом  и навсегда.
                             <br/>
                             <br/>
                             <br/>

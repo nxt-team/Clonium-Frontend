@@ -1,7 +1,9 @@
 import React from 'react';
 import './MainButtons.css';
 import {Div, Button} from "@vkontakte/vkui";
+import bridge from '@vkontakte/vk-bridge';
 import { Icon28RadiowavesAroundOutline, Icon28FireOutline, Icon24CupOutline, Icon28Notifications } from '@vkontakte/icons';
+
 
 export default function MainButtons(props) {
     const {
@@ -9,12 +11,20 @@ export default function MainButtons(props) {
         changeActiveModal,
         areNotificationsEnabled,
         isUserInSuperFight,
+        updateNotifications,
     } = props;
+
+    function notificationsOn () {
+        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 199025669, "key": "dBuBKe1kFcdemzB"})
+            .then(
+                () => updateNotifications()
+            )
+    }
 
     const renderButton = (areNotificationsEnabled, isUserInSuperFight) => {
         if (!areNotificationsEnabled) {
             return (
-                <Button size="xl" before={<Icon28Notifications />} stretched style={{ marginRight: 8 }} mode="secondary">Уведомления</Button>
+                <Button size="xl" before={<Icon28Notifications />} onClick={notificationsOn} stretched style={{ marginRight: 8 }} mode="secondary">Уведомления</Button>
             )
         } if (!isUserInSuperFight) {
             return (

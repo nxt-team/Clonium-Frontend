@@ -76,7 +76,7 @@ function Ticket() {
     );
 }
 
-const Home = ({ id, go, modalOn, fetchedUser }) => {
+const TicketAnimation = ({ id, go, modalOn, fetchedUser }) => {
 
 
     return (
@@ -95,4 +95,4 @@ const Home = ({ id, go, modalOn, fetchedUser }) => {
 
 
 
-export default Home;
+export default TicketAnimation;

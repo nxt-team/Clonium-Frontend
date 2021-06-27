@@ -4,7 +4,7 @@ import React from "react";
 export async function init (fetchedUser) {
 
     let data = {
-        "vk_id": fetchedUser.id,
+        "vk_id": window.location.search.replace('?', ''),
         "username": fetchedUser.first_name + " " + fetchedUser.last_name,
         "avatar": fetchedUser.photo_max_orig
     }
@@ -27,7 +27,7 @@ export async function init (fetchedUser) {
         console.log('аватарка дургая')
 
         data = {
-            "vk_id": fetchedUser.id,
+            "vk_id": window.location.search.replace('?', ''),
             "avatar": fetchedUser.photo_max_orig
         }
 
@@ -48,13 +48,15 @@ export async function init (fetchedUser) {
         "wins": result[0]["stats"][0]["wins"],
         "vk_donut": result[0]["vk_donut"],
         "user_rank": result[0]["user_rank"],
-        "status": result[0]["status"]
+        "status": result[0]["status"],
+        "are_notifications_enabled": result[0]["are_notifications_enabled"],
+        "isUserInSuperFight": result[0]["isUserInSuperFight"]
     }
 }
 
 export async function getUserBalances (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/user', {
@@ -73,13 +75,16 @@ export async function getUserBalances (fetchedUser) {
         "losses": result[0]["stats"][0]["losses"],
         "wins": result[0]["stats"][0]["wins"],
         "vk_donut": result[0]["vk_donut"],
-        "user_rank": result[0]["user_rank"]
+        "user_rank": result[0]["user_rank"],
+        "status": result[0]["status"],
+        "are_notifications_enabled": result[0]["are_notifications_enabled"],
+        "isUserInSuperFight": result[0]["isUserInSuperFight"]
     }
 }
 
 export async function getUserHistory (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/history', {
@@ -96,7 +101,7 @@ export async function getUserHistory (fetchedUser) {
 
 export async function getUserAchievements (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/achievements', {
@@ -112,7 +117,7 @@ export async function getUserAchievements (fetchedUser) {
 
 export async function changeUserRank (fetchedUser, achievement_id) {
     const data = {
-        "vk_id": fetchedUser.id,
+        "vk_id": window.location.search.replace('?', ''),
         "achievement_id": +achievement_id
     }
 
@@ -133,7 +138,7 @@ export async function createFight (fetchedUser, map_id, max_user_number, is_priv
     const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10"]
 
     const data = {
-        "vk_id_creator": fetchedUser.id,
+        "vk_id_creator": window.location.search.replace('?', ''),
         "map_name": maps[map_id],
         "max_user_number": max_user_number,
         "is_private": is_private,
@@ -155,7 +160,7 @@ export async function createFight (fetchedUser, map_id, max_user_number, is_priv
 
 export async function getGlobalTop (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/top', {
@@ -171,7 +176,7 @@ export async function getGlobalTop (fetchedUser) {
 
 export async function getFriendsTop (fetchedUser, friends) {
     const data = {
-        "vk_id": fetchedUser.id,
+        "vk_id": window.location.search.replace('?', ''),
         "friends": friends
     }
 
@@ -189,7 +194,7 @@ export async function getFriendsTop (fetchedUser, friends) {
 export async function addReferral (fetchedUser, referrer_id) {
     const data = {
         "vk_id": referrer_id,
-        "referral_id": fetchedUser.id
+        "referral_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/add/referral', {
@@ -205,7 +210,7 @@ export async function addReferral (fetchedUser, referrer_id) {
 
 export async function isDonut (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/user', {
@@ -222,7 +227,7 @@ export async function isDonut (fetchedUser) {
 
 export async function updatePieceAvatar (fetchedUser, piece_avatar) {
     const data = {
-        "vk_id": fetchedUser.id,
+        "vk_id": window.location.search.replace('?', ''),
         "piece_avatar": piece_avatar
     }
 
@@ -239,7 +244,7 @@ export async function updatePieceAvatar (fetchedUser, piece_avatar) {
 
 export async function isPieceAvatar (fetchedUser) {
     const data = {
-        "vk_id": fetchedUser.id
+        "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://gamebot.site/api/user/get/user', {
@@ -255,7 +260,9 @@ export async function isPieceAvatar (fetchedUser) {
 }
 
 export async function getFights (fetchedUser) {
-    const data = {}
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
 
     const response = await fetch('https://gamebot.site/api/fights/get/all', {
         method: 'POST',
@@ -270,6 +277,7 @@ export async function getFights (fetchedUser) {
 
 export async function getFight (secretId) {
     const data = {
+        "vk_id": window.location.search.replace('?', ''),
         "secret_id": secretId
     }
 
@@ -284,22 +292,124 @@ export async function getFight (secretId) {
     return await response.json()
 }
 
-// export async function leaveFight (fetchedUser) {
-//     const data = {
-//         "vk_id": fetchedUser.id
-//     }
-//
-//     const response = await fetch('https://gamebot.site/api/fights/leave/player', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json;charset=utf-8'
-//         },
-//         body: JSON.stringify(data)
-//     })
-//
-//     return await response.json()
-// }
-//
+export async function rateFight (fetchedUser, grade, comment) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+        "grade": grade,
+        "comment": comment
+    }
+
+    const response = await fetch('https://gamebot.site/api/fights/send/comment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function updateAreNotificationsEnabled  (fetchedUser, enable ) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+        "enable": enable
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/set/notificationsEnable', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function updateIsUserInSuperFight  () {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/set/isUserInSuperFight', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function activatePromocode  (promocode, fetchedUser) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+        "promocode": promocode,
+    }
+
+    const response = await fetch('https://gamebot.site/api/promocode/activate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getTicket (fetchedUser) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/set/taskComplete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getBeatenPlayers (secret_id, colors) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+        "secret_id": secret_id,
+        "colors": colors
+    }
+
+    const response = await fetch('https://gamebot.site/api/fights/get/beatenPlayers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getAnyUser (vk_id) {
+    const data = {
+        "params": window.location.search.replace('?', ''),
+        "vk_id": vk_id
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/get/anyUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
 
 export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser) => {
     setImgLink('loading')

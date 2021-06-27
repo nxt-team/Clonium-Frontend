@@ -6,15 +6,21 @@ import {
     Icon28BombOutline,
     Icon28Users3Outline,
     Icon28InfoOutline,
-    Icon28ChatsOutline, Icon28TicketOutline, Icon36GameOutline, Icon28ArrowUpOutline, Icon28ArrowDownOutline
+    Icon28ChatsOutline,
+    Icon28TicketOutline,
+    Icon36GameOutline,
+    Icon28ArrowUpOutline,
+    Icon28ArrowDownOutline,
+    Icon56DonateOutline
 } from '@vkontakte/icons';
 import { motion } from "framer-motion"
+import Button from "@vkontakte/vkui/dist/components/Button/Button";
 
 export default function InfoBanners(props) {
     const {
         publicUrl,
         chatUrl,
-        referenceUrl,
+        startupParameters,
         changeActiveModal,
     } = props;
 
@@ -48,7 +54,9 @@ export default function InfoBanners(props) {
                 </Link>
             </Card>
             <Card  >
-                <Link target="_blank" href="https://vk.me/join/zJ8DxkYAjOlAxQX/y74M/HYEjtfHxOWCMIM=" >
+                <Link target="_blank"
+                      // href="https://vk.me/join/zJ8DxkYAjOlAxQX/y74M/HYEjtfHxOWCMIM="
+                >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Red" >
                         <Icon28ChatsOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
@@ -60,17 +68,19 @@ export default function InfoBanners(props) {
                 </div>
                 </Link>
             </Card>
-            <Card onClick={() => changeActiveModal("aboutVkDonut")} >
-                <div className="InfoBanner" >
-                    <div className="InfoBanner__Icon__Before__Orange" >
-                        <Icon28BombOutline className="InfoBanner__Icon__Orange" width={32} height={32}/>
-                    </div>
+            {(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
+                <Card onClick={() => changeActiveModal("aboutVkDonut")} >
+                    <div className="InfoBanner" >
+                        <div className="InfoBanner__Icon__Before__Orange" >
+                            <Icon28BombOutline className="InfoBanner__Icon__Orange" width={32} height={32}/>
+                        </div>
                     <div className="InfoBanner__TextContainer" >
                         <Text weight="regular" >Подписка</Text>
                         <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >специальные <br/> возможнсоти</Caption>
+                        </div>
                     </div>
-                </div>
-            </Card>
+                </Card>
+            }
         </CardScroll>
     )
 }

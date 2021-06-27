@@ -49,7 +49,7 @@ const numericIndicator = {
     background: 'var(--modal_card_background)',
 }
 
-const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, goToPage, updateNeedUsersInFight, updateSecretId}) => {
+const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, goToPage, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters}) => {
 
     const [fights, setFights] = useState([])
 
@@ -267,8 +267,9 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
             <Online/>
             <MainButtons
                 go={go}
+                updateNotifications={updateNotifications}
                 changeActiveModal={changeActiveModal}
-                areNotificationsEnabled={false}
+                areNotificationsEnabled={userBalances["are_notifications_enabled"]}
                 isUserInSuperFight={false}
             />
 
@@ -430,7 +431,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                     marginBottom: 12
                 }}
             >
-                <InfoBanners changeActiveModal={changeActiveModal} />
+                <InfoBanners changeActiveModal={changeActiveModal} startupParameters={startupParameters} />
             </div>
             </PullToRefresh>
 

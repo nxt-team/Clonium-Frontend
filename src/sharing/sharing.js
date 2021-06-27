@@ -9,38 +9,29 @@ export const fightInviteShare = (fightId) => {
     bridge.send("VKWebAppShare", {"link": "https://vk.com/app7848428#fight=" + fightId})
 }
 
+export const copyFightInvite = (fightId) => {
+    bridge.send("VKWebAppCopyText", {"text": "Присоединяйся в бой \nhttps://vk.com/app7848428#fight=" + fightId});
+}
+
 export const postShare = (userId) => {
     const message = "Сразимся? " + "\n" + "\n" + "vk.com/app7848428#invite=" + userId
     bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-199025669_457239075"})
 }
 
-export const fightResultsPostShare = (userId, place,
-                                      // players
-) => {
-    let message = ""
-    const players = [
-        {
-            "user_name": "Петросян Савельевич",
-            "vk_id": 262626
-        },
-        {
-            "user_name": "Артём Ким",
-            "vk_id": 268696090
-        }
-    ]
-
-    if (players.length - place === 0) {
-        message = "Сразимся в клоний? \n \n " + "vk.com/app7848428#invite=" + userId
-    } else {
-        message = "Я обыграл:"
-        for (let item of players) {
-            message += "\n"
-            message += "- " + "@id" + item["vk_id"] + "(" + item["user_name"] + ")"
-        }
-        message += "\nи занял " + place + " место 😎"
-
-        message += "\n \nСразимся в клоний? \n " + "vk.com/app7848428#invite=" + userId
+export const fightResultsPostShare = (userId, place, players) => {
+    let message
+    if (players.length === 1) {
+        message = "Я обыграл 1 игрока"
+    }  else {
+        message = "Я обыграл " + players.length + " игроков"
     }
+    for (let item of players) {
+        message += "\n"
+        message += "- " + "@id" + item["vk_id"] + "(" + item["user_name"] + ")"
+    }
+    message += "\nи занял " + place + " место 😎"
+
+    message += "\n \nСразимся в клоний? \n " + "vk.com/app7848428#invite=" + userId
 
     bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-199025669_457239076"})
 }
@@ -53,7 +44,102 @@ export const fightResultsPictureShare = (place, numberOfPlayers) => {
 
 }
 
-export const showOffsStoryShare = () => {
+export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, wins, losses, exp, screenSpinnerOff) => {
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080 ;
+    canvas.height = 1920 ;
+    const ctx = canvas.getContext('2d');
+
+    const ava = new Image();
+    ava.src = avaUrl;
+    ava.crossOrigin = 'anonymous';
+    console.log(ava)
+    ava.onload = function () {
+        ctx.drawImage(ava, 92, 437, 160, 157);
+
+        const img = new Image();
+        img.src = "https://psv4.userapi.com/c532036/u476182155/docs/d2/20dbcb39cdda/ProfileStory.png?extra=jQmIhFxH3Lo9I67JGM1FXzn8EKgEAwsuZKGbbQWCe13WIL_Jirw8E11P7IwdI41_pmwW79ChNw_NvREqG5dVZWWgtI9dJdMIKJiUuXuvgXpV5bOFZ87_NpY0qZl9vOn_2osTOH6ZswVRFCcZQZKIUKg51HQ"
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0, 1080, 1920);
+            // ctx.fillRect(0, 0, 200, 452);
+
+            ctx.font = '48px Open Sans'
+            ctx.fillText(userName, 288, 500)
+            ctx.font = '36px Open Sans'
+            ctx.fillStyle = "#5D5F61"
+            ctx.fillText(userRank, 288, 565)
+            ctx.font = '600 96px Open Sans'
+            ctx.fillStyle = "#0A0A0A"
+            ctx.fillText(fights, 112, 784)
+            ctx.fillText('7', 112, 1009)
+            ctx.fillText('0', 608, 1009)
+            ctx.fillText(exp, 112, 1305)
+            ctx.font = '42px Open Sans'
+            ctx.fillStyle = "#5D5F61"
+            ctx.fillText('игр сыграно', 112 + 55 * String(fights).length + 24, 784)
+            ctx.fillText('опыта набрано', 112 + 55 * String(exp).length + 24, 1305)
+            ctx.save();
+            console.log(canvas.toDataURL().slice(0, 20, 400))
+            canvas.toBlob((imgBlob) => {
+                const fd = new FormData()
+                fd.append('file', imgBlob, 'image')
+                // fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
+                var request = new XMLHttpRequest()
+
+                request.open('POST', "https://gamebot.site:3000/uploadPhoto", false);
+                request.onload = async function () {
+                    if (request.status >= 200 && request.status < 400) {
+                        var data = JSON.parse(request.responseText)
+                        console.log(data["result"])
+                        let sizeLetter = 'w'
+                        let url = null
+
+                        while (url === null) {
+                            for (let size of data["result"]) {
+                                if (size["type"] === sizeLetter) {
+                                    url = size["url"]
+                                }
+                            }
+
+                            if (sizeLetter === 'w') {
+                                sizeLetter = 'z'
+                            } else if (sizeLetter === 'z') {
+                                sizeLetter = 'y'
+                            } else if (sizeLetter === 'y') {
+                                sizeLetter = 'x'
+                            } else if (sizeLetter === 'x') {
+                                sizeLetter = 'm'
+                            } else {
+                                sizeLetter = 's'
+                            }
+                        }
+
+                        const inviteUrl = "https://vk.com/app7848428#invite=" + userId
+                        const attachment = {
+                            text: 'open',
+                            type: 'url',
+                            url: inviteUrl,
+                        };
+                        console.log(url)
+                        screenSpinnerOff()
+                        bridge.send("VKWebAppShowStoryBox",
+                            { "background_type" : "image", "url" : url, "attachment": attachment, "locked": true});
+
+                    } else {
+                        console.log('err2')
+                    }
+                }
+                console.log(fd)
+                request.send(fd)
+            } , 'image/jpeg', 100)
+
+
+        }
+    }
+
+
 
 }
 

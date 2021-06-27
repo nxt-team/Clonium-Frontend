@@ -13,8 +13,9 @@ import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
 import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
+import bridge from "@vkontakte/vk-bridge";
 
-const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight }) => {
+const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications}) => {
 
     const [photos, setPhotos] = useState([])
 
@@ -23,6 +24,13 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight }) =>
             setPhotos(data)
         });
     })
+
+    function notificationsOn () {
+        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 199025669, "key": "dBuBKe1kFcdemzB"})
+            .then(
+                () => updateNotifications()
+            )
+    }
 
     function getNeedPlayers () {
         let needPlayers = needUsersInFight - photos.length
@@ -74,7 +82,7 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight }) =>
                 >{getNeedPlayers()}</UsersStack>
                 <div style={{display: "flex", marginTop: 8}}>
                     <Button size="l" before={<Icon24ShareOutline/>} onClick={() => fightInviteShare(secretId)} >Позвать друзей</Button>
-                    <Button size="l" style={{ marginLeft: 8 }} mode="secondary"><Icon24NotificationOutline /></Button>
+                    <Button size="l" style={{ marginLeft: 8 }} onClick={notificationsOn} mode="secondary"><Icon24NotificationOutline /></Button>
                 </div>
                 <Group
                     description={<span>Пригласи друзей сыграть с тобой, <br/> чтобы быстрее заполнить комнату</span>}

@@ -27,23 +27,37 @@ import { motion } from "framer-motion"
 
 import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
 import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
-import {Card, CardScroll, Input, FormLayoutGroup, Group, IOS, Placeholder, platform, SimpleCell, ANDROID} from "@vkontakte/vkui";
+import {
+    Card,
+    CardScroll,
+    Input,
+    FormLayoutGroup,
+    Group,
+    IOS,
+    Placeholder,
+    platform,
+    SimpleCell,
+    ANDROID,
+    Link
+} from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
+import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn }) => {
 
-    function getTickets (tickets) {
+    function getTickets(tickets) {
         if (tickets % 100 !== 11 && tickets % 10 === 1) {
             return tickets + ' билет'
-        } if (tickets % 100 !== 12 && tickets % 100 !== 13 && tickets % 100 !== 14 && (tickets % 10 === 2 || tickets % 10 === 3 || tickets % 10 === 4)) {
+        }
+        if (tickets % 100 !== 12 && tickets % 100 !== 13 && tickets % 100 !== 14 && (tickets % 10 === 2 || tickets % 10 === 3 || tickets % 10 === 4)) {
             return tickets + ' билета'
         } else {
             return tickets + ' билетов'
         }
     }
 
-    function getExp (exp) {
+    function getExp(exp) {
         if (exp % 100 !== 11 && exp % 10 === 1) {
             return exp + ' опыт набран'
         } else {
@@ -51,7 +65,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
         }
     }
 
-    function gamesCaption (games) {
+    function gamesCaption(games) {
         if (games % 100 !== 11 && games % 10 === 1) {
             return 'игра сыграна'
         } else {
@@ -59,24 +73,41 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
         }
     }
 
-    function winsCaption (wins) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+    function winsCaption(wins) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
         if (wins % 100 !== 11 && wins % 10 === 1) {
             return 'победа'
-        } if (wins % 100 !== 12 && wins % 100 !== 13 && wins % 100 !== 14 && (wins % 10 === 2 || wins % 10 === 3 || wins % 10 === 4)) {
+        }
+        if (wins % 100 !== 12 && wins % 100 !== 13 && wins % 100 !== 14 && (wins % 10 === 2 || wins % 10 === 3 || wins % 10 === 4)) {
             return 'победы'
         } else {
             return 'побед'
         }
     }
 
-    function losesCaption (loses) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+    function losesCaption(loses) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
         if (loses % 100 !== 11 && loses % 10 === 1) {
             return 'поражение'
-        } if (loses % 100 !== 12 && loses % 100 !== 13 && loses % 100 !== 14 && (loses % 10 === 2 || loses % 10 === 3 || loses % 10 === 4)) {
+        }
+        if (loses % 100 !== 12 && loses % 100 !== 13 && loses % 100 !== 14 && (loses % 10 === 2 || loses % 10 === 3 || loses % 10 === 4)) {
             return 'поражения'
         } else {
             return 'поражений'
         }
+    }
+
+    function story() {
+        screenSpinnerOn()
+        showOffsStoryShare(
+            fetchedUser.id,
+            fetchedUser.first_name + " " + fetchedUser.last_name,
+            fetchedUser.photo_200,
+            userBalances["user_rank"],
+            userBalances["fights"],
+            userBalances["wins"],
+            userBalances["losses"],
+            userBalances["exp"],
+            screenSpinnerOff
+        )
     }
 
     return (
@@ -88,11 +119,13 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
             >
                 Профиль
             </PanelHeader>
+            <div id="d2">аа</div>
+            <div id="d1">.</div>
 
             <Placeholder
                 icon={<Avatar size={72} src={fetchedUser.photo_200} />}
                 header={fetchedUser.first_name + ' ' + fetchedUser.last_name}
-                action={<Button size="l" before={<Icon24StoryOutline/>} >Попонтаваться</Button>}
+                action={<Button size="l" before={<Icon24StoryOutline/>} onClick={() => story()}>Попонтаваться</Button>}
             >
                 {userBalances["user_rank"]}
             </Placeholder>
@@ -194,14 +227,14 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
             <Banner
                 before={<Avatar style={{boxShadow: "inset 0 0 0 1px rgb(0 0 0 / 8%) !important"}} mode="app"><Icon28TicketOutline style={{color: "var(--text_primary)"}} /></Avatar>}
                 header={<span >{getTickets(userBalances["tickets"])}</span>}
-                subheader={<span>Билеты нужны для игры. 1 билет = 1 игра. Каждый день тебе будут доваться 5 билетеков. Дополнительно билетики можно получить за просмотр рекламы</span>}
-                actions={<Button mode="primary"  >Получить билетик</Button>}
+                subheader={<span>Билеты нужны для игры. 1 билет = 1 игра. Дополнительно билеты можно получить за просмотр рекламы</span>}
+                actions={<Button mode="primary" onClick={() => changeActiveModal("ticketFromAd")} >Получить билетик</Button>}
             />
             <Banner
                 before={<Avatar mode="app"><Icon24FavoriteOutline width={28} height={28} style={{color: "var(--text_primary)"}} /></Avatar>}
                 header={<span >{getExp(userBalances["exp"])}</span>}
-                subheader={<span>Опыт даётся за сыгранный бой. За преждевременный выход из боя мы отберём у тебя 2 опыта. </span>}
-                actions={<Button mode="primary" >Подробнее</Button>}
+                subheader={<span>Опыт можно получить за хорошую игру в бою.</span>}
+                actions={<Button mode="primary" target="_blank" href="https://vk.com/@nxt.team-clonium" >Подробнее</Button>}
             />
             {/*<FormLayout  >*/}
             {/*    <FormLayoutGroup>*/}
@@ -231,38 +264,38 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances }) => {
             <div className={"containerProfile"}>
                 <div className={'fullContainer'} >
                     <SimpleCell before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites") /* bridge.send("VKWebAppAddToMenu")*/ }  >Добавь сервис в избранные</SimpleCell>
-                    <SimpleCell before={<Icon28ShareOutline/>} onClick={() => bridge.send("VKWebAppShare", {"link": "https://vk.com/app7705406#invite=" + fetchedUser.id})} expandable >Рассказать друзьям</SimpleCell>
+                    <SimpleCell before={<Icon28ShareOutline/>} onClick={() => postShare(fetchedUser.id)} expandable >Рассказать друзьям</SimpleCell>
                     <SimpleCell before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
                     <SimpleCell before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
-                    <SimpleCell before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promoСodeActivation")} expandable >Активировать промокод</SimpleCell>
+                    <SimpleCell before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promocodeActivation")} expandable >Активировать промокод</SimpleCell>
                     {osName === ANDROID &&
                         <SimpleCell before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
                     }
                 </div>
 
-            <div className="Other__notify">
-                <div className="Other__notify__cont_wrap">
-                    <div className="Other__notify__cont">
-                        <div className="Other__notify__title">Оформи подписку VK Donut</div>
-                        <div className="Other__notify__caption">
-                            Поддержи разработчика и получи доступ к крутым функциям и плюшкам
+                {(userBalances["vk_donut"] === 0 && (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android"))&&
+                    <div className="Other__notify">
+                        <div className="Other__notify__cont_wrap">
+                            <div className="Other__notify__cont">
+                                <div className="Other__notify__title">Оформи подписку VK Donut</div>
+                                <div className="Other__notify__caption">
+                                    Поддержи разработчика и получи доступ к крутым функциям и плюшкам
+                                </div>
+                            </div>
+                            <div className="Other__notify__icon donut">
+                                <Icon56DonateOutline />
+                            </div>
+                        </div>
+                        <div className="Other__notify__actions">
+                            <Button
+                                onClick={() => changeActiveModal('aboutVkDonut')}
+                                size="l"
+                            >Подробнее</Button>
                         </div>
                     </div>
-                    <div className="Other__notify__icon donut">
-                        <Icon56DonateOutline />
-                    </div>
-                </div>
-                <div className="Other__notify__actions">
-                    <Button
-                        onClick={() => changeActiveModal('aboutVkDonut')}
-                        size="l"
-                    >Подробнее</Button>
-                    <Button
-                        size="l"
-                        mode="tertiary"
-                    >Обновить</Button>
-                </div>
-            </div>
+                }
+
+
             </div>
             <div style={{height: 12}}/>
 

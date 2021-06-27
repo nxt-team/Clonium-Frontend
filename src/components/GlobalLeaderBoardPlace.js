@@ -15,11 +15,12 @@ const numericIndicator = {
     background: 'var(--modal_card_background)',
 }
 
-const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut }) => {
+const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, onClick }) => {
 
     if (vkDonut === 1) {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="GlobalPlace__container" >
                         <div className="GlobalPlace__indicator">
@@ -41,6 +42,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut })
     } else if (vkDonut === 2) {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="GlobalPlace__container" >
                         <div className="GlobalPlace__indicator">
@@ -75,6 +77,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut })
     } else {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="GlobalPlace__container" >
                         <div className="GlobalPlace__indicator">

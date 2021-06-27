@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import {
     PanelHeader,
     Title,
@@ -14,10 +14,26 @@ import './FightResults.css'
 import { Icon28FavoriteOutline } from '@vkontakte/icons';
 import { Icon24CupOutline } from '@vkontakte/icons';
 import { Icon28PollSquareOutline } from '@vkontakte/icons';
+import {fightResultsPostShare} from "../../sharing/sharing";
+import {getBeatenPlayers} from "../../api/api";
 
+const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId }) => {
 
-const FightResults = ({ id, goToMainView, fightResultsSharing, finishData }) => {
+    const [beatenPlayers, setBeatenPlayers] = useState(null)
 
+    useEffect(() => {
+
+        async function getPlayers () {
+            if (beatenPlayersColors.length !== 0) {
+                const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
+                setBeatenPlayers(bp)
+                console.log(beatenPlayers)
+            }
+        }
+
+        getPlayers()
+
+    }, [])
 
     return (
         <Panel
@@ -117,8 +133,14 @@ const FightResults = ({ id, goToMainView, fightResultsSharing, finishData }) => 
 
             <FixedLayout vertical="bottom">
                 <Div className={"buttons__container"}>
-                    <Button size="xl" onClick={fightResultsSharing} >Похвастаться</Button>
-                    <Button className={"skip__button"} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={goToMainView} mode="tertiary">Пропустить</Button>
+                    {finishData[2] === 0 ?
+                        <Button size="xl" onClick={goToMainView} >Завершить</Button>
+                        :
+                        <>
+                            <Button size="xl" disabled={beatenPlayers === null} onClick={() => fightResultsPostShare(fetchedUser.id, finishData[0], beatenPlayers)} >Похвастаться</Button>
+                            <Button className={"skip__button"} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={goToMainView} mode="tertiary">Пропустить</Button>
+                        </>
+                    }
                 </Div>
 
             </FixedLayout>

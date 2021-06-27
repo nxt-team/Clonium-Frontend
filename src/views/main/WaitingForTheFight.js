@@ -3,7 +3,6 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
 import {
-    FixedLayout,
     Group,
 } from "@vkontakte/vkui";
 import useInterval from "@use-it/interval";

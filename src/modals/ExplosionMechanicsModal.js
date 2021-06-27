@@ -9,7 +9,7 @@ export default function ExplosionMechanicsModal({id, closeModal}) {
             onClose={closeModal}
             icon={<AnimatedDoneIcon/>}
             header="Разъяснение"
-            caption={<span style={{color: "var(--text_primary)"}} >Какой-то текст</span>}
+            caption={<span style={{color: "var(--text_primary)"}} >Фишки, появившиеся после разложения, добавляются к рядом стоящим. Если у тех масса = 3, то они тоже взрываются</span>}
             actions={[
                 {
                     title: 'Прочитал',

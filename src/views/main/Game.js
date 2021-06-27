@@ -24,12 +24,17 @@ import PassageSize10Map from "../../maps/PassageSize10/map.json";
 import SquareSize6Map from "../../maps/SquareSize6/map.json";
 import SquareSize8Map from "../../maps/SquareSize8/map.json";
 import {getFight} from "../../api/api";
-import {clickMap, leaveFight, socket} from "../../api/socket";
+import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
+import GlobalTimer from "../../components/GlobalTimer";
 let userColor = ""
 let colors = ["red", "blue", "green", "yellow"]
 
 let isRecursion = false
 let lastColorMotion = "red"
+let turn_time = true // true - ограничено
+let isGlobalTimer = false
+let game_time = 10
+let beatenPlayers = []
 
 function getStartJson(mapName) {
 	if (mapName === "GridSize8") {
@@ -85,18 +90,22 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	const [isAnimation, setIsAnimation] = useState(false)
 
 	if (finishData.length !== 0 && !isAnimation) {
-		goToEndFight()
-		// todo: добавить сет тайм аут
+		goToEndFight(beatenPlayers)
+		console.log("go to end fight")
+		console.log(beatenPlayers)
+		 // bridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
 	}
 
 
 	console.log(
 		" Color motion: " + colorMotion,
+		" Last color motion: " + lastColorMotion,
 		"-------------!!!!!-------------"
 	)
 
 	useEffect(() => {
 		console.log("CONNECTED COORDS")
+		socket.off("cords")
 
 		socket.on("cords", (data) => {
 			console.log("cords " + data)
@@ -113,8 +122,17 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 
 	useEffect(() => {
 		async function getFightInfo () {
+			beatenPlayers = []
+			isGlobalTimer = false
 			setMap(getStartJson(mapName))
 			const fight = await getFight(secretId)
+			turn_time = fight["turn_time"]
+			if (fight["game_time"] === -1) {
+				isGlobalTimer = false
+			} else {
+				game_time = fight["game_time"]
+				isGlobalTimer = true
+			}
 			fight.users.forEach((item, i) => {
 				if (item.vk_id === fetchedUser.id) {
 					userColor = item.color
@@ -153,19 +171,86 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	},[])
 
 	function changeColorMotion (color, source) {
+		console.log("change color motion " + color, source)
 
-		// if (colors.indexOf(colorMotion) + 1 === colors.length) {
+		// if (colors.indexOf(color) + 1 === colors.length) {
+		// 	console.log("COLOR MOTION CHANGED to _ from _ ", colors[0], color, source )
 		// 	setColorMotion(colors[0])
+		// 	lastColorMotion = colors[0]
 		// } else {
-		// 	setColorMotion(colors[colors.indexOf(colorMotion) + 1])
+		// 	console.log("COLOR MOTION CHANGED to _ from _", colors[colors.indexOf(color) + 1], color, source )
+		// 	setColorMotion(colors[colors.indexOf(color) + 1])
+		// 	lastColorMotion = colors[colors.indexOf(color) + 1]
 		// }
 
+		// if (colors.length === 2) {
+		// 	if (color === "red") {
+		// 		setColorMotion("blue")
+		// 		lastColorMotion = "blue"
+		// 	} else if (color === "blue") {
+		// 		setColorMotion( "red")
+		// 		lastColorMotion = "red"
+		// 	} else if (color === "green") {
+		// 		setColorMotion( "red")
+		// 		lastColorMotion = "red"
+		// 	} else {
+		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
+		// 	}
+		// } else if (colors.length === 3) {
+		// 	if (color === "red") {
+		// 		setColorMotion("blue")
+		// 		lastColorMotion = "blue"
+		// 	} else if (color === "blue") {
+		// 		setColorMotion( "green")
+		// 		lastColorMotion = "green"
+		// 	} else if (color === "green") {
+		// 		setColorMotion( "red")
+		// 		lastColorMotion = "red"
+		// 	}  else if (color === "yellow") {
+		// 		setColorMotion( "red")
+		// 		lastColorMotion = "red"
+		// 	} else {
+		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
+		// 	}
+		// } else if (colors.length === 4) {
+		// 	if (color === "red") {
+		// 		setColorMotion("blue")
+		// 		lastColorMotion = "blue"
+		// 	} else if (color === "blue") {
+		// 		setColorMotion( "green")
+		// 		lastColorMotion = "green"
+		// 	} else if (color === "green") {
+		// 		setColorMotion( "yellow")
+		// 		lastColorMotion = "yellow"
+		// 	} else if (color === "yellow") {
+		// 		setColorMotion( "red")
+		// 		lastColorMotion = "red"
+		// 	} else {
+		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
+		// 	}
+		// }
+
+
 		if (color === "red") {
-			console.log("COLOR MOTION CHANGED from red to blue by ", source)
 			setColorMotion("blue")
 			lastColorMotion = "blue"
 		} else if (color === "blue") {
-			console.log("COLOR MOTION CHANGED from blue to red by ", source)
+			if (colors.indexOf("green") === -1) {
+				setColorMotion( "red")
+				lastColorMotion = "red"
+			} else {
+				setColorMotion( "green")
+				lastColorMotion = "green"
+			}
+		} else if (color === "green") {
+			if (colors.indexOf("yellow") === -1) {
+				setColorMotion( "red")
+				lastColorMotion = "red"
+			} else {
+				setColorMotion( "yellow")
+				lastColorMotion = "yellow"
+			}
+		} else if (color === "yellow") {
 			setColorMotion( "red")
 			lastColorMotion = "red"
 		} else {
@@ -190,14 +275,27 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 
 		if (!flag) {
 			isRecursion = false
-			console.log("finish data", finishData)
 			// changeColorMotion(("line 181 " + row + " " + column))
+			colors.forEach((item, i) => {
+				if (count(item) === 0) {
+					console.log("KILLED " + item)
+					if (item !== userColor) {
+						beatenPlayers.push(item)
+					}
+					const colorMotionIndex = colors.indexOf(item)
+					colors.splice(colorMotionIndex, 1)
+					console.log(colors)
+					if (item === colorMotion) {
+						console.log(lastColorMotion, colorMotion)
+						changeColorMotion(lastColorMotion)
+						console.log(lastColorMotion, colorMotion)
+					}
+				}
+			})
 			setIsAnimation(false)
 		}
 
 		console.log("FLag: " + flag)
-
-		// TODO: здесб же сделать функцию, которая проверяет, не сажрали кого. Перебирает массив колорс и чекает наличие фишек для каждого цвета
 	}
 
 	function getCellContent (row, column) {
@@ -267,22 +365,28 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	}
 
 	function kickUser () {
-		// if (!isAnimation) {
-		// 	console.log('нужно кинкнуть ' + colorMotion)
-		// 	let newMap = map.slice()
-		// 	map.forEach(function(row, rowIndex, array) {
-		// 		row.forEach(function(cell, cellIndex, array) {
-		// 			if (cell['color'] === colorMotion) {
-		// 				newMap[rowIndex][cellIndex]['color'] = null
-		// 				newMap[rowIndex][cellIndex]['state'] = null
-		// 			}
-		// 		});
-		// 	});
-		// 	const colorMotionIndex = colors.indexOf(colorMotion)
-		// 	colors.splice(colorMotionIndex, 1)
-		// 	setMap(newMap)
-		// 	setColorMotion(colors[colorMotionIndex])
-		// }
+		if (!isAnimation) {
+			console.log('нужно кинкнуть ' + colorMotion)
+			if (colorMotion !== userColor) {
+				beatenPlayers.push(colorMotion)
+			}
+			let newMap = map.slice()
+			map.forEach(function(row, rowIndex, array) {
+				row.forEach(function(cell, cellIndex, array) {
+					if (cell['color'] === colorMotion) {
+						newMap[rowIndex][cellIndex]['color'] = null
+						newMap[rowIndex][cellIndex]['state'] = null
+					}
+				});
+			});
+
+			kickUserSend(colorMotion, secretId)
+
+			const colorMotionIndex = colors.indexOf(colorMotion)
+			colors.splice(colorMotionIndex, 1)
+			setMap(newMap)
+			changeColorMotion(lastColorMotion, "kik user")
+		}
 	}
 
 	function getMapInfo () {
@@ -298,7 +402,9 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 					<Title level="1" weight="semibold">
 						{translateColorMotion()}
 					</Title>
-					<Timer onExpiration={() => kickUser()} colorMotion={colorMotion} />
+					{turn_time&&
+						<Timer onExpiration={() => kickUser()} colorMotion={colorMotion} />
+					}
 				</div>
 			)
 		} else {
@@ -323,15 +429,15 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 			<PanelHeader
 				separator={false}
 				transparent={true}
-				left={<PanelHeaderButton onClick={() => changeActiveModal('messanger')}>
-					<Icon28MessagesOutline/>
-				</PanelHeaderButton>}
+				// left={<PanelHeaderButton onClick={() => changeActiveModal('messanger')}>
+				// 	<Icon28MessagesOutline/>
+				// </PanelHeaderButton>}
 			>
 			</PanelHeader>
 
 			{getMapInfo()}
 
-			<GameScore count={count}/>
+			<GameScore count={count} />
 			<GetMap onCellClickFromUser={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
 			<div
@@ -352,9 +458,9 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
 						До конца боя:
 					</Caption>
-					<Caption level="2" style={{ marginLeft: 6}}>
-						3:10
-					</Caption>
+					{isGlobalTimer&&
+						<GlobalTimer gameTime={game_time}/>
+					}
 				</div>
 			</div>
 

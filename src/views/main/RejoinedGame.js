@@ -24,32 +24,17 @@ import PassageSize10Map from "../../maps/PassageSize10/map.json";
 import SquareSize6Map from "../../maps/SquareSize6/map.json";
 import SquareSize8Map from "../../maps/SquareSize8/map.json";
 import {getFight} from "../../api/api";
-import {clickMap, leaveFight, socket} from "../../api/socket";
+import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
+import GlobalTimer from "../../components/GlobalTimer";
 let userColor = ""
 let colors = ["red", "blue", "green", "yellow"]
 
 let isRecursion = false
 let lastColorMotion = "red"
+let turn_time = true // true - ограничено
+let isGlobalTimer = false
+let game_time = 10
 
-function getStartJson(mapName) {
-    if (mapName === "GridSize8") {
-        return GridSize8Map
-    } else if (mapName === 'DonutSize6') {
-        return DonutSize6Map
-    } else if (mapName === 'DonutSize8') {
-        return DonutSize8Map
-    } else if (mapName === 'GridSize8') {
-        return GridSize8Map
-    } else if (mapName === 'GridSize10') {
-        return GridSize10Map
-    } else if (mapName === 'PassageSize10') {
-        return PassageSize10Map
-    } else if (mapName === 'SquareSize6') {
-        return SquareSize6Map
-    } else if (mapName === 'SquareSize8') {
-        return SquareSize8Map
-    }
-}
 
 function getColorInfo (color) {
     if (color === "blue") {
@@ -79,10 +64,13 @@ function getColorInfo (color) {
     }
 }
 
-const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor}) => {
+const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHome, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart}) => {
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
+    if (finishData.length !== 0 && !isAnimation) {
+        goToEndFight()
+    }
 
 
     console.log(
@@ -110,22 +98,60 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
         lastColorMotion = startColorMotion
         colors = startColors
         userColor = startUserColor
+
+        turn_time = turnTime
+        if (gameTime === -1) {
+            isGlobalTimer = false
+        } else {
+            const now = new Date();
+            const fightStartTime = new Date(fightStart)
+            const time = new Date(now - fightStartTime)
+            console.log(gameTime)
+            console.log(fightStartTime)
+            console.log(time.getSeconds() + time.getMinutes() * 60)
+            gameTime = gameTime - time.getSeconds() - time.getMinutes() * 60
+            console.log(gameTime)
+            isGlobalTimer = true
+        }
+        setMap(map.slice())
+
     },[])
+
+    function getGlobalStartTime () {
+        const now = new Date();
+        const fightStartTime = new Date(fightStart)
+        const time = new Date(now - fightStartTime)
+        console.log(gameTime)
+        console.log(fightStartTime)
+        console.log(time.getSeconds() + time.getMinutes() * 60)
+        gameTime = gameTime - time.getSeconds() - time.getMinutes() * 60
+        console.log(gameTime)
+        return gameTime
+        // todo: доделать
+    }
 
     function changeColorMotion (color, source) {
 
-        // if (colors.indexOf(colorMotion) + 1 === colors.length) {
-        // 	setColorMotion(colors[0])
-        // } else {
-        // 	setColorMotion(colors[colors.indexOf(colorMotion) + 1])
-        // }
-
         if (color === "red") {
-            console.log("COLOR MOTION CHANGED from red to blue by ", source)
             setColorMotion("blue")
             lastColorMotion = "blue"
         } else if (color === "blue") {
-            console.log("COLOR MOTION CHANGED from blue to red by ", source)
+            if (colors.indexOf("green") === -1) {
+                setColorMotion( "red")
+                lastColorMotion = "red"
+            } else {
+                setColorMotion( "green")
+                lastColorMotion = "green"
+            }
+        } else if (color === "green") {
+            if (colors.indexOf("yellow") === -1) {
+                setColorMotion( "red")
+                lastColorMotion = "red"
+            } else {
+                setColorMotion( "yellow")
+                lastColorMotion = "yellow"
+            }
+        } else if (color === "yellow") {
             setColorMotion( "red")
             lastColorMotion = "red"
         } else {
@@ -151,12 +177,20 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
         if (!flag) {
             isRecursion = false
             // changeColorMotion(("line 181 " + row + " " + column))
+            colors.forEach((item, i) => {
+                if (count(item) === 0) {
+                    console.log("KILLED " + item)
+                    const colorMotionIndex = colors.indexOf(item)
+                    colors.splice(colorMotionIndex, 1)
+                    if (item === colorMotion) {
+                        changeColorMotion(lastColorMotion)
+                    }
+                }
+            })
             setIsAnimation(false)
         }
 
         console.log("FLag: " + flag)
-
-        // TODO: здесб же сделать функцию, которая проверяет, не сажрали кого. Перебирает массив колорс и чекает наличие фишек для каждого цвета
     }
 
     function getCellContent (row, column) {
@@ -179,6 +213,7 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
         basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
         if (!isAnimation) {
             // changeColorMotion(("line 212 " + row + " " + column))
+
         }
         // }
     }
@@ -225,22 +260,25 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
     }
 
     function kickUser () {
-        // if (!isAnimation) {
-        // 	console.log('нужно кинкнуть ' + colorMotion)
-        // 	let newMap = map.slice()
-        // 	map.forEach(function(row, rowIndex, array) {
-        // 		row.forEach(function(cell, cellIndex, array) {
-        // 			if (cell['color'] === colorMotion) {
-        // 				newMap[rowIndex][cellIndex]['color'] = null
-        // 				newMap[rowIndex][cellIndex]['state'] = null
-        // 			}
-        // 		});
-        // 	});
-        // 	const colorMotionIndex = colors.indexOf(colorMotion)
-        // 	colors.splice(colorMotionIndex, 1)
-        // 	setMap(newMap)
-        // 	setColorMotion(colors[colorMotionIndex])
-        // }
+        if (!isAnimation) {
+            console.log('нужно кинкнуть ' + colorMotion)
+            let newMap = map.slice()
+            map.forEach(function(row, rowIndex, array) {
+                row.forEach(function(cell, cellIndex, array) {
+                    if (cell['color'] === colorMotion) {
+                        newMap[rowIndex][cellIndex]['color'] = null
+                        newMap[rowIndex][cellIndex]['state'] = null
+                    }
+                });
+            });
+
+            kickUserSend(colorMotion, secretId)
+
+            const colorMotionIndex = colors.indexOf(colorMotion)
+            colors.splice(colorMotionIndex, 1)
+            setMap(newMap)
+            changeColorMotion(lastColorMotion, "kik user")
+        }
     }
 
     function getMapInfo () {
@@ -256,7 +294,9 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
                     <Title level="1" weight="semibold">
                         {translateColorMotion()}
                     </Title>
+                    {turn_time&&
                     <Timer onExpiration={() => kickUser()} colorMotion={colorMotion} />
+                    }
                 </div>
             )
         } else {
@@ -281,15 +321,15 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
             <PanelHeader
                 separator={false}
                 transparent={true}
-                left={<PanelHeaderButton onClick={() => changeActiveModal('messanger')}>
-                    <Icon28MessagesOutline/>
-                </PanelHeaderButton>}
+                // left={<PanelHeaderButton onClick={() => changeActiveModal('messanger')}>
+                // 	<Icon28MessagesOutline/>
+                // </PanelHeaderButton>}
             >
             </PanelHeader>
 
             {getMapInfo()}
 
-            <GameScore count={count}/>
+            <GameScore count={count} />
             <GetMap onCellClickFromUser={onCellClickFromUser} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
             <div
@@ -310,9 +350,9 @@ const RejoinedGame = ({id, startupParameters, changeActiveModal, goToMainViewHom
                     <Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
                         До конца боя:
                     </Caption>
-                    <Caption level="2" style={{ marginLeft: 6}}>
-                        3:10
-                    </Caption>
+                    {isGlobalTimer&&
+                        <GlobalTimer gameTime={getGlobalStartTime()}/>
+                    }
                 </div>
             </div>
 

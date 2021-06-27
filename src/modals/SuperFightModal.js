@@ -4,8 +4,9 @@ import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton
 import Icon24Dismiss from "@vkontakte/icons/dist/24/dismiss";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
+import {updateIsUserInSuperFight} from "../api/api";
 
-export default function SuperFightModal({id, closeModal}) {
+export default function SuperFightModal({id, closeModal, completeSnackBar, isUserInSuperFight, changeIsUserInSuperFight}) {
     return (
         <ModalPage
             id={id}
@@ -39,7 +40,15 @@ export default function SuperFightModal({id, closeModal}) {
                     члена команды). За подробностями супер боёв следите в нашей беседе и
                     в нашем сообществе.
                 </Text>
-                <Button size="xl">Участвовать</Button>
+                <Button
+                    size="xl"
+                    disabled={isUserInSuperFight}
+                    onClick={() => {
+                    updateIsUserInSuperFight();
+                    closeModal();
+                    changeIsUserInSuperFight();
+                    completeSnackBar("Участвуешь");
+                }}>{isUserInSuperFight ? "Ты участвуешь" : "Участвовать"}</Button>
             </Div>
         </ModalPage>
     )

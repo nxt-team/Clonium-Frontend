@@ -9,7 +9,7 @@ export default function GrabRivalsModal({id, closeModal}) {
             onClose={closeModal}
             icon={<AnimatedDoneIcon/>}
             header="Разъяснение"
-            caption={<span style={{color: "var(--text_primary)"}} >Какой-то текст 2</span>}
+            caption={<span style={{color: "var(--text_primary)"}} >Появившиеся фишки после взрыва могут захватывать не только клетки, но и фишки соперников</span>}
             actions={[
                 {
                     title: 'Прочитал',

@@ -9,19 +9,19 @@ export default function Timer({onExpiration, colorMotion}) {
 
     const [count, setCount] = useState(15);
 
-    // if (localColorMotion !== colorMotion) {
-    //     setCount(15)
-    //     localColorMotion = colorMotion
-    // }
-    //
-    //
-    // useInterval(() => {
-    //     setCount((currentCount) => currentCount - 1);
-    //     if (count < 1) {
-    //         onExpiration()
-    //         setCount(15)
-    //     }
-    // }, 1000);
+    if (localColorMotion !== colorMotion) {
+        setCount(15)
+        localColorMotion = colorMotion
+    }
+
+
+    useInterval(() => {
+        setCount((currentCount) => currentCount - 1);
+        if (count < 1) {
+            onExpiration()
+            setCount(15)
+        }
+    }, 1000);
 
 
 

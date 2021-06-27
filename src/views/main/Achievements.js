@@ -1,42 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './achievements.css'
 import {
     Icon28AchievementCircleFillBlue,
-    Icon28CancelCircleFillRed, Icon28Dice4Outline,
-    Icon28Flash,
-    Icon28TicketOutline
+    Icon28ArrowRightOutline
 } from '@vkontakte/icons';
-import { Icon24HelpOutline } from '@vkontakte/icons';
-import { motion } from "framer-motion"
-import { Icon28ArrowRightOutline } from '@vkontakte/icons';
-import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
-import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
-import Icon24NotificationOutline from '@vkontakte/icons/dist/24/notification_outline';
-import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
 import {
-    Avatar,
-    Div,
-    FixedLayout, Footer,
+    Footer,
     Gallery,
-    Group,
-    IOS,
     PanelHeaderButton,
-    platform,
-    Separator,
+    Placeholder,
     SimpleCell, Spinner,
     Tabs,
-    TabsItem
+    TabsItem,
+    Title,
+    Panel,
+    PanelHeader,
+    Button
 } from "@vkontakte/vkui";
-import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
-import { Icon28GhostSimleOutline, Icon28ChevronBack, Icon24Back } from '@vkontakte/icons';
-import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
-import Icon28Notifications from "@vkontakte/icons/dist/28/notifications";
-import {getUserAchievements, getUserBalances, getUserHistory} from "../../api/api";
-const osName = platform();
+import {getUserAchievements} from "../../api/api";
 
 const achievementsList = [
     {
@@ -121,7 +102,15 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
                 </div>
             )
         } else if (userAchievements[0] === null) {
-            return <Footer>Здесь появятся твои награды</Footer>
+            return (
+                <Placeholder
+                    icon={<Icon28AchievementCircleFillBlue width={56} height={56} />}
+                    header="У тебя пока нет достижений"
+                    action={<Button size="l" onClick={() => window.history.back()} >На главную</Button>}
+                >
+                    Здесь появятся твои достижения. Скорее отправляйся зарабатывать их
+                </Placeholder>
+            )
         } else {
             let content = []
             userAchievements.forEach((item, index, array) => {
@@ -215,7 +204,7 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
             <PanelHeader
                 separator={false}
                 left={
-                    <PanelHeaderButton onClick={() => window.history.back()} data-to="home">
+                    <PanelHeaderButton onClick={() => window.history.back()} >
                         <Icon28ArrowRightOutline />
                     </PanelHeaderButton>
                 }

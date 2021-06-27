@@ -20,11 +20,12 @@ const numericIndicator = {
 }
 
 
-const leaderBoardPlace = ({ place, avaUrl, userName, exp }) => {
+const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
 
     if (place === 1) {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="avatar">
                         <Avatar size={48} src={avaUrl} className="avatar__photo" />
@@ -41,6 +42,7 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp }) => {
     } else if (place === 2) {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="avatar">
                         <Avatar size={48} src={avaUrl} className="avatar__photo" />
@@ -57,6 +59,7 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp }) => {
     } else if (place === 3) {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="avatar">
                         <Avatar size={48} src={avaUrl} className="avatar__photo" />
@@ -73,6 +76,7 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp }) => {
     } else {
         return (
             <SimpleCell
+                onClick={onClick}
                 before={
                     <div className="avatar">
                         <Avatar size={48} src={avaUrl} className="avatar__photo" />
