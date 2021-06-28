@@ -14,16 +14,13 @@ export default function Timer({onExpiration, colorMotion}) {
         localColorMotion = colorMotion
     }
 
-
-    useInterval(() => {
+    setTimeout(() => {
         setCount((currentCount) => currentCount - 1);
         if (count < 1) {
             onExpiration()
             setCount(15)
         }
-    }, 1000);
-
-
+    }, 1000)
 
     return (
         <div style={{

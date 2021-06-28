@@ -17,7 +17,7 @@ import { Icon28PollSquareOutline } from '@vkontakte/icons';
 import {fightResultsPostShare} from "../../sharing/sharing";
 import {getBeatenPlayers} from "../../api/api";
 
-const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId }) => {
+const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances }) => {
 
     const [beatenPlayers, setBeatenPlayers] = useState(null)
 
@@ -25,6 +25,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
 
         async function getPlayers () {
             if (beatenPlayersColors.length !== 0) {
+                await updateUserBalances()
                 const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
                 setBeatenPlayers(bp)
                 console.log(beatenPlayers)
@@ -133,7 +134,8 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
 
             <FixedLayout vertical="bottom">
                 <Div className={"buttons__container"}>
-                    {finishData[2] === 0 ?
+                    {finishData[1] - finishData[0] === 0
+                        ?
                         <Button size="xl" onClick={goToMainView} >Завершить</Button>
                         :
                         <>

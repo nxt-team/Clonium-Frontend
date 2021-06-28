@@ -1,21 +1,51 @@
-import React from 'react';
-import {Div, Footer, Gallery, ModalCard, ModalPage} from "@vkontakte/vkui";
-import ModalPageHeader from "@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader";
+import React, {useState, useEffect} from 'react';
+import {ModalPageHeader, Footer, Gallery, Spinner, ModalPage} from "@vkontakte/vkui";
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import Icon24Dismiss from "@vkontakte/icons/dist/24/dismiss";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 import "./AboutVkDonutModal.css"
+import {getDonateLink, getUserBalances} from "../api/api";
 
-export default function AboutVkDonutModal({id, closeModal}) {
-    console.log(document.body.getAttribute("scheme"))
+export default function AboutVkDonutModal({id, closeModal, completeSnackBar, errorSnackBar, updateUserBalances}) {
+    const [donateLink, setDonateLink] = useState(null)
+    const [isUpdateButton, setIsUpdateButton] = useState(false)
+
+    useEffect(() => {
+        async function getLink () {
+            const link = await getDonateLink()
+            console.log(link)
+            setDonateLink(link)
+        }
+        getLink()
+    }, [])
 
     function getBulletsColor () {
         if (document.body.getAttribute("scheme") === "client_light" || document.body.getAttribute("scheme") === "bright_light") {
             return "dark"
         } else {
             return "light"
+        }
+    }
+    
+    function addUpdateButton () {
+        setIsUpdateButton(true)
+    }
+
+    async function updateUserVkDonut (from) {
+        const newUserBalances = await getUserBalances()
+        if (newUserBalances["vk_donut"] !== 0) {
+            closeModal()
+            updateUserBalances(newUserBalances)
+            completeSnackBar("Премиальные возможности подключены")
+        } else {
+            closeModal()
+            if (from === "vkDonut") {
+                errorSnackBar("Ты не оформил подписку VK Donut")
+            } else {
+                errorSnackBar("Выставленный счёт не оплачен")
+            }
         }
     }
 
@@ -56,7 +86,12 @@ export default function AboutVkDonutModal({id, closeModal}) {
                             • Секретные прмокоды<br/>
                         </Text>
                         <div >
-                            <Button size="xl" href="https://vk.com/donut/nxt.team" target="_blank" >Оформить VK Donut</Button>
+                            <div style={{display: "flex"}}>
+                                <Button size="xl" href="https://vk.com/donut/nxt.team" target="_blank" onClick={addUpdateButton} >Оформить VK Donut</Button>
+                                { isUpdateButton &&
+                                    <Button size="xl" style={{marginLeft: 12}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} >Обновить</Button>
+                                }
+                            </div>
                             <Footer style={{margin: "8px 0"}} >от 99₽</Footer>
                         </div>
                     </div>
@@ -78,7 +113,15 @@ export default function AboutVkDonutModal({id, closeModal}) {
                             <br/>
                         </Text>
                         <div >
-                            <Button size="xl">Приобрести</Button>
+                            <div style={{display: "flex"}}>
+                                { donateLink
+                                    ? <Button size="xl" target="_blank" href={donateLink} onClick={addUpdateButton} >Приобрести</Button>
+                                    : <Button size="xl" disabled={true} ><Spinner size="regular" /></Button>
+                                }
+                                { isUpdateButton &&
+                                    <Button size="xl" style={{marginLeft: 12}} mode="secondary" onClick={() => updateUserVkDonut("forever")} >Обновить</Button>
+                                }
+                            </div>
                             <Footer style={{margin: "8px 0"}} >499₽</Footer>
                         </div>
                     </div>

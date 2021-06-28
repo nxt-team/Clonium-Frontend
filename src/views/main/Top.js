@@ -7,6 +7,7 @@ import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import './Top.css'
 import {
+    Icon32SearchOutline,
     Icon56UsersOutline,
     Icon28AchievementCircleFillBlue,
     Icon28FireOutline,
@@ -37,6 +38,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
     const [superFightBanner, setSuperFightBanner] = useState(true)
     const [globalTop, setGlobalTop] = useState([])
     const [friendsTop, setFriendsTop] = useState([])
+    const [searchData, setSearchData] = useState("")
 
     async function getFriendsTopByBridge () {
         const token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7848428, "scope": "friends"})
@@ -75,11 +77,58 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     <Spinner size="regular" style={{ marginTop: 20 }} />
                 </div>
             )
+        } else if (searchData.toLocaleLowerCase() === "индюк") {
+            return (
+                <Placeholder
+                    scretched
+                    icon={<Icon32SearchOutline width={56} height={56} />}
+                    header="Сам индюк"
+                >
+                   Ты нашёл пасхалку
+                </Placeholder>
+            )
+        }
+        
+        else if (searchData.trim().length > 0) {
+            const search = searchData.toLowerCase()
+            const data = globalTop[0].filter(({username}) => username.toLowerCase().indexOf(search) > -1);
+            let content = []
+            console.log(data)
+            data.forEach((item, index) => {
+                content.push(
+                    <GlobalLeaderBoardPlace
+                        onClick={() => {
+                            console.log("clicked")
+                            updateUserProfileVkId(item["vk_id"])
+                            goToPage("userProfile")
+                        }}
+                        avaUrl={item["avatar"]}
+                        exp={item["exp"]}
+                        place={index + 1}
+                        rank={item["user_rank"]}
+                        userName={item["username"]}
+                        vkDonut={item["vk_donut"]}
+                    />
+                )
+            })
+            if (content.length) {
+                return content
+            } else {
+                return (
+                    <Placeholder
+                        scretched
+                        icon={<Icon32SearchOutline width={56} height={56} />}
+                        header="Ничего не найдено"
+                    >
+                        Возможно игрок не входит в топ 100 или не зарегестрирован в приложение
+                    </Placeholder>
+                )
+            }
         } else {
             let content = []
             console.log(globalTop)
             console.log(globalTop[0])
-            globalTop[0].forEach((item, index, array) => {
+            globalTop[0].forEach((item, index) => {
                 content.push(
                     <GlobalLeaderBoardPlace
                         onClick={() => {
@@ -190,7 +239,11 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     {renderFriendsTop()}
                 </div>
                 <div>
-                    <Search after={null}/>
+                    <Search
+                        value={searchData}
+                        onChange={(e) => setSearchData(e.target.value)}
+                        after={null}
+                    />
                     {superFightBanner&&
                         <Banner
                             mode="image"

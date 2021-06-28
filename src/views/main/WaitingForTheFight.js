@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
@@ -12,7 +12,9 @@ const WaitingForTheFight = ({ id, startCount}) => {
     const [count, setCount] = useState(startCount);
 
     useInterval(() => {
-        setCount((currentCount) => currentCount - 1);
+        if (count > 0) {
+            setCount((currentCount) => currentCount - 1);
+        }
     }, 1000);
 
     return (

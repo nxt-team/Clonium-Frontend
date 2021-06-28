@@ -59,7 +59,7 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
         ctx.drawImage(ava, 92, 437, 160, 157);
 
         const img = new Image();
-        img.src = "https://psv4.userapi.com/c532036/u476182155/docs/d2/20dbcb39cdda/ProfileStory.png?extra=jQmIhFxH3Lo9I67JGM1FXzn8EKgEAwsuZKGbbQWCe13WIL_Jirw8E11P7IwdI41_pmwW79ChNw_NvREqG5dVZWWgtI9dJdMIKJiUuXuvgXpV5bOFZ87_NpY0qZl9vOn_2osTOH6ZswVRFCcZQZKIUKg51HQ"
+        img.src = "https://media.discordapp.net/attachments/655117045616082974/858985152712671232/ProfileStory.png"
         img.crossOrigin = 'anonymous';
         img.onload = function() {
             ctx.drawImage(img, 0, 0, 1080, 1920);
@@ -73,8 +73,8 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
             ctx.font = '600 96px Open Sans'
             ctx.fillStyle = "#0A0A0A"
             ctx.fillText(fights, 112, 784)
-            ctx.fillText('7', 112, 1009)
-            ctx.fillText('0', 608, 1009)
+            ctx.fillText(wins, 112, 1009)
+            ctx.fillText(losses, 608, 1009)
             ctx.fillText(exp, 112, 1305)
             ctx.font = '42px Open Sans'
             ctx.fillStyle = "#5D5F61"

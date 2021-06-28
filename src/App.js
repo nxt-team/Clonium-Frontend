@@ -166,6 +166,7 @@ const App = () => {
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
 			setUser(fetchUser)
 			let user = await init(fetchUser)
+			setUserBalances(user)
 			if (user["status"] === "success") {
 
 				let hash = window.location.hash
@@ -191,13 +192,13 @@ const App = () => {
 					if (data[0] === "waiting_for_players") {
 						secretId = user["status"].split("_")[1]
 						needUsersInFight = data[2]
-						goToPage("waitingForStart")
+						setActivePanel("waitingForStart")
 					} else if (data[0] === "waiting_for_the_fight") {
 						const now = new Date();
 						const fightStart = new Date(data[1])
 						const time = new Date(fightStart - now)
-						startCount = time.getSeconds()
-						goToPage("waitingForTheFight")
+						startCount = time.getSeconds() + 2
+						setActivePanel("waitingForTheFight")
 					} else if (data[0] === "fight") {
 						mapName = data[7]
 						colorMotion = data[1]
@@ -208,14 +209,13 @@ const App = () => {
 						gameTime = data[6]
 						userColor = data[8]
 						secretId = user["status"].split("_")[1]
-						goToPage("rejoinedGame")
+						setActivePanel("rejoinedGame")
 
 					}
 					// todo: доделать остальные статусы
 				})
 
 				setActiveView("main")
-				setUserBalances(user)
 			} else {
 
 				let newActiveModal = null
@@ -341,7 +341,13 @@ const App = () => {
 				completeSnackBar={completeSnackBar}
 				changeIsUserInSuperFight={() => userBalances["isUserInSuperFight"] = true}
 				isUserInSuperFight={userBalances["isUserInSuperFight"]} />
-			<AboutVkDonutModal id='aboutVkDonut' closeModal={() => setActiveModal(null)}/>
+			<AboutVkDonutModal
+				id='aboutVkDonut'
+				closeModal={() => setActiveModal(null)}
+				completeSnackBar={completeSnackBar}
+				errorSnackBar={errorSnackBar}
+				updateUserBalances={(newUserBalances) => setUserBalances(newUserBalances)}
+			/>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}
 				onClose={() => setActiveModal(null)}
@@ -511,6 +517,23 @@ const App = () => {
 				icon={<AnimatedErrorIcon/>}
 				header="Такого боя нет"
 				caption="Бой не найден"
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"fightError"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Ошибка боя"
+				caption="не удалось присоединиться к комнате"
 				actions={[
 					{
 						title: 'Закрыть',
@@ -728,6 +751,7 @@ const App = () => {
 						startupParameters={startupParameters}
 						screenSpinnerOff={screenSpinnerOff}
 						screenSpinnerOn={screenSpinnerOn}
+						errorSnackBar={errorSnackBar}
 					/>
 					<Top goToPage={goToPage} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} updateUserProfileVkId={(newVkId) => userProfileVkId = newVkId} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
@@ -742,7 +766,7 @@ const App = () => {
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated2} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
-					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
+					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} updateUserBalances={updateUserBalances} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
 				</View>
 				<View activePanel={"offline"} id="offline" modal={modal} >
 					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>

@@ -411,6 +411,38 @@ export async function getAnyUser (vk_id) {
     return await response.json()
 }
 
+export async function deleteUser () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/delete/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getDonateLink () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://gamebot.site/api/user/get/donateLink', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
 export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser) => {
     setImgLink('loading')
     let image = e.target.files;

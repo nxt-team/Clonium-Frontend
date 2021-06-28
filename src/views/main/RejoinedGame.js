@@ -34,6 +34,7 @@ let lastColorMotion = "red"
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 10
+let beatenPlayers = []
 
 
 function getColorInfo (color) {
@@ -68,11 +69,14 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
+
     if (finishData.length !== 0 && !isAnimation) {
-        goToEndFight()
+        goToEndFight(beatenPlayers)
+        console.log("go to end fight")
+        console.log(beatenPlayers)
     }
 
-
+    console.log("TIME", isGlobalTimer, game_time)
     console.log(
         " Color motion: " + colorMotion,
         "-------------!!!!!-------------"
@@ -109,8 +113,8 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
             console.log(gameTime)
             console.log(fightStartTime)
             console.log(time.getSeconds() + time.getMinutes() * 60)
-            gameTime = gameTime - time.getSeconds() - time.getMinutes() * 60
-            console.log(gameTime)
+            game_time = gameTime - time.getSeconds() - time.getMinutes() * 60
+            console.log(game_time)
             isGlobalTimer = true
         }
         setMap(map.slice())
@@ -124,9 +128,9 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
         console.log(gameTime)
         console.log(fightStartTime)
         console.log(time.getSeconds() + time.getMinutes() * 60)
-        gameTime = gameTime - time.getSeconds() - time.getMinutes() * 60
-        console.log(gameTime)
-        return gameTime
+        game_time = gameTime - time.getSeconds() - time.getMinutes() * 60
+        console.log(game_time)
+        return game_time
         // todo: доделать
     }
 
@@ -180,10 +184,16 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
             colors.forEach((item, i) => {
                 if (count(item) === 0) {
                     console.log("KILLED " + item)
+                    if (item !== userColor) {
+                        beatenPlayers.push(item)
+                    }
                     const colorMotionIndex = colors.indexOf(item)
                     colors.splice(colorMotionIndex, 1)
+                    console.log(colors)
                     if (item === colorMotion) {
+                        console.log(lastColorMotion, colorMotion)
                         changeColorMotion(lastColorMotion)
+                        console.log(lastColorMotion, colorMotion)
                     }
                 }
             })
@@ -262,6 +272,9 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
     function kickUser () {
         if (!isAnimation) {
             console.log('нужно кинкнуть ' + colorMotion)
+            if (colorMotion !== userColor) {
+                beatenPlayers.push(colorMotion)
+            }
             let newMap = map.slice()
             map.forEach(function(row, rowIndex, array) {
                 row.forEach(function(cell, cellIndex, array) {
@@ -346,14 +359,21 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
                     </Caption>
                     {getColorInfo(userColor)}
                 </div>
-                <div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", marginLeft: 10, borderRadius: 10, display: "flex"}} >
-                    <Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
+                {isGlobalTimer &&
+                <div style={{
+                    backgroundColor: "var(--content_tint_background)",
+                    padding: "8px 12px",
+                    marginLeft: 10,
+                    borderRadius: 10,
+                    display: "flex"
+                }}>
+                    <Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
                         До конца боя:
                     </Caption>
-                    {isGlobalTimer&&
-                        <GlobalTimer gameTime={getGlobalStartTime()}/>
-                    }
+                    <GlobalTimer gameTime={game_time}/>
+
                 </div>
+                }
             </div>
 
             <div

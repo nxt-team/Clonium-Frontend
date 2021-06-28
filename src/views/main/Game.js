@@ -33,7 +33,7 @@ let isRecursion = false
 let lastColorMotion = "red"
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
-let game_time = 10
+let game_time = 0
 let beatenPlayers = []
 
 function getStartJson(mapName) {
@@ -85,7 +85,7 @@ function getColorInfo (color) {
 }
 
 const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapName, secretId, fetchedUser, goToEndFight, finishData}) => {
-	const [map, setMap] = useState(getStartJson(mapName));
+	const [map, setMap] = useState(getStartJson(mapName).slice());
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
 
@@ -93,9 +93,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 		goToEndFight(beatenPlayers)
 		console.log("go to end fight")
 		console.log(beatenPlayers)
-		 // bridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
 	}
-
 
 	console.log(
 		" Color motion: " + colorMotion,
@@ -123,21 +121,20 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	useEffect(() => {
 		async function getFightInfo () {
 			beatenPlayers = []
-			isGlobalTimer = false
-			setMap(getStartJson(mapName))
 			const fight = await getFight(secretId)
 			turn_time = fight["turn_time"]
 			if (fight["game_time"] === -1) {
 				isGlobalTimer = false
 			} else {
-				game_time = fight["game_time"]
 				isGlobalTimer = true
+				game_time = fight["game_time"]
 			}
 			fight.users.forEach((item, i) => {
 				if (item.vk_id === fetchedUser.id) {
 					userColor = item.color
 				}
 			})
+			setMap(getStartJson(mapName))
 			// setColorMotion(colors[0])
 			colors.length = fight.max_user_number
 			console.log(userColor, colors)
@@ -454,14 +451,20 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 					</Caption>
 					{getColorInfo(userColor)}
 				</div>
-				<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", marginLeft: 10, borderRadius: 10, display: "flex"}} >
-					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
-						До конца боя:
-					</Caption>
-					{isGlobalTimer&&
+				{isGlobalTimer &&
+					<div style={{
+						backgroundColor: "var(--content_tint_background)",
+						padding: "8px 12px",
+						marginLeft: 10,
+						borderRadius: 10,
+						display: "flex"
+					}}>
+						<Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
+							До конца боя:
+						</Caption>
 						<GlobalTimer gameTime={game_time}/>
-					}
-				</div>
+					</div>
+				}
 			</div>
 
 			<div

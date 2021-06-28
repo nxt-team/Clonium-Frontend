@@ -23,6 +23,8 @@ import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline'
 import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
 import Icon24StoryOutline from '@vkontakte/icons/dist/24/story_outline';
 import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
+import { Icon28DeleteOutline } from '@vkontakte/icons';
+import { Icon28ChatsOutline } from '@vkontakte/icons';
 import { motion } from "framer-motion"
 
 import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
@@ -42,9 +44,10 @@ import {
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
+import {deleteUser} from "../../api/api";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn }) => {
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, errorSnackBar }) => {
 
     function getTickets(tickets) {
         if (tickets % 100 !== 11 && tickets % 10 === 1) {
@@ -296,6 +299,15 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 }
 
 
+            </div>
+            <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
+                Тестерам
+            </Title>
+            <div className={"containerProfile"}>
+                <div className={'fullContainer'} >
+                    <SimpleCell before={<Icon28DeleteOutline/>} onClick={async () => {await deleteUser(); errorSnackBar("Обязательно очисти кэш приложения!!!");}} expandable >Удалить свой профиль из бд</SimpleCell>
+                    <SimpleCell before={<Icon28ChatsOutline/>} href="https://vk.me/join/4nXMHh_Bj2OFh8X_AH33onT2ILbd18WTg3Y=" target="_blank" expandable >Беседа для тестеров</SimpleCell>
+                </div>
             </div>
             <div style={{height: 12}}/>
 
