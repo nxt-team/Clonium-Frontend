@@ -6,7 +6,7 @@ export async function init (fetchedUser) {
     let data = {
         "vk_id": window.location.search.replace('?', ''),
         "username": fetchedUser.first_name + " " + fetchedUser.last_name,
-        "avatar": fetchedUser.photo_max_orig
+        "avatar": fetchedUser.photo_200
     }
 
     let response = await fetch('https://gamebot.site/api/user/init', {
@@ -23,12 +23,12 @@ export async function init (fetchedUser) {
         return result
     }
 
-    if (result[0]["avatar"] !== fetchedUser.photo_max_orig) {
+    if (result[0]["avatar"] !== fetchedUser.photo_200) {
         console.log('аватарка дургая')
 
         data = {
             "vk_id": window.location.search.replace('?', ''),
-            "avatar": fetchedUser.photo_max_orig
+            "avatar": fetchedUser.photo_200
         }
 
         response = await fetch('https://gamebot.site/api/user/change/avatar', {

@@ -711,7 +711,7 @@ const App = () => {
 						updateNotifications={updateNotifications}
 						startupParameters={startupParameters}
 					/>
-					<WaitingForStart id={'waitingForStart'} go={go} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
+					<WaitingForStart id={'waitingForStart'} go={go} are_notifications_enabled={userBalances["are_notifications_enabled"]} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
 					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} />
 					<Game
 						id={'game'}

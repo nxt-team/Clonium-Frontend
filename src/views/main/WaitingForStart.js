@@ -15,7 +15,7 @@ import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
 
-const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications}) => {
+const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled}) => {
 
     const [photos, setPhotos] = useState([])
 
@@ -82,7 +82,9 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
                 >{getNeedPlayers()}</UsersStack>
                 <div style={{display: "flex", marginTop: 8}}>
                     <Button size="l" before={<Icon24ShareOutline/>} onClick={() => fightInviteShare(secretId)} >Позвать друзей</Button>
+                    {!are_notifications_enabled &&
                     <Button size="l" style={{ marginLeft: 8 }} onClick={notificationsOn} mode="secondary"><Icon24NotificationOutline /></Button>
+                    }
                 </div>
                 <Group
                     description={<span>Пригласи друзей сыграть с тобой, <br/> чтобы быстрее заполнить комнату</span>}
