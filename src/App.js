@@ -72,6 +72,7 @@ import {joinRoom, rejoinRoom, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
+import ClearCache from "./views/main/ClearCache";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -585,6 +586,10 @@ const App = () => {
 		setActiveView('offline')
 	}
 
+	function goToClearCache () {
+		setActiveView('clearCache')
+	}
+
 	async function goToEndFight (beatenPlayersColors) {
 		beatenPlayers = beatenPlayersColors
 
@@ -752,6 +757,7 @@ const App = () => {
 						screenSpinnerOff={screenSpinnerOff}
 						screenSpinnerOn={screenSpinnerOn}
 						errorSnackBar={errorSnackBar}
+						goToClearCache={goToClearCache}
 					/>
 					<Top goToPage={goToPage} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} updateUserProfileVkId={(newVkId) => userProfileVkId = newVkId} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
@@ -770,6 +776,9 @@ const App = () => {
 				</View>
 				<View activePanel={"offline"} id="offline" modal={modal} >
 					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>
+				</View>
+				<View activePanel={"clearCache"} id="clearCache" >
+					<ClearCache id='clearCache'/>
 				</View>
 			</Root>
 		</ConfigProvider>

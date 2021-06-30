@@ -47,7 +47,7 @@ import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
 import {deleteUser} from "../../api/api";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, errorSnackBar }) => {
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, goToClearCache }) => {
 
     function getTickets(tickets) {
         if (tickets % 100 !== 11 && tickets % 10 === 1) {
@@ -239,26 +239,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 subheader={<span>Опыт можно получить за хорошую игру в бою.</span>}
                 actions={<Button mode="primary" target="_blank" href="https://vk.com/@nxt.team-clonium" >Подробнее</Button>}
             />
-            {/*<FormLayout  >*/}
-            {/*    <FormLayoutGroup>*/}
-            {/*        <div style={{display: "flex", justifyContent: "space-between"}} >*/}
-            {/*            <div style={{width: "100%"}}>*/}
-            {/*                <Input placeholder="Промокод" type="text" maxLength={8}/>*/}
-            {/*            </div>*/}
-            {/*            <Button*/}
-            {/*                mode="secondary"*/}
-            {/*                style={{*/}
-            {/*                    padding: "0 8px",*/}
-            {/*                    marginLeft: 0,*/}
-            {/*                    alignSelf: "flex-end",*/}
-            {/*                    height: 44*/}
-            {/*                }}*/}
-            {/*            >*/}
-            {/*                Активировать*/}
-            {/*            </Button>*/}
-            {/*        </div>*/}
-            {/*    </FormLayoutGroup>*/}
-            {/*</FormLayout>*/}
 
 
             <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
@@ -305,7 +285,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
             </Title>
             <div className={"containerProfile"}>
                 <div className={'fullContainer'} >
-                    <SimpleCell before={<Icon28DeleteOutline/>} onClick={async () => {await deleteUser(); errorSnackBar("Обязательно очисти кэш приложения!!!");}} expandable >Удалить свой профиль из бд</SimpleCell>
+                    <SimpleCell before={<Icon28DeleteOutline/>} onClick={async () => {await deleteUser(); goToClearCache();}} expandable >Удалить свой профиль из бд</SimpleCell>
                     <SimpleCell before={<Icon28ChatsOutline/>} href="https://vk.me/join/4nXMHh_Bj2OFh8X_AH33onT2ILbd18WTg3Y=" target="_blank" expandable >Беседа для тестеров</SimpleCell>
                 </div>
             </div>
