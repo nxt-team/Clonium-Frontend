@@ -20,7 +20,7 @@ const playIcon = ({ color, size }) => {
         return (
             <svg
                 className="cont"
-                viewBox="0 0 38 38"
+                viewBox="0 0 39 39"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
@@ -39,7 +39,7 @@ const playIcon = ({ color, size }) => {
         return (
             <svg
                 className="cont"
-                viewBox="0 0 38 38"
+                viewBox="0 0 39 39"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
@@ -61,7 +61,7 @@ const playIcon = ({ color, size }) => {
         return (
             <svg
                 className="cont"
-                viewBox="0 0 38 38"
+                viewBox="0 0 39 39"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >

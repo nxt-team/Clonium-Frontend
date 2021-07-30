@@ -1,29 +1,26 @@
-import React, {useState, useEffect} from 'react';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
-import './achievements.css'
+import React, {useEffect, useState} from 'react';
 import {
-    IOS,
-    PanelHeaderButton, platform,
-    Button,
+    Div,
+    SimpleCell,
+    Footer,
+    Spinner,
+    Link,
     RichCell,
     Avatar,
-    Div,
-    Banner,
-    SimpleCell, Spinner, Link, Footer
+    Banner
 } from "@vkontakte/vkui";
-import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
+import Button from "@vkontakte/vkui/dist/components/Button/Button";
+import {getAnyUser, updateIsUserInSuperFight} from "../api/api";
 import {
+    Icon24ChevronCompactRight,
+    Icon24FavoriteOutline,
+    Icon28AchievementCircleFillBlue, Icon28ArrowDownOutline, Icon28ArrowUpOutline,
     Icon28DonateCircleFillYellow,
-    Icon28FavoriteOutline,
-} from '@vkontakte/icons';
-import Icon24Back from "@vkontakte/icons/dist/24/back";
-import UserStat from "../../components/UserStat";
-import {getAnyUser, getUserAchievements} from "../../api/api";
+    Icon28FavoriteOutline, Icon28TicketOutline, Icon36GameOutline
+} from "@vkontakte/icons";
+import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 
-const osName = platform();
-
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const numericIndicator = {
     height: 20,
     width: 20,
@@ -93,7 +90,7 @@ const achievementsList = [
 
 ]
 
-const UserProfile = ({id, vk_id, changeActiveModal}) => {
+export default function ProfileModalContent({closeModal, changeActiveModal, vk_id}) {
 
     const [isVkDonutBanner, setIsVkDonutBanner] = useState(true)
     const [userData, setUserData] = useState([])
@@ -106,6 +103,52 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
         }
         getUserdata();
     }, []);
+
+    function expCaption (exp) {
+        if (exp % 100 !== 11 && exp % 10 === 1) {
+            return 'Опыт набран'
+        } else {
+            return 'Опыта набрано'
+        }
+    }
+
+    function ticketsCaption (tickets) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (tickets % 100 !== 11 && tickets % 10 === 1) {
+            return 'Билет'
+        } if (tickets % 100 !== 12 && tickets % 100 !== 13 && tickets % 100 !== 14 && (tickets % 10 === 2 || tickets % 10 === 3 || tickets % 10 === 4)) {
+            return 'Билета'
+        } else {
+            return 'Билетов'
+        }
+    }
+
+    function gamesCaption (games) {
+        if (games % 100 !== 11 && games % 10 === 1) {
+            return 'Игра сыграна'
+        } else {
+            return 'Игр сыграно'
+        }
+    }
+
+    function winsCaption (wins) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (wins % 100 !== 11 && wins % 10 === 1) {
+            return 'Победа'
+        } if (wins % 100 !== 12 && wins % 100 !== 13 && wins % 100 !== 14 && (wins % 10 === 2 || wins % 10 === 3 || wins % 10 === 4)) {
+            return 'Победы'
+        } else {
+            return 'Побед'
+        }
+    }
+
+    function losesCaption (loses) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (loses % 100 !== 11 && loses % 10 === 1) {
+            return 'Поражение'
+        } if (loses % 100 !== 12 && loses % 100 !== 13 && loses % 100 !== 14 && (loses % 10 === 2 || loses % 10 === 3 || loses % 10 === 4)) {
+            return 'Поражения'
+        } else {
+            return 'Поражений'
+        }
+    }
 
     function renderAchievements () {
         if (userData["achievements"].length !== 0) {
@@ -158,8 +201,10 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
 
         if (userData.length === 0) {
             return (
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <Spinner size="regular" style={{marginTop: 20}}/>
+                <div style={{height: "90vh"}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <Spinner size="regular" style={{marginTop: 20}}/>
+                    </div>
                 </div>
             )
         } else {
@@ -170,7 +215,7 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
                     >
                         <Link target="_blank" href={"https://vk.com/id" + vk_id}>
                             <RichCell
-                                style={{backgroundColor: "var(--content_tint_background)", borderRadius: 8}}
+                                style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12}}
                                 multiline
                                 expandable
                                 before={
@@ -185,7 +230,19 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
                                 }
                                 caption={userData["user_rank"]}
                             >
-                                <Title level="2" weight="regular" style={{marginBottom: 4}}>{userData["username"]}</Title>
+                                <Title
+                                    level="2"
+                                    weight="regular"
+                                    style={{marginBottom: 4, marginRight: 24, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}
+                                >
+                                    {userData["username"].split(" ")[0]}
+                                    <br/>
+                                    {userData["username"].split(" ")[1]}
+                                </Title>
+                                <div
+                                    className={"profile_preview_icon"}>
+                                    <Icon24ChevronCompactRight/>
+                                </div>
                             </RichCell>
                         </Link>
                     </Div>
@@ -196,20 +253,68 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
                                 <Icon28FavoriteOutline/>
                             </div>
                         }
-                        header="У пользователя офрмлена подписка Vk Donut"
+                        header="У пользователя оформлена подписка VK Donut"
                         subheader="Оформи тоже для игры с комфортом"
                         asideMode="dismiss"
-                        onClick={() => changeActiveModal("aboutVkDonut")}
-                        actions={<Button mode="primary">Подробнее</Button>}
+                        actions={(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
+                                <Button
+                                    mode="primary"
+                                    onClick={() => {
+                                        closeModal();
+                                        setTimeout(() => changeActiveModal("aboutVkDonut"), 200);
+                                    }}
+                                >
+                                    Подробнее
+                                </Button>
+                            }
                         onDismiss={() => setIsVkDonutBanner(false)}
                     />
                     }
                     <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32}}>
                         Статистика
                     </Title>
-                    <div style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12, padding: "1px 0", marginTop: 12}}>
-                        <UserStat exp={userData["exp"]} games={userData["stats"][0]["fights"]} loses={userData["stats"][0]["losses"]} tickets={userData["tickets"]} wins={userData["stats"][0]["wins"]}/>
-                    </div>
+                    <Div>
+                        <div style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12, padding: "4px 0"}}>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon24FavoriteOutline width={28} height={28}/>}
+                                after={userData["exp"]}
+                            >
+                                {expCaption(userData["exp"])}
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon28TicketOutline/>}
+                                after={userData["tickets"]}
+                            >
+                                {ticketsCaption(userData["tickets"])}
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon36GameOutline width={28} height={28}/>}
+                                after={userData["stats"][0]["fights"]}
+                            >
+                                {gamesCaption(userData["stats"][0]["fights"])}
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon28ArrowUpOutline/>}
+                                after={userData["stats"][0]["wins"]}
+                            >
+                                {winsCaption(userData["stats"][0]["wins"])}
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon28ArrowDownOutline/>}
+                                after={userData["stats"][0]["losses"]}
+                            >
+                                {losesCaption(userData["stats"][0]["losses"])}
+                            </SimpleCell>
+                        </div>
+                    </Div>
+                    {/*<div style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12, padding: "1px 0", marginTop: 12}}>*/}
+                    {/*    <UserStat exp={userData["exp"]} games={userData["stats"][0]["fights"]} loses={userData["stats"][0]["losses"]} tickets={userData["tickets"]} wins={userData["stats"][0]["wins"]}/>*/}
+                    {/*</div>*/}
                     <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32}}>
                         Достижения
                     </Title>
@@ -224,21 +329,8 @@ const UserProfile = ({id, vk_id, changeActiveModal}) => {
     }
 
     return (
-        <Panel
-            id={id}
-        >
-            <PanelHeader
-                left={<PanelHeaderButton onClick={() => window.history.back()}>
-                    {osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
-                </PanelHeaderButton>}
-            >
-                Профиль
-            </PanelHeader>
+        <div>
             {renderUserData()}
-        </Panel>
+        </div>
     )
-};
-
-
-
-export default UserProfile;
+}

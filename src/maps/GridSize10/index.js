@@ -1,10 +1,10 @@
 import React from 'react';
 import GameCell from "../../components/GameCell";
 
-const cellSize = (window.innerWidth - 20 - 12) / 10 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
-const cellStyle = {height: cellSize, width: cellSize}
-
 export default function Message({onCellClick, getCellContent, colorMotion, map}) {
+
+    const cellSize = (document.documentElement.clientWidth - 20 - 12) / 10 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
+    const cellStyle = {height: cellSize, width: cellSize}
     
     return (
         <div style={{marginLeft: 6}} > { /* */}

@@ -7,30 +7,18 @@ import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
 import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
-import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
-import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
-import Icon24Back from "@vkontakte/icons/dist/24/back";
-import { Icon28MessagesOutline } from '@vkontakte/icons';
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
 import GetMap from "../../gameFunctions/GetMap";
 import Timer from "../../components/Timer";
-import GridSize8Map from "../../maps/GridSize8/map.json"
-import DonutSize6Map from "../../maps/DonutSize6/map.json";
-import DonutSize8Map from "../../maps/DonutSize8/map.json";
-import GridSize10Map from "../../maps/GridSize10/map.json";
-import PassageSize10Map from "../../maps/PassageSize10/map.json";
-import SquareSize6Map from "../../maps/SquareSize6/map.json";
-import SquareSize8Map from "../../maps/SquareSize8/map.json";
-import {getFight} from "../../api/api";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 let userColor = ""
-let colors = ["red", "blue", "green", "yellow"]
+let colors
 
 let isRecursion = false
-let lastColorMotion = "red"
+let lastColorMotion
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 10
@@ -79,7 +67,6 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
     console.log("TIME", isGlobalTimer, game_time)
     console.log(
         " Color motion: " + colorMotion,
-        "-------------!!!!!-------------"
     )
 
     useEffect(() => {
@@ -90,7 +77,6 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
 
             console.log(
                 " Color motion: " + colorMotion,
-                "----------------------------"
             )
             onCellClick(data[0], data[1])
             changeColorMotion(lastColorMotion, ("line 103 " + data))
@@ -136,30 +122,16 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
 
     function changeColorMotion (color, source) {
 
-        if (color === "red") {
-            setColorMotion("blue")
-            lastColorMotion = "blue"
-        } else if (color === "blue") {
-            if (colors.indexOf("green") === -1) {
-                setColorMotion( "red")
-                lastColorMotion = "red"
-            } else {
-                setColorMotion( "green")
-                lastColorMotion = "green"
-            }
-        } else if (color === "green") {
-            if (colors.indexOf("yellow") === -1) {
-                setColorMotion( "red")
-                lastColorMotion = "red"
-            } else {
-                setColorMotion( "yellow")
-                lastColorMotion = "yellow"
-            }
-        } else if (color === "yellow") {
-            setColorMotion( "red")
-            lastColorMotion = "red"
+        const colorMotionIndex = colors.indexOf(color)
+        console.log("colorMotionIndex", colorMotionIndex)
+        if (colorMotionIndex + 2 > colors.length) {
+            console.log("colorMotionIndex + 2 > color.length. ->", colors[0])
+            lastColorMotion = colors[0]
+            setColorMotion(colors[0])
         } else {
-            console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
+            console.log("colorMotionIndex + 2 <= color.length, ->", colors[colorMotionIndex + 1])
+            lastColorMotion = colors[colorMotionIndex + 1]
+            setColorMotion(colors[colorMotionIndex + 1])
         }
     }
 

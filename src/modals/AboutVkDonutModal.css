@@ -10,6 +10,13 @@
 }
 
 .VK_Donut_slide {
-    height: 100%;
-    width: 100%;
+    /*height: 100%;*/
+    /*width: 100%;*/
+}
+
+.refreshButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 4px;
 }

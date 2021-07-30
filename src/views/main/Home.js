@@ -49,7 +49,7 @@ const numericIndicator = {
     background: 'var(--modal_card_background)',
 }
 
-const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, goToPage, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters}) => {
+const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory}) => {
 
     const [fights, setFights] = useState([])
 
@@ -144,7 +144,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                                     updateNeedUsersInFight(item["max_user_number"]);
                                     updateSecretId(item["secret_id"])
                                     joinRoom(fetchedUser, item["secret_id"]);
-                                    goToPage("waitingForStart");
+                                    goIsolated("waitingForStart");
                                 }}
                                 after={<Icon28ChevronRightCircleOutline/>}>
                         <RichCell
@@ -215,10 +215,10 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
             <PanelHeader
                 left={
                     <React.Fragment>
-                        <PanelHeaderButton onClick={go} data-to="achievements">
+                        <PanelHeaderButton onClick={goToAchievements}>
                             <Icon28RadiowavesAroundOutline/>
                         </PanelHeaderButton>
-                        <PanelHeaderButton onClick={go} data-to="history">
+                        <PanelHeaderButton onClick={goToHistory}>
                             <Icon28HistoryForwardOutline style={{padding: 9}} width={26} height={26}/>
                         </PanelHeaderButton>
                     </React.Fragment>
@@ -228,7 +228,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                 Главная
             </PanelHeader>
             <PullToRefresh
-                isFetching={fights.length !== 0}
+                isFetching={fights.length === 0}
                 onRefresh={async () => {
                 setFights([]);
                 const fights = await getFights(fetchedUser)
@@ -246,14 +246,23 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                             justifyContent: "center"
                         }}>
                             {/*<Avatar size={64} src={fetchedUser.photo_200}/>*/}
-                            <div className="avatar">
+                            <div className="avatar" style={{margin: "6px 0 6px 0"}}>
                                 <Avatar size={64} src={fetchedUser.photo_200} className="avatar__photo" />
                                 <div className="avatar__indicator" >
                                     {getIcon()}
                                 </div>
                             </div>
-                            <Title style={{marginTop: 8}} level="1"
-                                   weight="semibold">{fetchedUser.first_name + ' ' + fetchedUser.last_name}</Title>
+                            <div
+                                style={{marginTop: 8, display: "block", width: "calc(100% - 16px)", textAlign: "center", marginLeft: 8, marginRight: 8}}
+                            >
+                                <Title
+                                    level="1"
+                                    weight="semibold"
+                                    style={{overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", lineHeight: "34px"}}
+                                >
+                                    {fetchedUser.first_name + ' ' + fetchedUser.last_name}
+                                </Title>
+                            </div>
                         </div>
                         <UserStat exp={userBalances["exp"]} games={userBalances["fights"]} loses={userBalances["losses"]} tickets={userBalances["tickets"]} wins={userBalances["wins"]}/>
                     </div>
@@ -264,7 +273,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                 </div>
             </Div>
 
-            <Online/>
+            <Online online={online} />
             <MainButtons
                 go={go}
                 updateNotifications={updateNotifications}

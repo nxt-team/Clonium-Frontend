@@ -1,7 +1,8 @@
 .GlobalPlace__indicator {
     color: var(--accent);
     margin-right: 8px;
-
+    min-width: 28px;
+    text-align: center;
 }
 
 .GlobalPlace__container {

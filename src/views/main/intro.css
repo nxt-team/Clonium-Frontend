@@ -23,6 +23,7 @@
     height: calc(100vh - 82px);
     width: 100vw;
     filter: blur(3.6em);
+    -webkit-filter: blur(3.6em);
 }
 
 .img {

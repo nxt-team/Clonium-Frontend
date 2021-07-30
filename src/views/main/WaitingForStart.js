@@ -5,9 +5,10 @@ import './waitingForStart.css'
 import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
 import Icon24NotificationOutline from '@vkontakte/icons/dist/24/notification_outline';
 import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
+import { Icon24Copy } from '@vkontakte/icons';
 import {
     FixedLayout,
-    Group,
+    Group, Spinner,
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
@@ -15,7 +16,7 @@ import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
 
-const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled}) => {
+const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated}) => {
 
     const [photos, setPhotos] = useState([])
 
@@ -30,6 +31,10 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
             .then(
                 () => updateNotifications()
             )
+    }
+
+    function copyFightLink (secretId) {
+        bridge.send("VKWebAppCopyText", {"text": "https://vk.com/app7848428#fight=" + secretId});
     }
 
     function getNeedPlayers () {
@@ -79,11 +84,16 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
                 </Title>
                 <UsersStack
                     photos={photos}
-                >{getNeedPlayers()}</UsersStack>
+                >
+                    {photos.length === 0 ? <Spinner size="small"/> : getNeedPlayers()}
+                </UsersStack>
                 <div style={{display: "flex", marginTop: 8}}>
                     <Button size="l" before={<Icon24ShareOutline/>} onClick={() => fightInviteShare(secretId)} >Позвать друзей</Button>
-                    {!are_notifications_enabled &&
-                    <Button size="l" style={{ marginLeft: 8 }} onClick={notificationsOn} mode="secondary"><Icon24NotificationOutline /></Button>
+                    {!are_notifications_enabled
+                        ?
+                        <Button size="l" style={{ marginLeft: 8 }} onClick={notificationsOn} mode="secondary"><Icon24NotificationOutline /></Button>
+                        :
+                        <Button size="l" style={{ marginLeft: 8 }} onClick={() => copyFightLink(secretId)} mode="secondary"><Icon24Copy /></Button>
                     }
                 </div>
                 <Group
@@ -100,7 +110,7 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
                         alignItems: "center",
                     }}
                 >
-                    <Button onClick={() => {leaveFight(fetchedUser); setTimeout(() => window.history.back(), 300)}} data-to="home" mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={() => {leaveFight(fetchedUser); setTimeout(() => goIsolated("home"), 300)}} data-to="home" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>

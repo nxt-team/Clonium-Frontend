@@ -21,7 +21,7 @@ import {
     Tabs,
     TabsItem,
     CardScroll, IOS, CardGrid,
-    PanelHeaderClose
+    PanelHeaderClose, Spinner
 } from "@vkontakte/vkui";
 import { Icon28CancelOutline, Icon28UserOutline, Icon28UsersOutline, Icon28Users3Outline } from '@vkontakte/icons';
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
@@ -55,11 +55,17 @@ const unselcted = {
 let turnTime = true // ограничено
 let gameTime = 600
 
-const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId }) => {
+const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId, goIsolated }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
     const [isPrivate, setIsPrivate] = useState(false)
+    const [isCreating, setIsCreating] = useState(false)
+
+    useEffect(() => {
+        turnTime = true
+        gameTime = 600
+    }, [])
 
     const changeMapSelect = (mapId) => {
         setMapsSelect(mapId);
@@ -84,12 +90,13 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
     }
 
     async function createFightAndGo () {
+        setIsCreating(true)
         const fight = await createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)
         updateNeedUsersInFight(playersNumber)
         updateSecretId(fight["secret_id"])
         joinRoom(fetchedUser, fight["secret_id"])
         goToMainView()
-        goToPage("waitingForStart")
+        goIsolated("waitingForStart")
     }
 
     return (
@@ -209,7 +216,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                                 }}
                             >
                                 <Title level="2" weight="regular">
-                                    Квдрат 6 на 6
+                                    Квадрат 6 на 6
                                 </Title>
                                 <SquareSize6 />
                             </div>
@@ -318,7 +325,9 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                     <Checkbox onChange={privateChanged} >Приватно</Checkbox>
                     <Checkbox onChange={() => turnTime = !turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
                 </FormLayoutGroup>
-                <Button size="xl" onClick={createFightAndGo}  >Создать</Button>
+                <Button size="xl" onClick={createFightAndGo}  >
+                    {isCreating ? <Spinner size="regular" /> : "Создать"}
+                </Button>
             </FormLayout>
         </Panel>
     )

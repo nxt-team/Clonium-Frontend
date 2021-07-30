@@ -1,11 +1,15 @@
 import {io} from "socket.io-client";
-export const socket = io("https://gamebot.site");
+export const socket = io("https://pipeweb.ru", {autoConnect: false});
 
 
 socket.on("connect", () => {
     console.log(
         "CONNECTED", socket.id
     ); // true
+    socket.emit("connectParams", {
+        "vk_id": window.location.search.replace('?', ''),
+        "socket_id": socket.id
+    })
 });
 
 export function joinRoom (fetchedUser, secret_id ) {

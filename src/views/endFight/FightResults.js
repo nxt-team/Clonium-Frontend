@@ -20,12 +20,13 @@ import {getBeatenPlayers} from "../../api/api";
 const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances }) => {
 
     const [beatenPlayers, setBeatenPlayers] = useState(null)
+    const [isSkipButtonDisabled, setIsSkipButtonDisabled] = useState(true)
 
     useEffect(() => {
 
         async function getPlayers () {
+            await updateUserBalances()
             if (beatenPlayersColors.length !== 0) {
-                await updateUserBalances()
                 const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
                 setBeatenPlayers(bp)
                 console.log(beatenPlayers)
@@ -33,6 +34,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
         }
 
         getPlayers()
+        setTimeout(() => setIsSkipButtonDisabled(false), 3000)
 
     }, [])
 
@@ -140,7 +142,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
                         :
                         <>
                             <Button size="xl" disabled={beatenPlayers === null} onClick={() => fightResultsPostShare(fetchedUser.id, finishData[0], beatenPlayers)} >Похвастаться</Button>
-                            <Button className={"skip__button"} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={goToMainView} mode="tertiary">Пропустить</Button>
+                            <Button className={"skip__button"} disabled={isSkipButtonDisabled} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={goToMainView} mode="tertiary">Пропустить</Button>
                         </>
                     }
                 </Div>

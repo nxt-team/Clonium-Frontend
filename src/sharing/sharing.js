@@ -5,6 +5,10 @@ export const refLinkShare = (userId) => {
     bridge.send("VKWebAppShare", {"link": "https://vk.com/app7848428#invite=" + userId})
 }
 
+export const refLinkCopy = (userId) => {
+    bridge.send("VKWebAppCopyText", {"text": "https://vk.com/app7848428#invite=" + userId})
+}
+
 export const fightInviteShare = (fightId) => {
     bridge.send("VKWebAppShare", {"link": "https://vk.com/app7848428#fight=" + fightId})
 }

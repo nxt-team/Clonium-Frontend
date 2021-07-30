@@ -87,16 +87,16 @@ const Intro = ({ id, panel_go, changeActiveModal, endIntro }) => {
         //     </div>
         // )
         galleryContent.push(
-            <div>
+            <div className={"lastIntroSlide"}>
                 <Placeholder
                     style={{padding: "48px 32px 0", marginTop: "var(--safe-area-inset-top)"}}
                     icon={<img style={{width: 96, height: 96, borderRadius: "20px"}} src={"https://sun9-53.userapi.com/impg/VoUEHIs7prmKhySY8x-hSD0QaBwTUPLX1581RA/uGLoluP92oY.jpg?size=278x278&quality=96&sign=e2947c1fa9a63e5f9e4d6b8a713808c3&type=album"} />}
                     header="Клоний"
                 />
                 <div>
-                    <SimpleCell disadled={true} multiline={true} before={<Icon28GameOutline />}>Играй с другими игроками онлайн в публичных комнатах</SimpleCell>
-                    <SimpleCell disadled={true} multiline={true} before={<Icon28AddSquareOutline />}>Создавай приватные комнаты для игры с друзьями</SimpleCell>
-                    <SimpleCell disadled={true} multiline={true} before={<Icon28FavoriteOutline/>}>Выполняй задания и получай достижения</SimpleCell>
+                    <SimpleCell disabled={true} multiline={true} before={<Icon28GameOutline />}>Играй с другими игроками онлайн в публичных комнатах</SimpleCell>
+                    <SimpleCell disabled={true} multiline={true} before={<Icon28AddSquareOutline />}>Создавай приватные комнаты для игры с друзьями</SimpleCell>
+                    <SimpleCell disabled={true} multiline={true} before={<Icon28FavoriteOutline/>}>Выполняй задания и получай достижения</SimpleCell>
                 </div>
             </div>
         )

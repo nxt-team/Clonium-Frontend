@@ -6,8 +6,7 @@ export default function BasicGetCellContent({row, column, map}) {
 
     if (map[row - 1][column - 1]['state'] === 'animate') {
         const mapLen = map.length
-        const svgSize = (window.innerWidth - 12 - mapLen * 2) / mapLen // число 16, т к у элементов задан margin 1px
-
+        const svgSize = (document.documentElement.clientWidth - 12 - mapLen * 2) / mapLen // число 16, т к у элементов задан margin 1px
         let animatedIcons = []
         if (map[row - 1][column] !== undefined && map[row - 1][column]["color"] !== "disabled") {
             animatedIcons.push(

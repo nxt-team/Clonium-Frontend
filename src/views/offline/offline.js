@@ -5,12 +5,26 @@ import {
     Placeholder,
 } from "@vkontakte/vkui";
 import { Icon32ErrorCircleOutline } from '@vkontakte/icons';
+import bridge from "@vkontakte/vk-bridge";
 
-const Home = ({ id, goToMainView, changeActiveModal}) => {
+const Offline = ({ id, goToMainView, popout, activePanel, goToEndFightView, changePopou}) => {
 
     const reconnecting = () => {
         if (window.navigator.onLine) {
-            goToMainView()
+            if (popout) {
+                if (popout.type.name === "ScreenSpinner") {
+                    window.location.href = ''
+                } else if (activePanel === "rateFight" || activePanel === "fightResults") {
+                    goToEndFightView()
+                } else {
+                    changePopou(null)
+                    goToMainView()
+                }
+            } else if (activePanel === "rateFight" || activePanel === "fightResults") {
+                goToEndFightView()
+            } else {
+                goToMainView()
+            }
         }
     }
 
@@ -35,4 +49,4 @@ const Home = ({ id, goToMainView, changeActiveModal}) => {
 
 
 
-export default Home;
+export default Offline;

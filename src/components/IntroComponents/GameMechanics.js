@@ -3,16 +3,6 @@ import '../../views/main/intro.css'
 import AnimatedPlayIcon from "../animatedPlayIcon";
 import PlayIcon from "../playIcon";
 import {
-    Avatar,
-    Div,
-    FixedLayout,
-    Group,
-    Gallery,
-    PanelHeaderButton,
-    platform,
-    Progress,
-    InfoRow,
-    Header,
     Title, Text, Button
 } from "@vkontakte/vkui";
 
@@ -35,6 +25,7 @@ const startJson = [
 ]
 
 let doneCalled = false
+let isAnimation = false
 
 const GameMechanics = ({done, changeActiveModal}) => {
     const [context, setContext] = useState(<Title style={{marginTop: 12}} level="2" weight="regular">Нажми на фишку</Title>)
@@ -55,6 +46,27 @@ const GameMechanics = ({done, changeActiveModal}) => {
 
     const IntroGameMap = () => {
         const [map, setMap] = useState(startJson);
+
+        function findAnimateIcons () {
+            let flag = false
+            map.forEach(function(row, index, array) {
+                row.forEach(function(cell, index, array) {
+                    if (cell['state'] === "animate") {
+                        flag = true
+                        return 1
+                    }
+                });
+
+                if (flag) {
+                    return 1
+                }
+            });
+
+            if (!flag) {
+                isAnimation = false
+            }
+        }
+
         function getCellContet(row, column) {
             if (map[row - 1][column - 1]['state'] === 'animate') {
                 const svgSize = 64
@@ -134,6 +146,16 @@ const GameMechanics = ({done, changeActiveModal}) => {
             }
         }
 
+        function onCellClickFromUser(row, column) {
+            if (!isAnimation) {
+                if (map[row - 1][column - 1]['state'] === 3) {
+                    isAnimation = true
+                }
+                onCellClick(row, column)
+            }
+
+        }
+
         function onCellClick(row, column) {
             if (0 < row < 9 && 0 < column < 9) {
                 let newMap = map.slice();
@@ -198,6 +220,7 @@ const GameMechanics = ({done, changeActiveModal}) => {
                             }
                         } catch (err) {}
 
+                        findAnimateIcons()
                         setMap(newMap);
                         if (map[1][1]['state'] === null && !doneCalled) {
                             doneCalled = true
@@ -215,35 +238,35 @@ const GameMechanics = ({done, changeActiveModal}) => {
         return (
             <div>
                 <div style={{ display: 'flex', width: "min-content" }}>
-                    <div className={'intro__cell'}  onClick={() => onCellClick(1, 1)}>
+                    <div className={'intro__cell'}  onClick={() => onCellClickFromUser(1, 1)}>
                         {getCellContet(1, 1)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(1, 2)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(1, 2)}>
                         {getCellContet(1, 2)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(1, 3)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(1, 3)}>
                         {getCellContet(1, 3)}
                     </div>
                 </div>
                 <div style={{ display: 'flex', width: "min-content" }}>
-                    <div className={'intro__cell'}  onClick={() => onCellClick(2, 1)}>
+                    <div className={'intro__cell'}  onClick={() => onCellClickFromUser(2, 1)}>
                         {getCellContet(2, 1)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(2, 2)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(2, 2)}>
                         {getCellContet(2, 2)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(2, 3)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(2, 3)}>
                         {getCellContet(2, 3)}
                     </div>
                 </div>
                 <div style={{ display: 'flex', width: "min-content" }}>
-                    <div className={'intro__cell'}  onClick={() => onCellClick(3, 1)}>
+                    <div className={'intro__cell'}  onClick={() => onCellClickFromUser(3, 1)}>
                         {getCellContet(3, 1)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(3, 2)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(3, 2)}>
                         {getCellContet(3, 2)}
                     </div>
-                    <div className={'intro__cell'} onClick={() => onCellClick(3, 3)}>
+                    <div className={'intro__cell'} onClick={() => onCellClickFromUser(3, 3)}>
                         {getCellContet(3, 3)}
                     </div>
                 </div>

@@ -1,11 +1,10 @@
 import React from 'react';
 import GameCell from "../../components/GameCell";
 
-const cellSize = (window.innerWidth - 16 - 12) / 8 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
-const cellStyle = {height: cellSize, width: cellSize}
-
 export default function GridSize8({onCellClick, getCellContent, colorMotion, map}) {
 
+    const cellSize = (document.documentElement.clientWidth - 16 - 12) / 8 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
+    const cellStyle = {height: cellSize, width: cellSize}
 
     return (
         <div style={{marginLeft: 6}} > { /* */}

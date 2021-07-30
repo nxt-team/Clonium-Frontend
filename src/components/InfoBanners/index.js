@@ -41,7 +41,7 @@ export default function InfoBanners(props) {
 
             </Card>
             <Card  >
-                <Link target="_blank" href="https://vk.com/nxt.team" >
+                <Link target="_blank" href="https://vk.com/pipeweb" >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Blue" >
                         <Icon28Users3Outline className="InfoBanner__Icon__Blue" width={32} height={32}/>

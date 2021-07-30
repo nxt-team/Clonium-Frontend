@@ -13,6 +13,11 @@ bridge.subscribe(({ detail: { type, data }}) => {
     schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
     document.body.attributes.setNamedItem(schemeAttribute);
     // setScheme(data.scheme)
+  } else if (type === 'VKWebAppLocationChanged') {
+    console.log("Location: ", data["location"])
+    const schemeAttribute = document.createAttribute('scheme');
+    schemeAttribute.value = data["location"] ? data["location"] : 'client_light';
+    document.body.attributes.setNamedItem(schemeAttribute);
   }
 });
 ReactDOM.render(<App />, document.getElementById("root"));

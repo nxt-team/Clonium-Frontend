@@ -100,7 +100,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         onClick={() => {
                             console.log("clicked")
                             updateUserProfileVkId(item["vk_id"])
-                            goToPage("userProfile")
+                            changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
                         exp={item["exp"]}
@@ -134,7 +134,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         onClick={() => {
                             console.log("clicked")
                             updateUserProfileVkId(item["vk_id"])
-                            goToPage("userProfile")
+                            changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
                         exp={item["exp"]}
@@ -175,7 +175,8 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         onClick={() => {
                             console.log("clicked")
                             updateUserProfileVkId(item["vk_id"])
-                            goToPage("userProfile")
+                            // goToPage("userProfile")
+                            changeActiveModal("profileModal")
                         }}
                         place={index + 1}
                         avaUrl={item["avatar"]}
@@ -216,7 +217,10 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
 
             <Tabs>
                 <TabsItem
-                    onClick={() => setSlideIndex(0)}
+                    onClick={() => {
+                        // document.getElementById("topSearch").blur()
+                        setSlideIndex(0)
+                    }}
                     selected={slideIndex === 0}
                 >
                     Друзья
@@ -233,13 +237,19 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                 align="center"
                 style={{ height: "100%" }}
                 slideIndex={slideIndex}
-                onChange={slideIndex => setSlideIndex(slideIndex)}
+                onChange={slideIndex => {
+                    if (slideIndex === 0) {
+                        document.getElementById("topSearch").blur()
+                    }
+                    setSlideIndex(slideIndex)
+                }}
             >
                 <div>
                     {renderFriendsTop()}
                 </div>
                 <div>
                     <Search
+                        id="topSearch"
                         value={searchData}
                         onChange={(e) => setSearchData(e.target.value)}
                         after={null}
@@ -247,7 +257,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     {superFightBanner&&
                         <Banner
                             mode="image"
-                            style={{margin: 0}}
+                            style={{margin: 0, marginBottom: 4}}
                             before={<Icon28FireOutline fill={'#fff'}/>}
                             header={<span>Супер игра</span>}
                             subheader={<span>Поле 10×17 и 10 игрков. Победитель получает стикерпак!</span>}
@@ -280,6 +290,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                 >
                     <div style={{marginTop: 8}} className="end_block">
                         <SimpleCell
+                            disabled={true}
                             before={
                                 <div className="avatar">
                                     <Avatar size={48} src={fetchedUser.photo_200} className="avatar__photo" />

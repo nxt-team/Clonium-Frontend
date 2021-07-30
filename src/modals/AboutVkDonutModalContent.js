@@ -5,10 +5,11 @@ import Icon24Dismiss from "@vkontakte/icons/dist/24/dismiss";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
+import { Icon28SwitchOutline } from '@vkontakte/icons';
 import "./AboutVkDonutModal.css"
 import {getDonateLink, getUserBalances} from "../api/api";
 
-export default function AboutVkDonutModal({id, closeModal, completeSnackBar, errorSnackBar, updateUserBalances}) {
+export default function AboutVkDonutModalContent({closeModal, completeSnackBar, errorSnackBar, updateUserBalances}) {
     const [donateLink, setDonateLink] = useState(null)
     const [isUpdateButton, setIsUpdateButton] = useState(false)
 
@@ -50,22 +51,7 @@ export default function AboutVkDonutModal({id, closeModal, completeSnackBar, err
     }
 
     return (
-        <ModalPage
-            id={id}
-            settlingHeight={100}
-            onClose={() => closeModal}
-            header={
-                <ModalPageHeader
-                    right={
-                        <PanelHeaderButton onClick={closeModal}>
-                            <Icon24Dismiss />
-                        </PanelHeaderButton>
-                    }
-                >
-                    Подписки
-                </ModalPageHeader>
-            }
-        >
+        <>
             <Gallery
                 slideWidth="90%"
                 style={{ height: "100%", paddingTop: 8 }}
@@ -87,9 +73,9 @@ export default function AboutVkDonutModal({id, closeModal, completeSnackBar, err
                         </Text>
                         <div >
                             <div style={{display: "flex"}}>
-                                <Button size="xl" href="https://vk.com/donut/nxt.team" target="_blank" onClick={addUpdateButton} >Оформить VK Donut</Button>
+                                <Button size="xl" href="https://vk.com/donut/pipeweb" target="_blank" onClick={addUpdateButton} >{isUpdateButton ? "Оформить" : "Оформить VK Donut"}</Button>
                                 { isUpdateButton &&
-                                    <Button size="xl" style={{marginLeft: 12}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} >Обновить</Button>
+                                    <Button size="xl" style={{marginLeft: 12, width: "min-content"}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} ><Icon28SwitchOutline width={24} height={24} /></Button>
                                 }
                             </div>
                             <Footer style={{margin: "8px 0"}} >от 99₽</Footer>
@@ -103,7 +89,7 @@ export default function AboutVkDonutModal({id, closeModal, completeSnackBar, err
                             Навсегда
                         </Title>
                         <Text weight="regular" style={{ marginBottom: 16 }}>
-                            Все тежи приемущества <br/>
+                            Все тежи преимущества <br/>
                             + создание своих карт (скоро) <br/>
                             + ракета рядом с именем в топе, <br/>
                             но с единоразовым платежом  и навсегда.
@@ -116,10 +102,10 @@ export default function AboutVkDonutModal({id, closeModal, completeSnackBar, err
                             <div style={{display: "flex"}}>
                                 { donateLink
                                     ? <Button size="xl" target="_blank" href={donateLink} onClick={addUpdateButton} >Приобрести</Button>
-                                    : <Button size="xl" disabled={true} ><Spinner size="regular" /></Button>
+                                    : <Button size="xl" disabled={true} style={{minHeight: 47.11}} ><Spinner size="small" /></Button>
                                 }
                                 { isUpdateButton &&
-                                    <Button size="xl" style={{marginLeft: 12}} mode="secondary" onClick={() => updateUserVkDonut("forever")} >Обновить</Button>
+                                    <Button size="xl" style={{marginLeft: 12, width: "min-content"}} mode="secondary" onClick={() => updateUserVkDonut("forever")} ><Icon28SwitchOutline width={24} height={24} /></Button>
                                 }
                             </div>
                             <Footer style={{margin: "8px 0"}} >499₽</Footer>
@@ -127,6 +113,6 @@ export default function AboutVkDonutModal({id, closeModal, completeSnackBar, err
                     </div>
                 </div>
             </Gallery>
-        </ModalPage>
+        </>
     )
 }

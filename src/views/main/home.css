@@ -86,6 +86,7 @@
 .profile_preview_container {
   display: flex;
   position: relative;
+  justify-content: center;
   border-radius: 10px;
   background-color: var(--content_tint_background);
 }
@@ -193,3 +194,10 @@
   clip-path: none !important;
 }
 
+#bigModal.ModalPage__in-wrap {
+  transform: translate3d(0px, 0%, 0px);
+}
+
+.lastIntroSlide {
+  overflow-x: auto !important;
+}

@@ -4,6 +4,7 @@ import {
     Icon28AchievementCircleFillBlue,
     Icon28ArrowRightOutline
 } from '@vkontakte/icons';
+import { Icon28CancelOutline } from '@vkontakte/icons';
 import {
     Footer,
     Gallery,
@@ -15,7 +16,7 @@ import {
     Title,
     Panel,
     PanelHeader,
-    Button
+    Button, PanelHeaderClose
 } from "@vkontakte/vkui";
 import {getUserAchievements} from "../../api/api";
 
@@ -77,7 +78,9 @@ const achievementsList = [
 
 ]
 
-const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
+let isDrag = false
+
+const Achievements = ({ id, fetchedUser, openAchievementModal, goToMainView }) => {
 
     const [userAchievements, setUserAchievements] = useState([]);
     const [slideIndex, setSlideIndex] = useState(0);
@@ -130,11 +133,15 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
                         }
                         description={achievementContent["task"]}
                         onClick={
-                            () => openAchievementModal(
-                                achievementContent["rank"],
-                                achievementContent["task"],
-                                achievementContent["achievement_id"]
-                            )
+                            () => {
+                                if (!isDrag) {
+                                    openAchievementModal(
+                                        achievementContent["rank"],
+                                        achievementContent["task"],
+                                        achievementContent["achievement_id"]
+                                    )
+                                }
+                            }
                         }
                     >
                         {achievementContent["rank"]}
@@ -181,11 +188,16 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
                         }
                         description={item["task"]}
                         onClick={
-                            () => openAchievementModal(
-                                item["rank"],
-                                item["task"],
-                                null
-                            )
+                            () => {
+                                if (!isDrag) {
+                                    openAchievementModal(
+                                        item["rank"],
+                                        item["task"],
+                                        null
+                                    )
+                                }
+                            }
+
                         }
                     >
                         {item["rank"]}
@@ -204,8 +216,8 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
             <PanelHeader
                 separator={false}
                 left={
-                    <PanelHeaderButton onClick={() => window.history.back()} >
-                        <Icon28ArrowRightOutline />
+                    <PanelHeaderButton onClick={goToMainView} >
+                        <Icon28CancelOutline />
                     </PanelHeaderButton>
                 }
             />
@@ -232,6 +244,8 @@ const Achievements = ({ id, fetchedUser, openAchievementModal }) => {
                 style={{ height: "100%" }}
                 slideIndex={slideIndex}
                 onChange={slideIndex => setSlideIndex(slideIndex)}
+                onDragStart={() => isDrag = true}
+                onDragEnd={() => setTimeout(() => isDrag = false, 200)}
             >
                 <div>
                     {getOtherAchievements()}

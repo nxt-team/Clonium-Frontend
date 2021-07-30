@@ -7,10 +7,6 @@ import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
 import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
-import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
-import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
-import Icon24Back from "@vkontakte/icons/dist/24/back";
-import { Icon28MessagesOutline } from '@vkontakte/icons';
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
@@ -27,10 +23,10 @@ import {getFight} from "../../api/api";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 let userColor = ""
-let colors = ["red", "blue", "green", "yellow"]
+let colors
 
 let isRecursion = false
-let lastColorMotion = "red"
+let lastColorMotion
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 0
@@ -98,7 +94,6 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	console.log(
 		" Color motion: " + colorMotion,
 		" Last color motion: " + lastColorMotion,
-		"-------------!!!!!-------------"
 	)
 
 	useEffect(() => {
@@ -109,8 +104,7 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 			console.log("cords " + data)
 
 			console.log(
-				" Color motion: " + colorMotion,
-				"----------------------------"
+				" Color motion: " + colorMotion
 			)
 			onCellClick(data[0], data[1])
 			changeColorMotion(lastColorMotion, ("line 103 " + data))
@@ -136,7 +130,10 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 			})
 			setMap(getStartJson(mapName))
 			// setColorMotion(colors[0])
-			colors.length = fight.max_user_number
+			lastColorMotion = "red"
+			colors = ["red", "blue", "green", "yellow"]
+			colors = colors.splice(0, fight.max_user_number)
+			console.log(fight.max_user_number)
 			console.log(userColor, colors)
 			let newMap = map.slice();
 			const len = map.length
@@ -168,90 +165,17 @@ const Game = ({id, startupParameters, changeActiveModal, goToMainViewHome, mapNa
 	},[])
 
 	function changeColorMotion (color, source) {
-		console.log("change color motion " + color, source)
 
-		// if (colors.indexOf(color) + 1 === colors.length) {
-		// 	console.log("COLOR MOTION CHANGED to _ from _ ", colors[0], color, source )
-		// 	setColorMotion(colors[0])
-		// 	lastColorMotion = colors[0]
-		// } else {
-		// 	console.log("COLOR MOTION CHANGED to _ from _", colors[colors.indexOf(color) + 1], color, source )
-		// 	setColorMotion(colors[colors.indexOf(color) + 1])
-		// 	lastColorMotion = colors[colors.indexOf(color) + 1]
-		// }
-
-		// if (colors.length === 2) {
-		// 	if (color === "red") {
-		// 		setColorMotion("blue")
-		// 		lastColorMotion = "blue"
-		// 	} else if (color === "blue") {
-		// 		setColorMotion( "red")
-		// 		lastColorMotion = "red"
-		// 	} else if (color === "green") {
-		// 		setColorMotion( "red")
-		// 		lastColorMotion = "red"
-		// 	} else {
-		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
-		// 	}
-		// } else if (colors.length === 3) {
-		// 	if (color === "red") {
-		// 		setColorMotion("blue")
-		// 		lastColorMotion = "blue"
-		// 	} else if (color === "blue") {
-		// 		setColorMotion( "green")
-		// 		lastColorMotion = "green"
-		// 	} else if (color === "green") {
-		// 		setColorMotion( "red")
-		// 		lastColorMotion = "red"
-		// 	}  else if (color === "yellow") {
-		// 		setColorMotion( "red")
-		// 		lastColorMotion = "red"
-		// 	} else {
-		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
-		// 	}
-		// } else if (colors.length === 4) {
-		// 	if (color === "red") {
-		// 		setColorMotion("blue")
-		// 		lastColorMotion = "blue"
-		// 	} else if (color === "blue") {
-		// 		setColorMotion( "green")
-		// 		lastColorMotion = "green"
-		// 	} else if (color === "green") {
-		// 		setColorMotion( "yellow")
-		// 		lastColorMotion = "yellow"
-		// 	} else if (color === "yellow") {
-		// 		setColorMotion( "red")
-		// 		lastColorMotion = "red"
-		// 	} else {
-		// 		console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
-		// 	}
-		// }
-
-
-		if (color === "red") {
-			setColorMotion("blue")
-			lastColorMotion = "blue"
-		} else if (color === "blue") {
-			if (colors.indexOf("green") === -1) {
-				setColorMotion( "red")
-				lastColorMotion = "red"
-			} else {
-				setColorMotion( "green")
-				lastColorMotion = "green"
-			}
-		} else if (color === "green") {
-			if (colors.indexOf("yellow") === -1) {
-				setColorMotion( "red")
-				lastColorMotion = "red"
-			} else {
-				setColorMotion( "yellow")
-				lastColorMotion = "yellow"
-			}
-		} else if (color === "yellow") {
-			setColorMotion( "red")
-			lastColorMotion = "red"
+		const colorMotionIndex = colors.indexOf(color)
+		console.log("colorMotionIndex", colorMotionIndex)
+		if (colorMotionIndex + 2 > colors.length) {
+			console.log("colorMotionIndex + 2 > color.length. ->", colors[0])
+			lastColorMotion = colors[0]
+			setColorMotion(colors[0])
 		} else {
-			console.log("COLOR MOTION CHANGED ERROR to ", color, lastColorMotion, source )
+			console.log("colorMotionIndex + 2 <= color.length, ->", colors[colorMotionIndex + 1])
+			lastColorMotion = colors[colorMotionIndex + 1]
+			setColorMotion(colors[colorMotionIndex + 1])
 		}
 	}
 

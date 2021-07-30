@@ -13,7 +13,7 @@ import './utils/OpenSansFonts.css'
 import Profile from './views/main/Profile'
 import Top from './views/main/Top'
 import History from './views/main/History'
-import { Icon56FavoriteOutline } from '@vkontakte/icons';
+import {Icon28CopyOutline, Icon56FavoriteOutline} from '@vkontakte/icons';
 import { Icon56VideoOutline } from '@vkontakte/icons';
 import Achievements from './views/main/Achievements'
 import { Icon28Messages } from '@vkontakte/icons';
@@ -51,8 +51,8 @@ import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
 import GameMechanicsModal from "./modals/GameMechanicsModal";
 import ExplosionMechanicsModal from "./modals/ExplosionMechanicsModal"
-import SuperFightModal from "./modals/SuperFightModal";
-import AboutVkDonutModal from "./modals/AboutVkDonutModal";
+import SuperFightModalContent from "./modals/SuperFightModalContent";
+import AboutVkDonutModalContent from "./modals/AboutVkDonutModalContent";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
 import UserProfile from "./views/main/UserProfile";
@@ -73,10 +73,13 @@ import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
 import ClearCache from "./views/main/ClearCache";
+import ProfileModalContent from "./modals/ProfileModalContent";
+import {postShare, refLinkCopy} from "./sharing/sharing";
+import AlreadyConnected from "./views/alreadyConnected/alreadyConnected";
+import AnimatedDoneIcon from "./components/AnimatedDoneIcon";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
-
 let mapName = ""
 let secretId = ""
 let needUsersInFight = 0
@@ -92,29 +95,35 @@ let userColor = ""
 let beatenPlayers = []
 
 let userProfileVkId = 1
+let isCustomizationLeaving = false
+let initTimeInSeconds = 0
+
+let isUserAlreadyConnected = false
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [finishData, setFinishData] = useState([])
 	const [fetchedUser, setUser] = useState({id: 1, first_name: "Загрузка", last_name: ""});
-	const [popout, setPopout] = useState(<ScreenSpinner/>); //
+	const [popout, setPopout] = useState(<ScreenSpinner/>); // в offline используется номер этой строки
 	const [activeModal, setActiveModal] = useState(null)
 	const [activeView, setActiveView] = useState('loading')
 	const [imgLink, setImgLink] = useState(null)
 	const [history, setHistory] = useState(['home']) // Заносим начальную панель в массив историй.
 	const [achievementModalData, setAchievementModalData] = useState(["Титул", "Сабхидер", true])
 	const [userBalances, setUserBalances] = useState({
-		"tickets": 0,
-		"exp": 5,
+		"tickets": 5,
+		"exp": 0,
 		"fights": 0,
 		"losses": 0,
 		"wins": 0,
 		"vk_donut": 0,
-		"user_rank": "",
-		"status": "",
+		"user_rank": "Ноу-нейм",
+		"status": "0",
 		"are_notifications_enabled": false,
 		"isUserInSuperFight": false,
+		"referrals": 0
 	})
+	const [ online, setOnline] = useState(1)
 
 	function updateStatusPanel (newStatus) {
 		const status = newStatus.split('-')
@@ -145,21 +154,29 @@ const App = () => {
 
 	}
 
+	// console.log("Scroll bars: ", document.documentElement.clientWidth, window.innerWidth)
+
 	useEffect(() => {
-		console.log("CONNECTED SOCKETS")
 		socket.on("status", (data) => {
 			console.log("NEW STATUS", data)
 			updateStatusPanel(data)
 		});
 
-
-
+		socket.on("online", (data) => {
+			if (activePanel !== "game" || activePanel !== "rejoinedGame") {
+				setOnline(data)
+			}
+			console.log("new Online", data)
+		});
 		bridge.subscribe(({ detail: { type, data }}) => {
 			console.log(type, data)
 			if (type === 'VKWebAppAddToFavoritesResult') {
 				completeSnackBar("Мини приложение в избранных")
 			} else if (type === "VKWebAppAllowMessagesFromGroupResult") {
+				updateUserBalances()
 				completeSnackBar("Уведомления включены")
+			} else if (type === "VKWebAppCopyTextResult") {
+				completeSnackBar("Скопировано!")
 			}
 		});
 
@@ -168,7 +185,14 @@ const App = () => {
 			setUser(fetchUser)
 			let user = await init(fetchUser)
 			setUserBalances(user)
-			if (user["status"] === "success") {
+			socket.connect()
+			const timeNow = new Date()
+			initTimeInSeconds = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
+
+			if (user["status"] === "connected") {
+				isUserAlreadyConnected = true
+				setActiveView("alreadyConnected")
+			} else if (user["status"] === "success") {
 
 				let hash = window.location.hash
 
@@ -237,7 +261,14 @@ const App = () => {
 						} else if (fight["status"] === "waiting_for_players") {
 							needUsersInFight = fight["max_user_number"]
 							secretId = hash
-							setTimeout(() => {joinRoom(fetchUser, hash); goToPage("waitingForStart")}, 300);
+							if (user["tickets"] === 0) {
+								newActiveModal = "noTickets"
+								console.log("noTickets")
+							} else {
+								setTimeout(() => {joinRoom(fetchUser, hash); setActivePanel("waitingForStart")}, 300);
+							}
+						} else if (fight["status"] === "fight_finished") {
+							newActiveModal = "fightFinished"
 						} else {
 							newActiveModal = "fightStarted"
 						}
@@ -254,7 +285,9 @@ const App = () => {
 
 		fetchData();
 
-		window.addEventListener('popstate', () => goBack());
+		window.addEventListener('popstate', () => {
+			goBack()
+		});
 	}, []);
 
 	const go = e => {
@@ -266,6 +299,8 @@ const App = () => {
 
 	const goToPage = (panel) => {
 		if (panel === "waitingForStart" && userBalances["tickets"] === 0) {
+			console.log(userBalances)
+			console.log("noTickets")
 			setActiveModal("noTickets")
 		} else {
 			window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
@@ -281,7 +316,17 @@ const App = () => {
 	}
 
 	window.addEventListener('offline', () => {
-		goToOffline()
+		const timeNow = new Date()
+		const timeInSecondsNow = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
+		console.log(timeInSecondsNow - initTimeInSeconds)
+		if (timeInSecondsNow - initTimeInSeconds < 1000) {
+			setTimeout(() => goToOffline(), 500)
+		} else if (isUserAlreadyConnected) {
+			errorSnackBar("Интернет соединение потеряно")
+		} else {
+			goToOffline()
+		}
+
 	})
 
 	const goIsolated = e => {
@@ -290,15 +335,39 @@ const App = () => {
 	}
 
 	const goIsolated2 = (panel) => {
-		setActivePanel( panel );
+		if (panel === "waitingForStart" && userBalances["tickets"] === 0) {
+			console.log(userBalances)
+			console.log("noTickets")
+			setActiveModal("noTickets")
+		} else {
+			setActivePanel(panel);
+		}
 	}
 
 	const goBack = () => {
-		if( history.length === 1 ) {  // Если в массиве одно значение:
+		console.log(activePanel, history)
+		console.log(activeModal)
+		if ( history.length === 1 ) {  // Если в массиве одно значение:
 			bridge.send("VKWebAppClose", {"status": "success"}); // Отправляем bridge на закрытие сервиса.
 		} else if( history.length > 1) { // Если в массиве больше одного значения:
-			history.pop() // удаляем последний элемент в массиве.
-			setActivePanel( history[history.length - 1] ) // Изменяем массив с иторией и меняем активную панель.
+
+			if (isCustomizationLeaving) {
+				setTimeout(() => {
+					history.pop() // удаляем последний элемент в массиве.
+					console.log("isCustomizationLeaving true")
+					setActivePanel(history[history.length - 1]) // Изменяем массив с иторией и меняем активную панель.
+					console.log("panel changed to", history[history.length - 1], "\n", "activePanel:", activePanel)
+				}, 500)
+			} else {
+				history.pop() // удаляем последний элемент в массиве.
+				setActivePanel(history[history.length - 1]) // Изменяем массив с иторией и меняем активную панель.
+				console.log("panel changed to", history[history.length - 1], "\n", "activePanel:", activePanel)
+			}
+
+			if (history[history.length - 1] === "profile") {
+				isCustomizationLeaving = true
+				setTimeout(() => isCustomizationLeaving = false, 500)
+			}
 		}
 	}
 
@@ -327,7 +396,9 @@ const App = () => {
 	}
 
 	const addTicket = () => {
-		userBalances["tickets"]++
+		let locBalances = userBalances
+		locBalances["tickets"]++
+		setUserBalances(locBalances)
 	}
 
 
@@ -336,19 +407,51 @@ const App = () => {
 			activeModal={activeModal}
 			onClose={() => setActiveModal(null)}
 		>
-			<SuperFightModal
-				id='superFight'
-				closeModal={() => setActiveModal(null)}
-				completeSnackBar={completeSnackBar}
-				changeIsUserInSuperFight={() => userBalances["isUserInSuperFight"] = true}
-				isUserInSuperFight={userBalances["isUserInSuperFight"]} />
-			<AboutVkDonutModal
-				id='aboutVkDonut'
-				closeModal={() => setActiveModal(null)}
-				completeSnackBar={completeSnackBar}
-				errorSnackBar={errorSnackBar}
-				updateUserBalances={(newUserBalances) => setUserBalances(newUserBalances)}
-			/>
+			<ModalPage
+				id={'superFight'}
+				settlingHeight={100}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() => setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Супер бой
+					</ModalPageHeader>
+				}
+			>
+				<SuperFightModalContent
+					completeSnackBar={completeSnackBar}
+					changeIsUserInSuperFight={() => userBalances["isUserInSuperFight"] = true}
+					isUserInSuperFight={userBalances["isUserInSuperFight"]}
+				/>
+			</ModalPage>
+			<ModalPage
+				id={"aboutVkDonut"}
+				settlingHeight={50}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() =>setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Подписки
+					</ModalPageHeader>
+				}
+			>
+				<AboutVkDonutModalContent
+					closeModal={() => setActiveModal(null)}
+					completeSnackBar={completeSnackBar}
+					errorSnackBar={errorSnackBar}
+					updateUserBalances={updateUserBalances}
+					/>
+			</ModalPage>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}
 				onClose={() => setActiveModal(null)}
@@ -390,47 +493,72 @@ const App = () => {
 					title: 'Смотреть',
 					mode: 'primary',
 					action: () => {
-						const user_platform = startupParameters.get('vk_platform')
-						if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone') {
-							bridge.send("VKWebAppShowNativeAds", {ad_format: "reward"})
-								.then(async data => {
-									if (data.result) {
-										const result = await getTicket(fetchedUser)
-										console.log(result)
-										if (result.success) {
-											setActiveModal(null)
-											addTicket()
-											completeSnackBar("Билет зачислен")
-										}
-									} else if (data.no_ad_reason === "no ad") {
+						bridge.send("VKWebAppShowNativeAds", {ad_format: "reward"})
+							.then(async data => {
+								console.log(data)
+								if (data.result) {
+									const result = await getTicket(fetchedUser)
+									console.log(result)
+									if (result.success) {
+										addTicket()
 										setActiveModal(null)
-										bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
-											.then(async data => {
-												if (data.result) {
-													const result = await getTicket(fetchedUser)
-													console.log(result)
-													if (result.success) {
-														setActiveModal(null)
-														addTicket()
-														completeSnackBar("Билет зачислен")
-													}
-												} else if (data.no_ad_reason === "no ad") {
-													setActiveModal(null)
-													errorSnackBar("Не удалось получить билет. Закончилась реклама")
-												} else {
-													setActiveModal(null)
-													errorSnackBar("Не известная ошибка. data: " + data)
-												}
-											})
-									} else {
-										setActiveModal(null)
-										errorSnackBar("Не известная ошибка. data: " + data)
+										// completeSnackBar("Билет зачислен")
 									}
+								} else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_reason.toLowerCase() === "no ad" || data.error_reason.toLowerCase() === "no ads") {
+									setActiveModal(null)
+									bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
+										.then(async data => {
+											if (data.result) {
+												const result = await getTicket(fetchedUser)
+												console.log(result)
+												if (result.success) {
+													addTicket()
+													setActiveModal(null)
+													// completeSnackBar("Билет зачислен")
+												}
+											} else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_reason.toLowerCase() === "no ad" || data.error_reason.toLowerCase() === "no ads") {
+												setActiveModal(null)
+												errorSnackBar("Не удалось получить билет. Закончилась реклама")
+											} else {
+												setActiveModal(null)
+												errorSnackBar("Не известная ошибка. data: " + data)
+											}
+										})
+										.catch((e) => {
+											errorSnackBar("Не удалось получить билет. Закончилась реклама")
+										})
+								} else {
+									setActiveModal(null)
+									errorSnackBar("Не известная ошибка. data: " + data)
+								}
+							})
+							.catch((e) => {
+								console.log(e)
+								setActiveModal(null)
+								bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
+									.then(async data => {
+										if (data.result) {
+											const result = await getTicket(fetchedUser)
+											console.log(result)
+											if (result.success) {
+												addTicket()
+												setActiveModal(null)
+												// completeSnackBar("Билет зачислен")
+											}
+										} else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_reason.toLowerCase() === "no ad" || data.error_reason.toLowerCase() === "no ads") {
+											setActiveModal(null)
+											errorSnackBar("Не удалось получить билет. Закончилась реклама")
+										} else {
+											setActiveModal(null)
+											errorSnackBar("Не известная ошибка. data: " + data)
+										}
+									})
+									.catch((e) => {
+										setActiveModal(null)
+										errorSnackBar("Не удалось получить билет. Закончилась реклама")
 								})
-						} else {
-							setActiveModal(null)
-							errorSnackBar("Билет можно получить только в официальном приложение ВКонтакте")
-						}
+							})
+
 					}
 				}]}
 			>
@@ -452,6 +580,7 @@ const App = () => {
 				startupParameters={startupParameters}
 				fetchedUser={fetchedUser}
 				updateUserBalances={updateUserBalances}
+				changeActiveModal={changeActiveModal}
 			/>
 			<ModalPage
 				id="messanger"
@@ -546,11 +675,95 @@ const App = () => {
 				]}
 			>
 			</ModalCard>
+			<ModalCard
+				id={"fightFinished"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Бой уже закончился"
+				caption="Создай или присоединись в другой"
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"successPromocodeActivation"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedDoneIcon/>}
+				header="Промокод активирован"
+				caption="Бонус уже зачислен"
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
+			<ModalCard
+				id={"erroredPromocodeActivation"}
+				onClose={() => setActiveModal(null)}
+				icon={<AnimatedErrorIcon/>}
+				header="Ошибка активации"
+				caption="Не удалось активировать промокод"
+				actions={[
+					{
+						title: 'Закрыть',
+						mode: 'secondary',
+						action: () => {
+							setActiveModal(null);
+						}
+					}
+				]}
+			>
+			</ModalCard>
 			<GameMechanicsModal id={"gameMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<ExplosionMechanicsModal id={"explosionMechanicsModal"} closeModal={() => setActiveModal(null)}/>
 			<GrabRivalsModal id={"grabRivalsModal"} closeModal={() => setActiveModal(null)}/>
-			<AchievementModal id={"achievementModal"} closeModal={() => setActiveModal(null)} data={achievementModalData} fetchedUser={fetchedUser} completeSnackBar={completeSnackBar} />
-
+			<AchievementModal
+				id={"achievementModal"}
+				closeModal={() => setActiveModal(null)}
+				data={achievementModalData}
+				fetchedUser={fetchedUser} 
+				completeSnackBar={completeSnackBar}
+				userBalances={userBalances}
+				changeActiveModal={changeActiveModal}
+				updateUserRank={(newRank) => userBalances["user_rank"] = newRank}
+				inviteReferrals={inviteReferrals}
+			/>
+			{/*<ProfileModal*/}
+			{/*	id={"profileModal"}*/}
+			{/*	changeActiveModal={changeActiveModal}*/}
+			{/*	closeModal={() => setActiveModal(null)}*/}
+			{/*	vk_id={userProfileVkId}*/}
+			{/*/>*/}
+			<ModalPage
+				id={"profileModal"}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() => setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Профиль
+					</ModalPageHeader>
+				}
+				settlingHeight={100}
+			>
+				<ProfileModalContent closeModal={() => setActiveModal(null)} vk_id={userProfileVkId} changeActiveModal={changeActiveModal}/>
+			</ModalPage>
 		</ModalRoot>
 	);
 
@@ -569,6 +782,8 @@ const App = () => {
 	}
 
 	function goToCreatingRoom () {
+		// window.history.pushState( {panel: "creatingRoom"}, "creatingRoom" );
+		// history.push("creatingRoom")
 		setActiveView('creatingRoom')
 	}
 
@@ -588,6 +803,10 @@ const App = () => {
 
 	function goToClearCache () {
 		setActiveView('clearCache')
+	}
+
+	function goToEndFightView () {
+		setActiveView("endFight")
 	}
 
 	async function goToEndFight (beatenPlayersColors) {
@@ -620,6 +839,20 @@ const App = () => {
 		)
 	}
 
+	function inviteReferrals () {
+		setPopout(
+			<ActionSheet onClose={() => setPopout(null)}>
+				<ActionSheetItem autoclose onClick={() => postShare(fetchedUser.id)} before={<Icon28NewsfeedOutline/>}>
+					Опубликовать пост
+				</ActionSheetItem>
+				<ActionSheetItem autoclose onClick={() => refLinkCopy(fetchedUser.id)} before={<Icon28CopyOutline />}>
+					Скопировать ссылку
+				</ActionSheetItem>
+				{osName === IOS && <ActionSheetItem autoclose mode="cancel">Отменить</ActionSheetItem>}
+			</ActionSheet>
+		)
+	}
+
 	function openAchievementModal (title, caption, isCompleted) {
 		setAchievementModalData([title, caption, isCompleted])
 		setActiveModal('achievementModal')
@@ -639,6 +872,7 @@ const App = () => {
 	}
 
 	function errorSnackBar (text) {
+		console.log(text)
 		setPopout(
 			<Snackbar
 				layout="vertical"
@@ -689,6 +923,14 @@ const App = () => {
 		setActivePanel("home")
 	}
 
+	function goToAchievements () {
+		setActiveView("achievements")
+	}
+
+	function goToHistory () {
+		setActiveView("history")
+	}
+
 	return (
 		<ConfigProvider
 			// scheme={scheme}
@@ -701,8 +943,6 @@ const App = () => {
 				</View>
 				<View id='main' history={getSwipeBackHistory()} onSwipeBack={goBackBySwipeBack} activePanel={activePanel} popout={popout} modal={modal}>
 					<Intro id='intro_1' panel_go={panel_go} endIntro={endIntro} changeActiveModal={changeActiveModal}/>
-					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} />
-					<History id='history' go={go} fetchedUser={fetchedUser} />
 					<Home
 						id={'home'}
 						goToPage={goToPage}
@@ -715,8 +955,12 @@ const App = () => {
 						userBalances={userBalances}
 						updateNotifications={updateNotifications}
 						startupParameters={startupParameters}
+						goIsolated={goIsolated2}
+						online={online}
+						goToHistory={goToHistory}
+						goToAchievements={goToAchievements}
 					/>
-					<WaitingForStart id={'waitingForStart'} go={go} are_notifications_enabled={userBalances["are_notifications_enabled"]} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
+					<WaitingForStart goIsolated={goIsolated2} id={'waitingForStart'} go={go} are_notifications_enabled={userBalances["are_notifications_enabled"]} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
 					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} />
 					<Game
 						id={'game'}
@@ -768,17 +1012,27 @@ const App = () => {
 					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} goToPage={goToPage} fetchedUser={fetchedUser}
 								  updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
 								  updateSecretId={(newId) => secretId = newId }
+								  goIsolated={goIsolated2}
 					/>
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated2} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
 					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} updateUserBalances={updateUserBalances} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
 				</View>
-				<View activePanel={"offline"} id="offline" modal={modal} >
-					<Offline id={'offline'} goToMainView={goToMainView} changeActiveModal={changeActiveModal}/>
+				<View activePanel={"offline"} id="offline" >
+					<Offline id={'offline'} changePopou={(newPopout) => setPopout(newPopout)} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
 				</View>
 				<View activePanel={"clearCache"} id="clearCache" >
 					<ClearCache id='clearCache'/>
+				</View>
+				<View activePanel={"alreadyConnected"} id="alreadyConnected" popout={popout}>
+					<AlreadyConnected id='alreadyConnected'/>
+				</View>
+				<View activePanel={"achievements"} id="achievements" popout={popout} modal={modal}>
+					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} goToMainView={goToMainView} />
+				</View>
+				<View activePanel={"history"} id="history" popout={popout} modal={modal}>
+					<History id='history' fetchedUser={fetchedUser} goToMainView={goToMainView} />
 				</View>
 			</Root>
 		</ConfigProvider>
