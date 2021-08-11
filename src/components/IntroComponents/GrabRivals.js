@@ -155,9 +155,6 @@ const GradRivals = ({done, changeActiveModal}) => {
 
         function onCellClickFromUser(row, column) {
             if (!isAnimation) {
-                if (map[row - 1][column - 1]['state'] === 3) {
-                    isAnimation = true
-                }
                 onCellClick(row, column)
             }
 
@@ -175,6 +172,7 @@ const GradRivals = ({done, changeActiveModal}) => {
                 } else if (map[row - 1][column - 1]['state'] === 3) {
                     const color = newMap[row - 1][column - 1]['color'];
                     newMap[row - 1][column - 1]['state'] = "animate";
+                    isAnimation = true
                     setMap(newMap)
 
                     setTimeout(() => {

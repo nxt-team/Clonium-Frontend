@@ -20,12 +20,12 @@ const WaitingForTheFight = ({ id, startCount}) => {
 
     }, [])
 
-    useInterval(() => {
+    setTimeout(() => {
         if (count > 0) {
             const timeNow = new Date()
             const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60
             setCount(finalSeconds - secondsNow);
-            if (count < 5) {
+            if (count < 6) {
                 const user_platform = startupParameters.get('vk_platform')
                 if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
                     bridge.send("VKWebAppTapticImpactOccurred", {"style": "medium"});

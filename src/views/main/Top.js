@@ -10,7 +10,7 @@ import {
     Icon32SearchOutline,
     Icon56UsersOutline,
     Icon28AchievementCircleFillBlue,
-    Icon28FireOutline,
+    Icon28FireOutline, Icon28AddSquareOutline,
 } from '@vkontakte/icons';
 import LeaderBoardPlace from '../../components/LeaderBoardPlace'
 import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
@@ -30,7 +30,10 @@ import {
 } from "@vkontakte/vkui";
 import {getFriendsTop, getGlobalTop} from "../../api/api";
 import bridge from '@vkontakte/vk-bridge';
+import SwipeableViews from "react-swipeable-views";
+import {refLinkShare} from "../../sharing/sharing";
 const osName = platform();
+let updateHeight
 
 const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVkId }) => {
 
@@ -39,6 +42,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
     const [globalTop, setGlobalTop] = useState([])
     const [friendsTop, setFriendsTop] = useState([])
     const [searchData, setSearchData] = useState("")
+    const [nonPlayingFriends, setNonPlayingFriends] = useState([])
 
     async function getFriendsTopByBridge () {
         const token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7848428, "scope": "friends"})
@@ -58,6 +62,23 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
             console.log(friends["response"]["items"])
             const friendsTop = await getFriendsTop(fetchedUser, friends["response"]["items"])
             setFriendsTop(friendsTop)
+            let nonPlaying = await bridge.send("VKWebAppCallAPIMethod", {
+                "method": "friends.search", "request_id": "1", "params":
+                    {
+                        "user_id": fetchedUser.id,
+                        "fields": "photo_200,sex",
+                        "q": "",
+                        "v": "5.21",
+                        "count": 10,
+                        "access_token": token["access_token"]
+                    }
+            });
+            const friendsInGame = []
+            friendsTop[0].forEach((item) => friendsInGame.push(item["vk_id"]))
+            nonPlaying = nonPlaying["response"]["items"].filter(item => friendsInGame.indexOf(item["id"]) === -1)
+            nonPlaying.splice(5)
+            setNonPlayingFriends(nonPlaying)
+            updateHeight.updateHeight()
         }
     }
 
@@ -65,6 +86,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
         async function getTops() {
             const globalTop = await getGlobalTop(fetchedUser)
             setGlobalTop(globalTop)
+            updateHeight.updateHeight()
             await getFriendsTopByBridge()
         }
         getTops();
@@ -184,6 +206,19 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         exp={item["exp"]}/>
                 )
             })
+            let nonPlayingFriendsContent = []
+            nonPlayingFriends.forEach((item) => {
+                nonPlayingFriendsContent.push(
+                    <SimpleCell
+                        style={{cursor: "pointer"}}
+                        before={<Avatar size={40} src={item["photo_200"]} />}
+                        after={<Icon28AddSquareOutline />}
+                        onClick={() => refLinkShare(fetchedUser.id)}
+                    >
+                        {item["first_name"] + " " + item["last_name"]}
+                    </SimpleCell>
+                )
+            })
             return (
                 <>
                     <Placeholder
@@ -200,13 +235,25 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     }>
                         {content}
                     </Group>
+                    {nonPlayingFriends.length > 0 &&
+                        <>
+                            <Separator/>
+                            <Group header={
+                                <Header>
+                                    Неиграющие друзья
+                                </Header>
+                            }>
+                                {nonPlayingFriendsContent}
+                            </Group>
+                        </>
+                    }
                 </>
             )
         }
     }
 
     return (
-        <Panel id={id}>
+        <Panel id={id} style={{position: "fixed"}}>
             <PanelHeader
                 left={<PanelHeaderButton onClick={() => window.history.back()} data-to="home">
                     {osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
@@ -232,22 +279,22 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     Все
                 </TabsItem>
             </Tabs>
-            <Gallery
-                slideWidth="100%"
-                align="center"
-                style={{ height: "100%" }}
-                slideIndex={slideIndex}
-                onChange={slideIndex => {
+            <SwipeableViews
+                action={(action) => updateHeight = action}
+                enableMouseEvents
+                // animateHeight
+                index={slideIndex}
+                onChangeIndex={slideIndex => {
                     if (slideIndex === 0) {
                         document.getElementById("topSearch").blur()
                     }
                     setSlideIndex(slideIndex)
                 }}
             >
-                <div>
+                <div className={"friendsSlide"} >
                     {renderFriendsTop()}
                 </div>
-                <div>
+                <div className={"globalSlide"} >
                     <Search
                         id="topSearch"
                         value={searchData}
@@ -255,35 +302,48 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         after={null}
                     />
                     {superFightBanner&&
-                        <Banner
-                            mode="image"
-                            style={{margin: 0, marginBottom: 4}}
-                            before={<Icon28FireOutline fill={'#fff'}/>}
-                            header={<span>Супер игра</span>}
-                            subheader={<span>Поле 10×17 и 10 игрков. Победитель получает стикерпак!</span>}
-                            asideMode="dismiss"
-                            onDismiss={() => setSuperFightBanner(false)}
-                            background={
-                                <div
-                                    style={{
-                                        backgroundColor: '#ec644c',
-                                    }}
-                                />
-                            }
-                            actions={
-                                <React.Fragment >
-                                    <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('superFight')} >Подробнее</Button>
-                                </React.Fragment>
-                            }
+                    <Banner
+                        mode="image"
+                        style={{margin: 0, marginBottom: 4}}
+                        before={<Icon28FireOutline fill={'#fff'}/>}
+                        header={<span>Супер бой</span>}
+                        subheader={<span>Поле 16×11 и 10 игроков. Победитель получает стикерпак!</span>}
+                        asideMode="dismiss"
+                        onDismiss={() => setSuperFightBanner(false)}
+                        background={
+                            <div
+                                style={{
+                                    backgroundColor: '#ec644c',
+                                }}
+                            />
+                        }
+                        actions={
+                            <React.Fragment >
+                                <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('superFight')} >Подробнее</Button>
+                            </React.Fragment>
+                        }
                     />
                     }
                     {renderGlobalTop()}
-                    </div>
-            </Gallery>
+                </div>
+            </SwipeableViews>
+            {/*<Gallery*/}
+            {/*    slideWidth="100%"*/}
+            {/*    align="center"*/}
+            {/*    style={{ height: "100%" }}*/}
+            {/*    slideIndex={slideIndex}*/}
+            {/*    onChange={slideIndex => {*/}
+            {/*        if (slideIndex === 0) {*/}
+            {/*            document.getElementById("topSearch").blur()*/}
+            {/*        }*/}
+            {/*        setSlideIndex(slideIndex)*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    */}
+            {/*</Gallery>*/}
 
             {(slideIndex === 1 && globalTop.length !== 0)&&
                 <>
-                <div style={{height: 110}} />
                 <FixedLayout
                     style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
                     vertical="bottom"

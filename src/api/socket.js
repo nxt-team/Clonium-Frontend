@@ -12,17 +12,23 @@ socket.on("connect", () => {
     })
 });
 
+socket.on("disconnect", () => {
+    console.log("disconnected")
+})
+
 export function joinRoom (fetchedUser, secret_id ) {
     socket.emit("join room", {
         "secret_id": secret_id,
         "vk_id": fetchedUser.id,
-        "avatar": fetchedUser.photo_max_orig
+        "avatar": fetchedUser.photo_200,
+        "params": window.location.search.replace('?', '')
     })
 }
 
 export function leaveFight (fetchedUser) {
     socket.emit("leave room", {
-        "vk_id": fetchedUser.id
+        "vk_id": fetchedUser.id,
+        "params": window.location.search.replace('?', '')
     })
 }
 
@@ -40,7 +46,8 @@ export function clickMap (secretId, fetchedUser, row, column) {
         "vk_id": fetchedUser.id,
         "secret_id": secretId,
         "row": row,
-        "column": column
+        "column": column,
+        "params": window.location.search.replace('?', '')
     })
 }
 

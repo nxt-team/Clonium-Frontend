@@ -9,7 +9,7 @@ import {
     WriteBarIcon,
     Gallery,
     Text,
-    Button,
+    Button, Avatar,
 } from "@vkontakte/vkui";
 import './RateFight.css'
 import {rateFight} from "../../api/api";
@@ -109,6 +109,11 @@ const RateFight = ({ id, goIsolated, screenSpinnerOn, screenSpinnerOff, fetchedU
                         onChange={(e) => setComment(e.target.value)}
                         placeholder="Твой комментарий"
                         maxlength={400}
+                        before={
+                            <WriteBarIcon disabled={true} style={{opacity: 1}}>
+                            <Avatar size={34} src={fetchedUser.photo_200} />
+                            </WriteBarIcon>
+                        }
                         after={comment.length !== 0 ?
                             <WriteBarIcon
                                 mode="send"

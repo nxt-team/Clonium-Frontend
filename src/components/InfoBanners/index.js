@@ -27,7 +27,7 @@ export default function InfoBanners(props) {
     return (
         <CardScroll>
             <Card  >
-                <Link target="_blank" href="https://vk.com/@nxt.team-clonium" >
+                <Link target="_blank" href="https://vk.com/@pipeweb-clonium" >
                     <div className="InfoBanner"  >
                         <div className="InfoBanner__Icon__Before__Green" >
                             <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
@@ -68,7 +68,7 @@ export default function InfoBanners(props) {
                 </div>
                 </Link>
             </Card>
-            {(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
+            { // (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
                 <Card onClick={() => changeActiveModal("aboutVkDonut")} >
                     <div className="InfoBanner" >
                         <div className="InfoBanner__Icon__Before__Orange" >

@@ -1,3 +1,15 @@
+.friendsSlide {
+    height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom) - var(--panelheader_height_ios) - 53px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.globalSlide {
+    height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom) - var(--panelheader_height_ios) - 53px - 69px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .GlobalPlace__indicator {
     color: var(--accent);
     margin-right: 8px;

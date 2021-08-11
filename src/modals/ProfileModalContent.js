@@ -235,9 +235,9 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                                     weight="regular"
                                     style={{marginBottom: 4, marginRight: 24, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}
                                 >
-                                    {userData["username"].split(" ")[0]}
+                                    <span dangerouslySetInnerHTML={{__html: userData["username"].split(" ")[0]}}/>
                                     <br/>
-                                    {userData["username"].split(" ")[1]}
+                                    <span dangerouslySetInnerHTML={{__html: userData["username"].split(" ")[1]}}/>
                                 </Title>
                                 <div
                                     className={"profile_preview_icon"}>

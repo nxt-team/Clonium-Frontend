@@ -118,6 +118,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -140,6 +141,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -162,6 +164,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -184,6 +187,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -206,6 +210,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -228,6 +233,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',
@@ -250,6 +256,7 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                         >
                             <div
                                 style={{
+                                    cursor: "pointer",
                                     height: '100%',
                                     width: 144,
                                     display: 'flex',

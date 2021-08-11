@@ -1,0 +1,16 @@
+.balances_main_div {
+    height: 100%;
+    padding: 12px 16px;
+}
+
+.balances_info_div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balances_button_div {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}

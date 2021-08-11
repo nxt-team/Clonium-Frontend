@@ -7,21 +7,18 @@ import {
 import { Icon32ErrorCircleOutline } from '@vkontakte/icons';
 import bridge from "@vkontakte/vk-bridge";
 
-const Offline = ({ id, goToMainView, popout, activePanel, goToEndFightView, changePopou}) => {
+const Offline = ({ id, goToMainView, activePanel, goToEndFightView, isLoadingInitData}) => {
 
-    const reconnecting = () => {
+    const reconnecting = async () => {
         if (window.navigator.onLine) {
-            if (popout) {
-                if (popout.type.name === "ScreenSpinner") {
-                    window.location.href = ''
-                } else if (activePanel === "rateFight" || activePanel === "fightResults") {
-                    goToEndFightView()
-                } else {
-                    changePopou(null)
-                    goToMainView()
-                }
+            if (isLoadingInitData ) {
+                await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
+                window.location.href = ''
             } else if (activePanel === "rateFight" || activePanel === "fightResults") {
                 goToEndFightView()
+            } else if (activePanel === "game" || activePanel === "rejoinedGame"  || activePanel === "waitingForTheFight") {
+                await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
+                window.location.href = ''
             } else {
                 goToMainView()
             }

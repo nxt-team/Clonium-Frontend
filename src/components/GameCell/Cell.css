@@ -13,4 +13,12 @@
     background-color: var(--panel_tab_active_background);
     margin: 1px;
     border-radius: 10%;
+    cursor: pointer;
+}
+
+.motion_cell {
+    background-color: var(--text_secondary);
+    margin: 1px;
+    border-radius: 10%;
+    cursor: pointer;
 }

@@ -26,7 +26,7 @@ export default function ShowImgPlayIconModal({id, closeModal, imgLink}) {
 
                     </defs>
                     <circle cx="19" cy="19" r="18" fill="url(#img1)" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="19" cy="19" r="3" fill="#F5F5F5" stroke="#232324"/>
+                    <circle cx="19" cy="19" r="3" fill="currentColor"/>
                 </svg>
             }
             header="Твоя фишка"

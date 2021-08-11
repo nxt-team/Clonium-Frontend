@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import '../views/main/game.css'
 import '../views/main/home.css';
 import {gsap} from "gsap";
-const Svg = ({ start, svgSize, end, changed, color }) => {
+const Svg = ({ start, svgSize, end, changed, imgLink, color }) => {
 
     let fill = ''
 
@@ -41,15 +41,22 @@ const Svg = ({ start, svgSize, end, changed, color }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
+            <defs>
+                <pattern id="img1" patternUnits="userSpaceOnUse" width="100%" height="100%">
+                    <image className='twombly' xlinkHref={imgLink}
+                           x="0" y="0"/>
+                </pattern>
+
+            </defs>
             <circle
                 cx="19"
                 cy="19"
                 r="18"
-                fill={fill}
-                stroke="currentColor"
+                fill="url(#img1)"
+                stroke={fill}
                 stroke-width="2"
             />
-            <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
+            <circle cx="19" cy="19" r="3" fill={fill}/>
         </svg>
     );
 };

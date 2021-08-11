@@ -46,7 +46,6 @@ const numericIndicator = {
     lineHeight: '20px',
     fontSize: 13,
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
-    background: 'var(--modal_card_background)',
 }
 
 const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory}) => {
@@ -139,7 +138,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
 
 
                 content.push(
-                    <SimpleCell style={{marginTop: 12}}
+                    <SimpleCell style={{marginTop: 12, cursor: "pointer"}}
                                 onClick={() => {
                                     updateNeedUsersInFight(item["max_user_number"]);
                                     updateSecretId(item["secret_id"])
@@ -260,7 +259,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                                     weight="semibold"
                                     style={{overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", lineHeight: "34px"}}
                                 >
-                                    {fetchedUser.first_name + ' ' + fetchedUser.last_name}
+                                    <span dangerouslySetInnerHTML={{__html: fetchedUser.first_name + ' ' + fetchedUser.last_name}}/>
                                 </Title>
                             </div>
                         </div>

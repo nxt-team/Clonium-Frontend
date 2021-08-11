@@ -8,7 +8,7 @@ import {
     Slider,
     WriteBarIcon,
     Button,
-    Text, Progress, FixedLayout,
+    Text, Progress, FixedLayout, Spinner,
 } from "@vkontakte/vkui";
 import './FightResults.css'
 import { Icon28FavoriteOutline } from '@vkontakte/icons';
@@ -17,7 +17,8 @@ import { Icon28PollSquareOutline } from '@vkontakte/icons';
 import {fightResultsPostShare} from "../../sharing/sharing";
 import {getBeatenPlayers} from "../../api/api";
 
-const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances }) => {
+let userBalances
+const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances, goToTemporaryBanned }) => {
 
     const [beatenPlayers, setBeatenPlayers] = useState(null)
     const [isSkipButtonDisabled, setIsSkipButtonDisabled] = useState(true)
@@ -25,7 +26,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
     useEffect(() => {
 
         async function getPlayers () {
-            await updateUserBalances()
+            userBalances = await updateUserBalances()
             if (beatenPlayersColors.length !== 0) {
                 const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
                 setBeatenPlayers(bp)
@@ -37,6 +38,14 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
         setTimeout(() => setIsSkipButtonDisabled(false), 3000)
 
     }, [])
+
+    function go () {
+        if (userBalances["warnings"] === 3) {
+            goToTemporaryBanned()
+        } else {
+            goToMainView()
+        }
+    }
 
     return (
         <Panel
@@ -141,8 +150,12 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
                         <Button size="xl" onClick={goToMainView} >Завершить</Button>
                         :
                         <>
-                            <Button size="xl" disabled={beatenPlayers === null} onClick={() => fightResultsPostShare(fetchedUser.id, finishData[0], beatenPlayers)} >Похвастаться</Button>
-                            <Button className={"skip__button"} disabled={isSkipButtonDisabled} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={goToMainView} mode="tertiary">Пропустить</Button>
+                            <Button size="xl" before={ beatenPlayers === null &&
+                                <Spinner size={"m"} />
+                            } disabled={beatenPlayers === null} onClick={() => fightResultsPostShare(fetchedUser.id, finishData[0], beatenPlayers)} >Похвастаться</Button>
+                            <Button className={"skip__button"} disabled={isSkipButtonDisabled} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={go} mode="tertiary">
+                                Пропустить
+                            </Button>
                         </>
                     }
                 </Div>

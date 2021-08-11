@@ -25,6 +25,7 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
     if (place === 1) {
         return (
             <SimpleCell
+                style={{cursor: "pointer"}}
                 onClick={onClick}
                 before={
                     <div className="avatar">
@@ -36,12 +37,13 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
                 }
                 description={exp + " опыта"}
             >
-                {userName}
+                <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>
         )
     } else if (place === 2) {
         return (
             <SimpleCell
+                style={{cursor: "pointer"}}
                 onClick={onClick}
                 before={
                     <div className="avatar">
@@ -53,12 +55,13 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
                 }
                 description={exp + " опыта"}
             >
-                {userName}
+                <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>
         )
     } else if (place === 3) {
         return (
             <SimpleCell
+                style={{cursor: "pointer"}}
                 onClick={onClick}
                 before={
                     <div className="avatar">
@@ -70,12 +73,13 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
                 }
                 description={exp + " опыта"}
             >
-                {userName}
+                <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>
         )
     } else {
         return (
             <SimpleCell
+                style={{cursor: "pointer"}}
                 onClick={onClick}
                 before={
                     <div className="avatar">
@@ -87,7 +91,7 @@ const leaderBoardPlace = ({ place, avaUrl, userName, exp, onClick }) => {
                 }
                 description={exp + " опыта"}
             >
-                {userName}
+                <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>
         )
     }

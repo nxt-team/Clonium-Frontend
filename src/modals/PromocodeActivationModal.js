@@ -7,7 +7,7 @@ import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import bridge from '@vkontakte/vk-bridge';
 import {activatePromocode, getTicket, updateIsUserInSuperFight} from "../api/api";
 
-export default function PromocodeActivationModal({id, closeModal, fetchedUser, errorSnackBar, completeSnackBar, changeActiveModal, updateUserBalances}) {
+export default function PromocodeActivationModal({id, closeModal, fetchedUser, errorSnackBar, completeSnackBar, changeActiveModal, updateUserBalances, useBalances}) {
 
     const [promocode, setPromocode] = useState("")
 
@@ -17,20 +17,65 @@ export default function PromocodeActivationModal({id, closeModal, fetchedUser, e
 
     async function makePromocodeActivation () {
         if (promocode.trim().length > 0) {
-            bridge.send("VKWebAppShowNativeAds", {ad_format: "reward"})
-                .then(async data => {
-                    if (data.result) {
-                        const result = await activatePromocode(promocode, fetchedUser)
-                        console.log(result)
-                        if (result.success) {
+
+            if (useBalances["vk_donut"] !== 0) {
+                const result = await activatePromocode(promocode, fetchedUser)
+                console.log(result)
+                if (result.success) {
+                    closeModal()
+                    await updateUserBalances()
+                    setTimeout(() => changeActiveModal("successPromocodeActivation"), 500)
+                } else {
+                    closeModal()
+                    setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
+                }
+            } else {
+                bridge.send("VKWebAppShowNativeAds", {ad_format: "reward"})
+                    .then(async data => {
+                        if (data.result) {
+                            const result = await activatePromocode(promocode, fetchedUser)
+                            console.log(result)
+                            if (result.success) {
+                                closeModal()
+                                await updateUserBalances()
+                                setTimeout(() => changeActiveModal("successPromocodeActivation"), 500)
+                            } else {
+                                closeModal()
+                                setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
+                            }
+                        } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_data.error_reason.toLowerCase() === "no ad" || data.error_data.error_reason.toLowerCase() === "no ads") {
                             closeModal()
-                            await updateUserBalances()
-                            setTimeout(() => changeActiveModal("successPromocodeActivation"), 500)
+                            bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
+                                .then(async data => {
+                                    if (data.result) {
+                                        const result = await activatePromocode(promocode, fetchedUser)
+                                        console.log(result)
+                                        if (result.success) {
+                                            closeModal()
+                                            await updateUserBalances()
+                                            setTimeout(() => changeActiveModal("successPromocodeActivation"), 500)
+                                        } else {
+                                            closeModal()
+                                            setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
+                                        }
+                                    } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_data.error_reason.toLowerCase() === "no ad" || data.error_data.error_reason.toLowerCase() === "no ads") {
+                                        closeModal()
+                                        errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
+                                    } else {
+                                        closeModal()
+                                        errorSnackBar("Не известная ошибка. data: " + data)
+                                    }
+                                })
+                                .catch((e) => {
+                                    errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
+                                })
                         } else {
                             closeModal()
-                            setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
+                            errorSnackBar("Не известная ошибка. data: " + data)
                         }
-                    } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_data.error_reason.toLowerCase() === "no ad" || data.error_data.error_reason.toLowerCase() === "no ads") {
+                    })
+                    .catch((e) => {
+                        console.log(e)
                         closeModal()
                         bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
                             .then(async data => {
@@ -45,7 +90,7 @@ export default function PromocodeActivationModal({id, closeModal, fetchedUser, e
                                         closeModal()
                                         setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
                                     }
-                                } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_data.error_reason.toLowerCase() === "no ad" || data.error_data.error_reason.toLowerCase() === "no ads") {
+                                } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_reason.toLowerCase() === "no ad" || data.error_reason.toLowerCase() === "no ads") {
                                     closeModal()
                                     errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
                                 } else {
@@ -54,42 +99,11 @@ export default function PromocodeActivationModal({id, closeModal, fetchedUser, e
                                 }
                             })
                             .catch((e) => {
+                                closeModal()
                                 errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
                             })
-                    } else {
-                        closeModal()
-                        errorSnackBar("Не известная ошибка. data: " + data)
-                    }
-                })
-                .catch((e) => {
-                    console.log(e)
-                    closeModal()
-                    bridge.send("VKWebAppShowNativeAds", {ad_format: "preloader"})
-                        .then(async data => {
-                            if (data.result) {
-                                const result = await activatePromocode(promocode, fetchedUser)
-                                console.log(result)
-                                if (result.success) {
-                                    closeModal()
-                                    await updateUserBalances()
-                                    setTimeout(() => changeActiveModal("successPromocodeActivation"), 500)
-                                } else {
-                                    closeModal()
-                                    setTimeout(() => changeActiveModal("erroredPromocodeActivation"), 500)
-                                }
-                            } else if (data.no_ad_reason.toLowerCase() === "no ad" || data.no_ad_reason.toLowerCase() === "no ads" || data.error_reason.toLowerCase() === "no ad" || data.error_reason.toLowerCase() === "no ads") {
-                                closeModal()
-                                errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
-                            } else {
-                                closeModal()
-                                errorSnackBar("Не известная ошибка. data: " + data)
-                            }
-                        })
-                        .catch((e) => {
-                            closeModal()
-                            errorSnackBar("Не удалось активировать промокод. Закончилась реклама")
-                        })
-                })
+                    })
+            }
         }
 
 

@@ -19,7 +19,7 @@ export async function init (fetchedUser) {
 
     const result = await response.json()
 
-    if (result["status"] === "connected") {
+    if (result["status"] === "connected" || result["status"] === "banned" || result["status"] === "temporaryBanned") {
         return result
     }
 
@@ -35,7 +35,8 @@ export async function init (fetchedUser) {
             "status": "success",
             "are_notifications_enabled": false,
             "isUserInSuperFight": false,
-            "referrals": 0
+            "referrals": 0,
+            "warnings": 0
         }
     }
 
@@ -83,7 +84,8 @@ export async function init (fetchedUser) {
         "status": result[0]["status"],
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
-        "referrals": result[0]["referrals"].length
+        "referrals": result[0]["referrals"].length,
+        "warnings": result[0]["warnings"]
     }
 }
 
@@ -112,7 +114,8 @@ export async function getUserBalances (fetchedUser) {
         "status": result[0]["status"],
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
-        "referrals": result[0]["referrals"].length
+        "referrals": result[0]["referrals"].length,
+        "warnings": result[0]["warnings"]
     }
 }
 
@@ -131,6 +134,22 @@ export async function getUserHistory (fetchedUser) {
 
     return  await response.json()
 
+}
+
+export async function reconnectUser () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/user/disconnect/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
 }
 
 export async function getUserAchievements (fetchedUser) {
@@ -477,83 +496,115 @@ export async function getDonateLink () {
     return await response.json()
 }
 
-export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser) => {
+export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser, errorSnackBar, closeModal) => {
     setImgLink('loading')
     let image = e.target.files;
     if (image && image.length > 0) {
-        if ((image[0].type.indexOf("image/") + 1) !== 0) {
-            try {
-                let img = await imagenation(image[0], 1500);
-                if (img) {
-                    console.log('everything is okay')
-                    // if (token === null) {
-                    //     token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7622545, "scope": "photos"});
-                    //     console.log('result', token["access_token"])
-                    // }
 
-                    // const linkForUpload = await bridge.send("VKWebAppCallAPIMethod", {"method": "photos.getUploadServer", "request_id": "32test", "params": {"album_id": 278829270, "group_id": 201110393, "v":"5.126", "access_token": token["access_token"]}});
-                    // console.log(linkForUpload)
+        var reader = new FileReader();
 
+        reader.readAsDataURL(image[0]);
+        reader.onload = function (e) {
 
-                    const fd = new FormData()
-                    fd.append('file', image[0], 'image')
-                    // fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
-                    var request = new XMLHttpRequest()
+            //Initiate the JavaScript Image object.
+            var newImage = new Image();
 
-                    request.open('POST', "https://pipeweb.ru:3000/uploadPhoto", false);
-                    request.onload = async function () {
-                        if (request.status >= 200 && request.status < 400) {
-                            var data = JSON.parse(request.responseText)
-                            console.log(data["result"])
-                            let sizeLetter = 'w'
-                            let url = null
+            //Set the Base64 string return from FileReader as source.
+            newImage.src = e.target.result;
 
-                            while (url === null) {
-                                for (let size of data["result"]) {
-                                    if (size["type"] === sizeLetter) {
-                                        url = size["url"]
+            //Validate the File Height and Width.
+
+            newImage.onload = async function () {
+                const height = this.height;
+                const width = this.width;
+                console.log(height, width)
+                if (!(height > 1500 || width > 1500)) {
+                    console.log(image)
+                    if ((image[0].type.indexOf("image/") + 1) !== 0) {
+                        console.log(image[0])
+                        try {
+                            let img = await imagenation(image[0], 1500)
+                            console.log(img)
+                            if (img) {
+                                console.log('everything is okay')
+                                const fd = new FormData()
+                                fd.append('file', image[0], 'image')
+                                // fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
+                                var request = new XMLHttpRequest()
+
+                                request.open('POST', "https://pipeweb.ru/api/uploadPhoto", false);
+                                request.onload = async function () {
+                                    if (request.status >= 200 && request.status < 400) {
+                                        var data = JSON.parse(request.responseText)
+                                        console.log(data["result"])
+                                        let sizeLetter = 'w'
+                                        let url = null
+
+                                        while (url === null) {
+                                            for (let size of data["result"]) {
+                                                if (size["type"] === sizeLetter) {
+                                                    url = size["url"]
+                                                }
+                                            }
+
+                                            if (sizeLetter === 'w') {
+                                                sizeLetter = 'z'
+                                            } else if (sizeLetter === 'z') {
+                                                sizeLetter = 'y'
+                                            } else if (sizeLetter === 'y') {
+                                                sizeLetter = 'x'
+                                            } else if (sizeLetter === 'x') {
+                                                sizeLetter = 'm'
+                                            } else {
+                                                sizeLetter = 's'
+                                            }
+                                        }
+
+                                        const result = await updatePieceAvatar(fetchedUser, "https://i.gifer.com/47tv.gif")
+                                        console.log(result)
+                                        setImgLink(url)
+
+                                        changeActiveModal("showImgPlayIcon")
+
+                                    } else {
+                                        console.log('err2')
                                     }
                                 }
+                                console.log(fd)
+                                request.send(fd)
 
-                                if (sizeLetter === 'w') {
-                                    sizeLetter = 'z'
-                                } else if (sizeLetter === 'z') {
-                                    sizeLetter = 'y'
-                                } else if (sizeLetter === 'y') {
-                                    sizeLetter = 'x'
-                                } else if (sizeLetter === 'x') {
-                                    sizeLetter = 'm'
-                                } else {
-                                    sizeLetter = 's'
-                                }
+
                             }
-
-                            const result = await updatePieceAvatar(fetchedUser, url)
-                            console.log(result)
-                            setImgLink(url)
-
-                            changeActiveModal("showImgPlayIcon")
-
-                        } else {
-                            console.log('err2')
+                            else {
+                                setImgLink(null)
+                                closeModal()
+                                errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG!");
+                            }
+                        }
+                        catch (error) {
+                            setImgLink(null)
+                            closeModal()
+                            console.log(error)
+                            errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG!");
                         }
                     }
-                    console.log(fd)
-                    request.send(fd)
-
-
+                    else {
+                        setImgLink(null)
+                        closeModal()
+                        errorSnackBar("Выберите файл формата: JPEG или PNG!");
+                    }
+                } else {
+                    setImgLink(null)
+                    closeModal()
+                    errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 1500px");
                 }
-                else {
-                    alert(<><h2>Упс, файл не удалось прочитать</h2><p>Для продолжения вы должны выбрать корректный файл формата JPEG, PNG, или GIF!</p></>);
-                }
-            }
-            catch (error) {
-                console.log(error)
-                alert(<><h2>Упс, файл не удалось прочитать</h2><p>Для продолжения вы должны выбрать корректный файл формата JPEG, PNG, или GIF!</p></>);
-            }
-        }
-        else {
-            alert(<><h2>Ошибка в выборе файла</h2><p>Для продолжения вы должны выбрать файл формата JPEG, PNG, или GIF!</p></>);
-        }
+
+            };
+        };
+    }
+    else {
+        setImgLink(null)
+        closeModal()
+        errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 1500px");
     }
 }

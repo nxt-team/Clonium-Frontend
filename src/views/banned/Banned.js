@@ -4,24 +4,14 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import {Icon24HelpOutline, Icon28GhostSimleOutline, Icon28TicketOutline} from '@vkontakte/icons';
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import {socket} from "../../api/socket";
-import {reconnectUser} from "../../api/api";
 
 
 
-const AlreadyConnected = ({ id}) => {
+const Banned = ({ id}) => {
 
     useEffect(() => {
         bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
     }, []);
-
-    async function doReconnection () {
-        const reconnectResult = await reconnectUser()
-        bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
-        console.log(reconnectResult);
-        window.location.href = ''
-
-    }
 
     return (
         <Panel
@@ -40,10 +30,10 @@ const AlreadyConnected = ({ id}) => {
                     <Icon28GhostSimleOutline width={64} height={64} />
                 </div>
                 <Title level="1" weight="semibold" style={{ margin: "20px 12px 28px"}} >
-                    Ты уже имеешь активную сессию в приложении.
+                    Ты был заблокирован.
                 </Title>
                 <div style={{display: "flex"}}>
-                    <Button size="l" onClick={() => doReconnection()} >Переподключиться</Button>
+                    <Button size="l" target="_blank" href="https://vk.me/pipeweb" >Тех. поддержка</Button>
                 </div>
             </div>
         </Panel>
@@ -52,4 +42,4 @@ const AlreadyConnected = ({ id}) => {
 
 
 
-export default AlreadyConnected;
+export default Banned;

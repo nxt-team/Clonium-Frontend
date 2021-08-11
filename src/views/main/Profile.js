@@ -12,9 +12,10 @@ import './game.css'
 import Icon28ShareOutline from '@vkontakte/icons/dist/28/share_outline';
 import './home.css';
 import './other.scss'
-import { Icon28PincodeOutline } from '@vkontakte/icons';
+import {Icon28InfoOutline, Icon28PincodeOutline, Icon28Users3Outline} from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 import { Icon56DonateOutline } from '@vkontakte/icons';
+import { Icon24ErrorCircleOutline } from '@vkontakte/icons';
 import { Icon28PaletteOutline } from '@vkontakte/icons';
 import Icon28ServicesOutline from '@vkontakte/icons/dist/28/services_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';
@@ -26,7 +27,7 @@ import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
 import { Icon28DeleteOutline } from '@vkontakte/icons';
 import { Icon28ChatsOutline } from '@vkontakte/icons';
 import { motion } from "framer-motion"
-
+import './Profile.css'
 import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
 import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
 import {
@@ -40,11 +41,12 @@ import {
     platform,
     SimpleCell,
     ANDROID,
-    Link
+    Link, CardGrid
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
 import {deleteUser} from "../../api/api";
+import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 const osName = platform();
 
 const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, goToClearCache }) => {
@@ -62,9 +64,9 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
     function getExp(exp) {
         if (exp % 100 !== 11 && exp % 10 === 1) {
-            return exp + ' опыт набран'
+            return exp + ' опыт'
         } else {
-            return exp + ' опыта набрано'
+            return exp + ' опыта'
         }
     }
 
@@ -98,6 +100,18 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
         }
     }
 
+    function getWarnings (warnings) {
+        if (warnings === 0) {
+            return "0 предов"
+        } if (warnings === 1) {
+            return "1 пред"
+        } if (warnings === 2) {
+            return "2 преда"
+        } if (warnings === 3) {
+            return "3 преда"
+        }
+    }
+
     function story() {
         screenSpinnerOn()
         showOffsStoryShare(
@@ -127,8 +141,8 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
             <Placeholder
                 icon={<Avatar size={72} src={fetchedUser.photo_200} />}
-                header={fetchedUser.first_name + ' ' + fetchedUser.last_name}
-                action={<Button size="l" before={<Icon24StoryOutline/>} onClick={() => story()}>Попонтаваться</Button>}
+                header={<span dangerouslySetInnerHTML={{__html: fetchedUser.first_name + ' ' + fetchedUser.last_name}}/>}
+                action={<Button size="l" before={<Icon24StoryOutline/>} onClick={() => story()}>Попонтоваться</Button>}
             >
                 {userBalances["user_rank"]}
             </Placeholder>
@@ -227,18 +241,60 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 </CardScroll>
             </Group>
 
-            <Banner
-                before={<Avatar style={{boxShadow: "inset 0 0 0 1px rgb(0 0 0 / 8%) !important"}} mode="app"><Icon28TicketOutline style={{color: "var(--text_primary)"}} /></Avatar>}
-                header={<span >{getTickets(userBalances["tickets"])}</span>}
-                subheader={<span>Билеты нужны для игры. 1 билет = 1 игра. Дополнительно билеты можно получить за просмотр рекламы</span>}
-                actions={<Button mode="primary" onClick={() => changeActiveModal("ticketFromAd")} >Получить билетик</Button>}
-            />
-            <Banner
-                before={<Avatar mode="app"><Icon24FavoriteOutline width={28} height={28} style={{color: "var(--text_primary)"}} /></Avatar>}
-                header={<span >{getExp(userBalances["exp"])}</span>}
-                subheader={<span>Опыт можно получить за хорошую игру в бою.</span>}
-                actions={<Button mode="primary" target="_blank" href="https://vk.com/@nxt.team-clonium" >Подробнее</Button>}
-            />
+            <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
+                Балансы
+            </Title>
+
+            <CardScroll style={{margin: "12px 0"}}>
+                <Card size="m" style={{borderRadius: 16, width: 180}}>
+                    <div className={"balances_main_div"}>
+                        <div className="InfoBanner__Icon__Before__Blue" style={{marginBottom: 12}}>
+                            <Icon28TicketOutline className="InfoBanner__Icon__Blue" width={32} height={32}/>
+                        </div>
+                        <Title level="2" weight="regular">
+                            {getTickets(userBalances["tickets"])}
+                        </Title>
+                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
+                            Нужны для игры <br/> 1 билет = 1 игра
+                        </Text>
+                        <div className={"balances_button_div"}>
+                            <Button style={{width: "100%"}} mode="primary" onClick={() => changeActiveModal("ticketFromAd")} >Получить билет</Button>
+                        </div>
+                    </div>
+                </Card>
+                <Card size="m" style={{borderRadius: 16, width: 180}}>
+                    <div className={"balances_main_div"}>
+                        <div className="InfoBanner__Icon__Before__Green" style={{marginBottom: 12}}>
+                            <Icon24FavoriteOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
+                        </div>
+                        <Title level="2" weight="regular">
+                            {getExp(userBalances["exp"])}
+                        </Title>
+                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
+                            Дается за <br/> хорошую игру
+                        </Text>
+                        <div className={"balances_button_div"}>
+                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
+                        </div>
+                    </div>
+                </Card>
+                <Card size="m" style={{borderRadius: 16, width: 180}}>
+                    <div className={"balances_main_div"}>
+                        <div className="InfoBanner__Icon__Before__Red" style={{marginBottom: 12}} >
+                            <Icon24ErrorCircleOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
+                        </div>
+                        <Title level="2" weight="regular">
+                            {getWarnings(userBalances["warnings"])}
+                        </Title>
+                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
+                            Дается за неактив в игре. 3 преда = бан
+                        </Text>
+                        <div className={"balances_button_div"}>
+                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
+                        </div>
+                    </div>
+                </Card>
+            </CardScroll>
 
 
             <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >

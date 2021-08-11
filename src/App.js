@@ -77,13 +77,17 @@ import ProfileModalContent from "./modals/ProfileModalContent";
 import {postShare, refLinkCopy} from "./sharing/sharing";
 import AlreadyConnected from "./views/alreadyConnected/alreadyConnected";
 import AnimatedDoneIcon from "./components/AnimatedDoneIcon";
+import Banned from "./views/banned/Banned";
+import TemporaryBanned from "./views/temporaryBanned/TemporaryBanned";
+import TicketAnimation from "./components/TicketAnimation";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
+const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 let mapName = ""
 let secretId = ""
 let needUsersInFight = 0
-let startCount = 34
+let startCount = 30
 
 let colorMotion = ""
 let turnTime = true
@@ -93,11 +97,13 @@ let fightStart = new Date()
 let gameTime = 0
 let userColor = ""
 let beatenPlayers = []
+let temporaryBannedOurs
+let usersInFight
 
 let userProfileVkId = 1
 let isCustomizationLeaving = false
 let initTimeInSeconds = 0
-
+let isLoadingInitData = true
 let isUserAlreadyConnected = false
 
 const App = () => {
@@ -121,7 +127,8 @@ const App = () => {
 		"status": "0",
 		"are_notifications_enabled": false,
 		"isUserInSuperFight": false,
-		"referrals": 0
+		"referrals": 0,
+		"warnings": 0
 	})
 	const [ online, setOnline] = useState(1)
 
@@ -134,8 +141,9 @@ const App = () => {
 			map = []
 			setActivePanel("waitingForStart")
 		} else if (status[0] === "waiting_for_the_fight") {
-			startCount = 34
-			setActivePanel("waitingForTheFight")
+			startCount = 28
+			setPopout(<TicketAnimation/>)
+			setTimeout( () => {setActivePanel("waitingForTheFight"); setPopout(null)}, 2700)
 		} else if (status[0] === "fight") {
 			mapName = status[1]
 			secretId = status[2]
@@ -149,8 +157,8 @@ const App = () => {
 	}
 
 	async function updateNotifications () {
-		await updateAreNotificationsEnabled(fetchedUser, true)
 		userBalances["are_notifications_enabled"] = true
+		await updateAreNotificationsEnabled(fetchedUser, true)
 
 	}
 
@@ -161,6 +169,10 @@ const App = () => {
 			console.log("NEW STATUS", data)
 			updateStatusPanel(data)
 		});
+
+		socket.on("disconnectEvent", () => {
+			setActiveView("alreadyConnected")
+		})
 
 		socket.on("online", (data) => {
 			if (activePanel !== "game" || activePanel !== "rejoinedGame") {
@@ -173,7 +185,6 @@ const App = () => {
 			if (type === 'VKWebAppAddToFavoritesResult') {
 				completeSnackBar("Мини приложение в избранных")
 			} else if (type === "VKWebAppAllowMessagesFromGroupResult") {
-				updateUserBalances()
 				completeSnackBar("Уведомления включены")
 			} else if (type === "VKWebAppCopyTextResult") {
 				completeSnackBar("Скопировано!")
@@ -181,6 +192,18 @@ const App = () => {
 		});
 
 		async function fetchData() {
+			isLoadingInitData = true
+			const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme"]})
+			console.log("storageGetData", storageGetData)
+			const isReloading = storageGetData["keys"][0]["value"]
+			if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
+				let theme = storageGetData["keys"][1]["value"]
+				console.log("THEME ", theme)
+				const schemeAttribute = document.createAttribute('scheme');
+				schemeAttribute.value = theme ? theme : 'client_light';
+				document.body.attributes.setNamedItem(schemeAttribute);
+			}
+			await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": ""});
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
 			setUser(fetchUser)
 			let user = await init(fetchUser)
@@ -192,7 +215,20 @@ const App = () => {
 			if (user["status"] === "connected") {
 				isUserAlreadyConnected = true
 				setActiveView("alreadyConnected")
-			} else if (user["status"] === "success") {
+			} else if (user["status"] === "banned") {
+				isUserAlreadyConnected = true
+				setActiveView("banned")
+			} else if (user["status"] === "temporaryBanned") {
+				isUserAlreadyConnected = true
+				const timeNow = new Date()
+				const ours_now = timeNow.getDate() * 24 + timeNow.getHours()
+				const bannedTime = new Date(user["last_activity"])
+				const banned_ours = bannedTime.getDate() * 24 + bannedTime.getHours()
+				temporaryBannedOurs = banned_ours + 24 - ours_now
+				setActiveView("temporaryBanned")
+			}
+
+			else if (user["status"] === "success") {
 
 				let hash = window.location.hash
 
@@ -212,6 +248,7 @@ const App = () => {
 					"secret_id": user["status"].split("_")[1],
 					"vk_id": fetchUser.id,
 					"avatar": fetchUser.photo_max_orig,
+					"params": window.location.search.replace('?', '')
 				}, (data) => {
 					console.log(data)
 					if (data[0] === "waiting_for_players") {
@@ -222,7 +259,7 @@ const App = () => {
 						const now = new Date();
 						const fightStart = new Date(data[1])
 						const time = new Date(fightStart - now)
-						startCount = time.getSeconds() + 2
+						startCount = time.getSeconds() - 30
 						setActivePanel("waitingForTheFight")
 					} else if (data[0] === "fight") {
 						mapName = data[7]
@@ -233,11 +270,11 @@ const App = () => {
 						fightStart = data[5]
 						gameTime = data[6]
 						userColor = data[8]
+						usersInFight = data[9]
 						secretId = user["status"].split("_")[1]
 						setActivePanel("rejoinedGame")
 
 					}
-					// todo: доделать остальные статусы
 				})
 
 				setActiveView("main")
@@ -281,13 +318,28 @@ const App = () => {
 				setTimeout(() => setActiveModal(newActiveModal), 300)
 			}
 			setPopout(null)
+			isLoadingInitData = false
 		}
 
-		fetchData();
+		fetchData()
 
 		window.addEventListener('popstate', () => {
 			goBack()
 		});
+
+		window.addEventListener('offline', () => {
+			const timeNow = new Date()
+			const timeInSecondsNow = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
+			console.log(timeInSecondsNow - initTimeInSeconds)
+			if (timeInSecondsNow - initTimeInSeconds < 1000) {
+				setTimeout(() => goToOffline(), 500)
+			} else if (isUserAlreadyConnected) {
+				errorSnackBar("Интернет соединение потеряно")
+			} else {
+				goToOffline()
+			}
+
+		})
 	}, []);
 
 	const go = e => {
@@ -314,20 +366,6 @@ const App = () => {
 		setActivePanel( panel ); // Меняем активную панель
 		history.push( panel ); // Добавляем панель в историю
 	}
-
-	window.addEventListener('offline', () => {
-		const timeNow = new Date()
-		const timeInSecondsNow = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
-		console.log(timeInSecondsNow - initTimeInSeconds)
-		if (timeInSecondsNow - initTimeInSeconds < 1000) {
-			setTimeout(() => goToOffline(), 500)
-		} else if (isUserAlreadyConnected) {
-			errorSnackBar("Интернет соединение потеряно")
-		} else {
-			goToOffline()
-		}
-
-	})
 
 	const goIsolated = e => {
 		const panel = e.currentTarget.dataset.to
@@ -393,6 +431,7 @@ const App = () => {
 	const updateUserBalances = async () => {
 		const user = await getUserBalances(fetchedUser)
 		setUserBalances(user)
+		return user
 	}
 
 	const addTicket = () => {
@@ -424,6 +463,7 @@ const App = () => {
 				}
 			>
 				<SuperFightModalContent
+					closeModal={() => setActiveModal(null)}
 					completeSnackBar={completeSnackBar}
 					changeIsUserInSuperFight={() => userBalances["isUserInSuperFight"] = true}
 					isUserInSuperFight={userBalances["isUserInSuperFight"]}
@@ -570,6 +610,7 @@ const App = () => {
 				fetchedUser={fetchedUser}
 				changeActiveModal={(newModal) => setActiveModal(newModal)}
 				setImgLink={(newImgLink) => setImgLink(newImgLink)}
+				errorSnackBar={errorSnackBar}
 			/>
 			<ShowImgPlayIconModal id={"showImgPlayIcon"} imgLink={imgLink} closeModal={() => {setImgLink(null); setActiveModal(null)}} />
 			<PromocodeActivationModal
@@ -581,6 +622,7 @@ const App = () => {
 				fetchedUser={fetchedUser}
 				updateUserBalances={updateUserBalances}
 				changeActiveModal={changeActiveModal}
+				useBalances={userBalances}
 			/>
 			<ModalPage
 				id="messanger"
@@ -794,7 +836,7 @@ const App = () => {
 	function goToMainViewHome () {
 		setActivePanel('home')
 		setActiveView('main')
-		setHistory(['home'])
+		// setHistory(['home'])
 	}
 
 	function goToOffline () {
@@ -812,7 +854,11 @@ const App = () => {
 	async function goToEndFight (beatenPlayersColors) {
 		beatenPlayers = beatenPlayersColors
 
-		if (activePanel !== "rateFight") {
+		if (popout) {
+			setPopout(null)
+		}
+
+		if (activePanel !== "rateFight" && userBalances["vk_donut"] === 0) {
 			bridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
 		}
 
@@ -931,6 +977,11 @@ const App = () => {
 		setActiveView("history")
 	}
 
+	function goToTemporaryBanned () {
+		temporaryBannedOurs = 24
+		setActiveView('temporaryBanned')
+	}
+
 	return (
 		<ConfigProvider
 			// scheme={scheme}
@@ -972,6 +1023,8 @@ const App = () => {
 						mapName={mapName}
 						goToMainViewHome={goToMainViewHome}
 						finishData={finishData}
+						userBalances={userBalances}
+						screenSpinnerOn={screenSpinnerOn}
 					/>
 					<RejoinedGame
 						id={'rejoinedGame'}
@@ -990,6 +1043,8 @@ const App = () => {
 						gameTime={gameTime}
 						turnTime={turnTime}
 						fightStart={fightStart}
+						userBalances={userBalances}
+						usersInFight={usersInFight}
 					/>
 					<Profile
 						id={'profile'}
@@ -1017,16 +1072,22 @@ const App = () => {
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated2} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
-					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} updateUserBalances={updateUserBalances} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing}/>
+					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} updateUserBalances={updateUserBalances} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing} goToTemporaryBanned={goToTemporaryBanned}/>
 				</View>
 				<View activePanel={"offline"} id="offline" >
-					<Offline id={'offline'} changePopou={(newPopout) => setPopout(newPopout)} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
+					<Offline id={'offline'} changePopou={(newPopout) => setPopout(newPopout)} isLoadingInitData={isLoadingInitData} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
 				</View>
 				<View activePanel={"clearCache"} id="clearCache" >
 					<ClearCache id='clearCache'/>
 				</View>
 				<View activePanel={"alreadyConnected"} id="alreadyConnected" popout={popout}>
 					<AlreadyConnected id='alreadyConnected'/>
+				</View>
+				<View activePanel={"banned"} id="banned" popout={popout}>
+					<Banned id='banned'/>
+				</View>
+				<View activePanel={"temporaryBanned"} id="temporaryBanned" popout={popout}>
+					<TemporaryBanned id='temporaryBanned' oursForUnban={temporaryBannedOurs}/>
 				</View>
 				<View activePanel={"achievements"} id="achievements" popout={popout} modal={modal}>
 					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} goToMainView={goToMainView} />

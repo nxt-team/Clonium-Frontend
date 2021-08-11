@@ -23,6 +23,7 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
     useEffect(() => {
         socket.once("avatars", (data) => {
             setPhotos(data)
+            console.log(data)
         });
     })
 

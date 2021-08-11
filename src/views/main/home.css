@@ -84,6 +84,7 @@
 }
 
 .profile_preview_container {
+  cursor: pointer;
   display: flex;
   position: relative;
   justify-content: center;
@@ -200,4 +201,28 @@
 
 .lastIntroSlide {
   overflow-x: auto !important;
+}
+
+.Button {
+  cursor: pointer;
+}
+
+.PanelHeaderButton {
+  cursor: pointer;
+}
+
+.Tabs--buttons {
+  cursor: pointer;
+}
+
+.Radio {
+  cursor: pointer;
+}
+
+.Checkbox {
+  cursor: pointer;
+}
+
+.Tabs {
+  cursor: pointer;
 }

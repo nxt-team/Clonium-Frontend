@@ -104,7 +104,7 @@ const Intro = ({ id, panel_go, changeActiveModal, endIntro }) => {
 
     return (
         <Panel
-            style={{overflowY: "hidden"}}
+            className={"intro__panel"}
             id={id}
         >
             <div className="blur_container">
@@ -155,7 +155,7 @@ const Intro = ({ id, panel_go, changeActiveModal, endIntro }) => {
 
 
             <FixedLayout
-                style={{backgroundColor: "var(--input_background)", borderRadius: "24px 24px 0 0", padding: "24px"}}
+                className={"intro__fixedLayout"}
                 vertical="bottom"
             >
                 <div style={{display: "flex", justifyContent: "space-between", marginBottom: 20, alignItems: "center"}}>

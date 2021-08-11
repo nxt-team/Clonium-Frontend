@@ -4,7 +4,7 @@ import {File, ModalCard, Spinner} from "@vkontakte/vkui";
 import {Icon56GalleryOutline} from "@vkontakte/icons";
 import {onChange_originalFile} from "../api/api";
 
-export default function UploadingPhotoModal({id, closeModal, imgLink, setImgLink, changeActiveModal, fetchedUser}) {
+export default function UploadingPhotoModal({id, closeModal, imgLink, setImgLink, changeActiveModal, fetchedUser, errorSnackBar}) {
     return (
         <ModalCard
             id={id}
@@ -19,7 +19,7 @@ export default function UploadingPhotoModal({id, closeModal, imgLink, setImgLink
                 controlSize="xl"
                 disabled={imgLink === "loading"}
                 style={{marginTop: 16}}
-                onChange={(e) => onChange_originalFile(e, setImgLink, changeActiveModal, fetchedUser)}
+                onChange={(e) => onChange_originalFile(e, setImgLink, changeActiveModal, fetchedUser, errorSnackBar, closeModal)}
             >
                 {imgLink === "loading" ? <Spinner size="regular" /> : "Загрузить"}
             </File>

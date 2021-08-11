@@ -109,7 +109,7 @@ const Achievements = ({ id, fetchedUser, openAchievementModal, goToMainView }) =
                 <Placeholder
                     icon={<Icon28AchievementCircleFillBlue width={56} height={56} />}
                     header="У тебя пока нет достижений"
-                    action={<Button size="l" onClick={() => window.history.back()} >На главную</Button>}
+                    action={<Button size="l" onClick={() => goToMainView()} >На главную</Button>}
                 >
                     Здесь появятся твои достижения. Скорее отправляйся зарабатывать их
                 </Placeholder>

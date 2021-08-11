@@ -69,13 +69,13 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                             • Звездочка рядом с именем в топе<br/>
                             • Никакой рекламы<br/>
                             • Крутые тактики в сообществе<br/>
-                            • Секретные прмокоды<br/>
+                            • Секретные промокоды<br/>
                         </Text>
                         <div >
                             <div style={{display: "flex"}}>
                                 <Button size="xl" href="https://vk.com/donut/pipeweb" target="_blank" onClick={addUpdateButton} >{isUpdateButton ? "Оформить" : "Оформить VK Donut"}</Button>
                                 { isUpdateButton &&
-                                    <Button size="xl" style={{marginLeft: 12, width: "min-content"}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} ><Icon28SwitchOutline width={24} height={24} /></Button>
+                                    <Button size="xl" style={{marginLeft: 12, width: "min-content", height: 47.11}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} ><Icon28SwitchOutline width={20} height={20} /></Button>
                                 }
                             </div>
                             <Footer style={{margin: "8px 0"}} >от 99₽</Footer>
@@ -89,7 +89,7 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                             Навсегда
                         </Title>
                         <Text weight="regular" style={{ marginBottom: 16 }}>
-                            Все тежи преимущества <br/>
+                            Все те же преимущества <br/>
                             + создание своих карт (скоро) <br/>
                             + ракета рядом с именем в топе, <br/>
                             но с единоразовым платежом  и навсегда.
@@ -105,7 +105,7 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                                     : <Button size="xl" disabled={true} style={{minHeight: 47.11}} ><Spinner size="small" /></Button>
                                 }
                                 { isUpdateButton &&
-                                    <Button size="xl" style={{marginLeft: 12, width: "min-content"}} mode="secondary" onClick={() => updateUserVkDonut("forever")} ><Icon28SwitchOutline width={24} height={24} /></Button>
+                                    <Button size="xl" style={{marginLeft: 12, width: "min-content", height: 47.11}} mode="secondary" onClick={() => updateUserVkDonut("forever")} ><Icon28SwitchOutline width={20} height={20} /></Button>
                                 }
                             </div>
                             <Footer style={{margin: "8px 0"}} >499₽</Footer>

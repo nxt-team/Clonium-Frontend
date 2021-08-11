@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "isForDonuts": false,
+    "text": "Ух ты!"
+  },
+  {
+    "id": 2,
+    "isForDonuts": false,
+    "text": "Ой"
+  },
+  {
+    "id": 3,
+    "isForDonuts": false,
+    "text": "Удачи..."
+  },
+  {
+    "id": 4,
+    "isForDonuts": false,
+    "text": "Топ"
+  },
+  {
+    "id": 5,
+    "isForDonuts": false,
+    "text": "Ладно"
+  },
+  {
+    "id": 6,
+    "isForDonuts": false,
+    "text": "Не уходи!"
+  },
+  {
+    "id": 7,
+    "isForDonuts": false,
+    "text": "Помогите"
+  },
+  {
+    "id": 8,
+    "isForDonuts": false,
+    "text": "Сложно"
+  },
+  {
+    "id": 9,
+    "isForDonuts": true,
+    "text": "Чел, ты ..."
+  },
+  {
+    "id": 10,
+    "isForDonuts": true,
+    "text": "Ох, как пукнул!"
+  },
+  {
+    "id": 11,
+    "isForDonuts": true,
+    "text": "Алё, гараж!"
+  },
+  {
+    "id": 12,
+    "isForDonuts": true,
+    "text": "Пустышка"
+  },
+  {
+    "id": 13,
+    "isForDonuts": true,
+    "text": "До слёз"
+  },
+  {
+    "id": 14,
+    "isForDonuts": true,
+    "text": "Шут гороховый"
+  },
+  {
+    "id": 15,
+    "isForDonuts": true,
+    "text": "Моё уважение"
+  },
+  {
+    "id": 16,
+    "isForDonuts": true,
+    "text": "Бесишь!"
+  },
+  {
+    "id": 17,
+    "isForDonuts": true,
+    "text": "Ммм, обожаю"
+  },
+  {
+    "id": 18,
+    "isForDonuts": true,
+    "text": "Овощи"
+  },
+  {
+    "id": 19,
+    "isForDonuts": true,
+    "text": "До слёз"
+  },
+  {
+    "id": 20,
+    "isForDonuts": true,
+    "text": "Ор"
+  },
+  {
+    "id": 21,
+    "isForDonuts": true,
+    "text": "Adios Amigos!"
+  },
+  {
+    "id": 22,
+    "isForDonuts": true,
+    "text": "Лайк"
+  },
+  {
+    "id": 23,
+    "isForDonuts": true,
+    "text": "Бунт!"
+  },
+  {
+    "id": 24,
+    "isForDonuts": true,
+    "text": "Молодчик"
+  },
+  {
+    "id": 25,
+    "isForDonuts": true,
+    "text": "Ну что за..."
+  }
+
+]
