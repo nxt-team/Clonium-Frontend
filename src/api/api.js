@@ -36,7 +36,8 @@ export async function init (fetchedUser) {
             "are_notifications_enabled": false,
             "isUserInSuperFight": false,
             "referrals": 0,
-            "warnings": 0
+            "warnings": 0,
+            "achievements": []
         }
     }
 
@@ -85,7 +86,8 @@ export async function init (fetchedUser) {
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
-        "warnings": result[0]["warnings"]
+        "warnings": result[0]["warnings"],
+        "achievements": result[0]["achievements"]
     }
 }
 
@@ -115,8 +117,42 @@ export async function getUserBalances (fetchedUser) {
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
-        "warnings": result[0]["warnings"]
+        "warnings": result[0]["warnings"],
+        "achievements": result[0]["achievements"]
     }
+}
+
+export async function getAllUserInfo () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/user/get/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    const result = await response.json()
+    return result
+}
+
+export async function getSubAchievement () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/user/set/subAchievement', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
 }
 
 export async function getUserHistory (fetchedUser) {
@@ -514,6 +550,12 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
 
             //Validate the File Height and Width.
 
+            newImage.onerror = function () {
+                setImgLink(null)
+                closeModal()
+                errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 1500px")
+            }
+
             newImage.onload = async function () {
                 const height = this.height;
                 const width = this.width;
@@ -532,46 +574,46 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
                                 // fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
                                 var request = new XMLHttpRequest()
 
-                                request.open('POST', "https://pipeweb.ru/api/uploadPhoto", false);
-                                request.onload = async function () {
-                                    if (request.status >= 200 && request.status < 400) {
-                                        var data = JSON.parse(request.responseText)
-                                        console.log(data["result"])
-                                        let sizeLetter = 'w'
-                                        let url = null
+                            request.open('POST', "https://pipeweb.ru/api/uploadPhoto", false);
+                            request.onload = async function () {
+                                if (request.status >= 200 && request.status < 400) {
+                                    var data = JSON.parse(request.responseText)
+                                    console.log(data["result"])
+                                    let sizeLetter = 'w'
+                                    let url = null
 
-                                        while (url === null) {
-                                            for (let size of data["result"]) {
-                                                if (size["type"] === sizeLetter) {
-                                                    url = size["url"]
-                                                }
-                                            }
-
-                                            if (sizeLetter === 'w') {
-                                                sizeLetter = 'z'
-                                            } else if (sizeLetter === 'z') {
-                                                sizeLetter = 'y'
-                                            } else if (sizeLetter === 'y') {
-                                                sizeLetter = 'x'
-                                            } else if (sizeLetter === 'x') {
-                                                sizeLetter = 'm'
-                                            } else {
-                                                sizeLetter = 's'
+                                    while (url === null) {
+                                        for (let size of data["result"]) {
+                                            if (size["type"] === sizeLetter) {
+                                                url = size["url"]
                                             }
                                         }
 
-                                        const result = await updatePieceAvatar(fetchedUser, "https://i.gifer.com/47tv.gif")
-                                        console.log(result)
-                                        setImgLink(url)
-
-                                        changeActiveModal("showImgPlayIcon")
-
-                                    } else {
-                                        console.log('err2')
+                                        if (sizeLetter === 'w') {
+                                            sizeLetter = 'z'
+                                        } else if (sizeLetter === 'z') {
+                                            sizeLetter = 'y'
+                                        } else if (sizeLetter === 'y') {
+                                            sizeLetter = 'x'
+                                        } else if (sizeLetter === 'x') {
+                                            sizeLetter = 'm'
+                                        } else {
+                                            sizeLetter = 's'
+                                        }
                                     }
+
+                                    const result = await updatePieceAvatar(fetchedUser, url)
+                                    console.log(result)
+                                    setImgLink(url)
+
+                                    changeActiveModal("showImgPlayIcon")
+
+                                } else {
+                                    console.log('err2')
                                 }
-                                console.log(fd)
-                                request.send(fd)
+                            }
+                            console.log(fd)
+                            request.send(fd)
 
 
                             }

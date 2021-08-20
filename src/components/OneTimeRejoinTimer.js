@@ -3,11 +3,15 @@ import {Title} from "@vkontakte/vkui";
 import { useSpring, animated } from '@react-spring/web'
 import useInterval from "@use-it/interval";
 
-let localColorMotion = 'red'
 
-export default function Timer({onExpiration, colorMotion}) {
+export default function OneTimeRejoinTimer({onExpiration, startCount, resetOneTimeTimer}) {
 
-    const [count, setCount] = useState(15);
+    const [count, setCount] = useState(startCount);
+
+    useEffect(() => {
+        console.log("RESETED ONE TIME TIMER")
+        resetOneTimeTimer()
+    }, [])
 
     // if (localColorMotion !== colorMotion) {
     //     setCount(15)
@@ -27,20 +31,14 @@ export default function Timer({onExpiration, colorMotion}) {
     //     }
     //     , [count])
 
-    if (localColorMotion !== colorMotion) {
-        setCount(15)
-        localColorMotion = colorMotion
 
-    }
-
-
-        useInterval(() => {
-            setCount((currentCount) => currentCount - 1);
-            if (count < 1) {
-                onExpiration()
-                setCount(15)
-            }
-        }, 1000);
+    useInterval(() => {
+        setCount((currentCount) => currentCount - 1);
+        if (count < 1) {
+            onExpiration()
+            setCount(15)
+        }
+    }, 1000);
 
     return (
         <div style={{

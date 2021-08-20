@@ -52,11 +52,11 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
 
     return (
         <>
-            <Gallery
-                slideWidth="90%"
-                style={{ height: "100%", paddingTop: 8 }}
-                bullets={getBulletsColor()}
-            >
+            {/*<Gallery*/}
+            {/*    slideWidth="90%"*/}
+            {/*    style={{ height: "100%", paddingTop: 8 }}*/}
+            {/*    bullets={getBulletsColor()}*/}
+            {/*>*/}
                 <div className={"VK_Donut_slide"}>
                     <div className={'VK_Donut_container'} >
                         <Title level="1" weight="semibold" style={{ marginBottom: 12, marginTop: 4 }} >
@@ -73,7 +73,7 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                         </Text>
                         <div >
                             <div style={{display: "flex"}}>
-                                <Button size="xl" href="https://vk.com/donut/pipeweb" target="_blank" onClick={addUpdateButton} >{isUpdateButton ? "Оформить" : "Оформить VK Donut"}</Button>
+                                <Button size="xl" href="https://vk.com/donut/clonium.group" target="_blank" onClick={addUpdateButton} >{isUpdateButton ? "Оформить" : "Оформить VK Donut"}</Button>
                                 { isUpdateButton &&
                                     <Button size="xl" style={{marginLeft: 12, width: "min-content", height: 47.11}} mode="secondary" onClick={() => updateUserVkDonut("vkDonut")} ><Icon28SwitchOutline width={20} height={20} /></Button>
                                 }
@@ -82,37 +82,40 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                         </div>
                     </div>
                 </div>
+                <div style={{height: 8}}>
 
-                <div className={"VK_Donut_slide"}>
-                    <div className={'VK_Donut_container'} >
-                        <Title level="1" weight="semibold" style={{ marginBottom: 12, marginTop: 4 }} >
-                            Навсегда
-                        </Title>
-                        <Text weight="regular" style={{ marginBottom: 16 }}>
-                            Все те же преимущества <br/>
-                            + создание своих карт (скоро) <br/>
-                            + ракета рядом с именем в топе, <br/>
-                            но с единоразовым платежом  и навсегда.
-                            <br/>
-                            <br/>
-                            <br/>
-                            <br/>
-                        </Text>
-                        <div >
-                            <div style={{display: "flex"}}>
-                                { donateLink
-                                    ? <Button size="xl" target="_blank" href={donateLink} onClick={addUpdateButton} >Приобрести</Button>
-                                    : <Button size="xl" disabled={true} style={{minHeight: 47.11}} ><Spinner size="small" /></Button>
-                                }
-                                { isUpdateButton &&
-                                    <Button size="xl" style={{marginLeft: 12, width: "min-content", height: 47.11}} mode="secondary" onClick={() => updateUserVkDonut("forever")} ><Icon28SwitchOutline width={20} height={20} /></Button>
-                                }
-                            </div>
-                            <Footer style={{margin: "8px 0"}} >499₽</Footer>
-                        </div>
-                    </div>
                 </div>
-            </Gallery>
+
+            {/*    <div className={"VK_Donut_slide"}>*/}
+            {/*        <div className={'VK_Donut_container'} >*/}
+            {/*            <Title level="1" weight="semibold" style={{ marginBottom: 12, marginTop: 4 }} >*/}
+            {/*                Навсегда*/}
+            {/*            </Title>*/}
+            {/*            <Text weight="regular" style={{ marginBottom: 16 }}>*/}
+            {/*                Все те же преимущества <br/>*/}
+            {/*                + создание своих карт (скоро) <br/>*/}
+            {/*                + ракета рядом с именем в топе, <br/>*/}
+            {/*                но с единоразовым платежом  и навсегда.*/}
+            {/*                <br/>*/}
+            {/*                <br/>*/}
+            {/*                <br/>*/}
+            {/*                <br/>*/}
+            {/*            </Text>*/}
+            {/*            <div >*/}
+            {/*                <div style={{display: "flex"}}>*/}
+            {/*                    { donateLink*/}
+            {/*                        ? <Button size="xl" target="_blank" href={donateLink} onClick={addUpdateButton} >Приобрести</Button>*/}
+            {/*                        : <Button size="xl" disabled={true} style={{minHeight: 47.11}} ><Spinner size="small" /></Button>*/}
+            {/*                    }*/}
+            {/*                    { isUpdateButton &&*/}
+            {/*                        <Button size="xl" style={{marginLeft: 12, width: "min-content", height: 47.11}} mode="secondary" onClick={() => updateUserVkDonut("forever")} ><Icon28SwitchOutline width={20} height={20} /></Button>*/}
+            {/*                    }*/}
+            {/*                </div>*/}
+            {/*                <Footer style={{margin: "8px 0"}} >499₽</Footer>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</Gallery>*/}
         </>
     )
 }

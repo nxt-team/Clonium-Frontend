@@ -1,0 +1,10 @@
+.phrase_container {
+    cursor: pointer;
+    transition: opacity .3s var(--ios-easing);
+    height: 24px;
+    margin: 6px 12px;
+}
+
+.phrase_group {
+    margin-bottom: 12px;
+}

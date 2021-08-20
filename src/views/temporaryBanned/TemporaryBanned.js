@@ -41,7 +41,7 @@ const TemporaryBanned = ({ id, oursForUnban}) => {
                     {getTitle()}
                 </Title>
                 <div style={{display: "flex"}}>
-                    <Button size="l" target="_blank" href="https://vk.me/pipeweb" >Тех. поддержка</Button>
+                    <Button size="l" target="_blank" href="https://vk.me/clonium.group" >Тех. поддержка</Button>
                 </div>
             </div>
         </Panel>

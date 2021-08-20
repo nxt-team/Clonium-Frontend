@@ -65,9 +65,9 @@ const achievementsList = [
     },
     {
         achievement_id: 7,
-        rank: "Гений игры",
-        task: "Сыграть супер бой",
-        reward: 10
+        rank: "Sub",
+        task: "Подписаться на сообщество",
+        reward: 5
     },
     {
         achievement_id: 8,
@@ -127,7 +127,7 @@ const Achievements = ({ id, fetchedUser, openAchievementModal, goToMainView }) =
                                     {achievementContent["reward"]}
                                 </div>
                                 <div className={"exp_block__text"} >
-                                    опыта
+                                    {achievementContent["rank"] === "Sub" ? "билетов" : "опыта"}
                                 </div>
                             </div>
                         }
@@ -182,7 +182,7 @@ const Achievements = ({ id, fetchedUser, openAchievementModal, goToMainView }) =
                                     {item["reward"]}
                                 </div>
                                 <div className={"exp_block__text"}>
-                                    опыта
+                                     {item["rank"] === "Sub" ? "билетов" : "опыта"}
                                 </div>
                             </div>
                         }

@@ -123,7 +123,11 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
     const ctx = canvas.getContext('2d');
 
     const ava = new Image();
-    ava.src = avaUrl;
+    if (avaUrl === "https://vk.com/images/camera_200.png") {
+        ava.src = "https://media.discordapp.net/attachments/655117045616082974/877280912084172911/image0.png"
+    } else {
+        ava.src = avaUrl;
+    }
     ava.crossOrigin = 'anonymous';
     console.log(ava)
     ava.onload = function () {

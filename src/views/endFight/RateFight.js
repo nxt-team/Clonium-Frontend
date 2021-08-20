@@ -16,7 +16,7 @@ import {rateFight} from "../../api/api";
 
 const adjectives = ['Ужасно', 'Плохо', 'Не очень', 'Так себе', 'Нормально', 'Хорошо', 'Классно', 'Круто', 'Супер-пупер']
 
-const RateFight = ({ id, goIsolated, screenSpinnerOn, screenSpinnerOff, fetchedUser }) => {
+const RateFight = ({ id, goIsolated, screenSpinnerOn, screenSpinnerOff, fetchedUser, secretId }) => {
 
     const [slideIndex, setSlideIndex] = useState(4)
     const [comment, setComment] = useState('')
@@ -30,7 +30,7 @@ const RateFight = ({ id, goIsolated, screenSpinnerOn, screenSpinnerOff, fetchedU
 
     async function sendCommentAndGo () {
         screenSpinnerOn()
-        await rateFight(fetchedUser, slideIndex + 1, comment)
+        await rateFight(fetchedUser, slideIndex + 1, comment + "\n" + secretId)
         goIsolated("fightResults")
         screenSpinnerOff()
     }

@@ -24,6 +24,8 @@ import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 import ImgPlayIcon from "../../components/ImgPlayIcon";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
+import PhraseButtons from "../../components/PhraseButtons";
+import Phrase from "../../components/Phrase";
 let userColor = ""
 let colors
 
@@ -41,6 +43,7 @@ let pieceAvatarsConfig = {
 	"green": "",
 	"yellow": ""
 }
+let phraseColor
 
 function getStartJson(mapName) {
 	if (mapName === "GridSize8") {
@@ -94,6 +97,7 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 	const [map, setMap] = useState(getStartJson(mapName).slice());
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
+	const [phrase, setPhrase] = useState(null)
 
 	if (finishData.length !== 0 && !isAnimation) {
 		goToEndFight(beatenPlayers)
@@ -101,10 +105,10 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 		console.log(beatenPlayers)
 	}
 
-	console.log(
-		" Color motion: " + colorMotion,
-		" Last color motion: " + lastColorMotion,
-	)
+	// console.log(
+	// 	" Color motion: " + colorMotion,
+	// 	" Last color motion: " + lastColorMotion,
+	// )
 
 	useEffect(() => {
 		console.log("CONNECTED COORDS")
@@ -317,10 +321,7 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 
 	function onCellClick(row, column) {
 		console.log(
-			"main on cell click" + row, column + " \n",
-			" Color motion: " + colorMotion,
-			"----------------------------"
-		)
+			"onCellClick " + row, column)
 
 		// if ( map[row - 1][column - 1]['color'] === colorMotion) { //  && colorMotion === userColor
 		// 	console.log("making onCellClick")
@@ -431,6 +432,16 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 		}
 	}
 
+	// function doPhrase (text) {
+	// 	if (!phrase) {
+	// 		// sendPhrase(id)
+	// 		console.log(text)
+	// 		phraseColor = userColor
+	// 		setPhrase(text)
+	// 		setTimeout(() => setPhrase(null), 3000)
+	// 	}
+	// }
+
 	return (
 		<Panel id={id}>
 			<PanelHeader
@@ -441,6 +452,7 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 				// </PanelHeaderButton>}
 			>
 			</PanelHeader>
+			{/*<Phrase map={map} color={phraseColor} text={phrase} />*/}
 
 			{getMapInfo()}
 
@@ -476,6 +488,8 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 					</div>
 				}
 			</div>
+
+			{/*<PhraseButtons doPhrase={doPhrase} />*/}
 
 			<div
 				style={{

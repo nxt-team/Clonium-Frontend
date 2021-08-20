@@ -6,20 +6,22 @@ import {
 } from "@vkontakte/vkui";
 import { Icon32ErrorCircleOutline } from '@vkontakte/icons';
 import bridge from "@vkontakte/vk-bridge";
+import {doDisconnect, doReconnect} from "../../api/socket";
 
-const Offline = ({ id, goToMainView, activePanel, goToEndFightView, isLoadingInitData}) => {
+const Offline = ({ id, goToMainView, activePanel, goToEndFightView, isLoadingInitData, screenSpinnerOff}) => {
 
     const reconnecting = async () => {
         if (window.navigator.onLine) {
-            if (isLoadingInitData ) {
-                await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
-                window.location.href = ''
-            } else if (activePanel === "rateFight" || activePanel === "fightResults") {
+            screenSpinnerOff()
+            if (activePanel === "rateFight" || activePanel === "fightResults") {
+                doReconnect()
                 goToEndFightView()
-            } else if (activePanel === "game" || activePanel === "rejoinedGame"  || activePanel === "waitingForTheFight") {
+            } else if (isLoadingInitData || activePanel === "game" || activePanel === "rejoinedGame"  || activePanel === "waitingForTheFight" || activePanel === "waitingForStart") {
+                doDisconnect()
                 await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
                 window.location.href = ''
             } else {
+                doReconnect()
                 goToMainView()
             }
         }

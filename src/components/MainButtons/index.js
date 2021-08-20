@@ -12,10 +12,11 @@ export default function MainButtons(props) {
         areNotificationsEnabled,
         isUserInSuperFight,
         updateNotifications,
+        goToAchievements,
     } = props;
 
     function notificationsOn () {
-        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 199025669, "key": "dBuBKe1kFcdemzB"})
+        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 206549924, "key": "dBuBKe1kFcdemzB"})
             .then(
                 () => updateNotifications()
             )
@@ -26,13 +27,15 @@ export default function MainButtons(props) {
             return (
                 <Button size="xl" before={<Icon28Notifications />} onClick={notificationsOn} stretched style={{ marginRight: 8 }} mode="secondary">Уведомления</Button>
             )
-        } if (!isUserInSuperFight) {
+        }
+        // if (!isUserInSuperFight) {
+        //     return (
+        //         <Button size="xl" before={<Icon28FireOutline />} stretched onClick={() => changeActiveModal('superFight')} style={{ marginRight: 8, whiteSpace: "nowrap" }} mode="secondary">Супер бой</Button>
+        //     )
+        // }
+        else {
             return (
-                <Button size="xl" before={<Icon28FireOutline />} stretched onClick={() => changeActiveModal('superFight')} style={{ marginRight: 8, whiteSpace: "nowrap" }} mode="secondary">Супер бой</Button>
-            )
-        } else {
-            return (
-                <Button size="xl" before={<Icon28RadiowavesAroundOutline />} onClick={go} data-to="achievements" stretched style={{ marginRight: 8 }} mode="secondary">Достижения</Button>
+                <Button size="xl" before={<Icon28RadiowavesAroundOutline />} onClick={goToAchievements} stretched style={{ marginRight: 8 }} mode="secondary">Достижения</Button>
             )
         }
     }

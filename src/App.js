@@ -45,7 +45,7 @@ import {
 	IOS,
 	Panel,
 	Snackbar,
-	Avatar
+	Avatar, Alert
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
@@ -57,9 +57,9 @@ import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
 import UserProfile from "./views/main/UserProfile";
 import {
-	addReferral,
+	addReferral, getAllUserInfo,
 	getBeatenPlayers,
-	getFight,
+	getFight, getSubAchievement,
 	getTicket,
 	getUserBalances,
 	init,
@@ -68,7 +68,7 @@ import {
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {joinRoom, rejoinRoom, socket} from "./api/socket";
+import {doDisconnect, doReconnect, joinRoom, rejoinRoom, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
@@ -96,7 +96,7 @@ let colors = []
 let fightStart = new Date()
 let gameTime = 0
 let userColor = ""
-let beatenPlayers = []
+let beatenPlayers = ""
 let temporaryBannedOurs
 let usersInFight
 
@@ -104,7 +104,9 @@ let userProfileVkId = 1
 let isCustomizationLeaving = false
 let initTimeInSeconds = 0
 let isLoadingInitData = true
-let isUserAlreadyConnected = false
+let isOfflineNeedShowInSnackBar = false
+
+let startGameTimer
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
@@ -128,7 +130,8 @@ const App = () => {
 		"are_notifications_enabled": false,
 		"isUserInSuperFight": false,
 		"referrals": 0,
-		"warnings": 0
+		"warnings": 0,
+		"achievements": []
 	})
 	const [ online, setOnline] = useState(1)
 
@@ -153,6 +156,9 @@ const App = () => {
 		} else if (status[0] === "finish") {
 			const data = JSON.parse(status[1])
 			setFinishData(data)
+		} else if (status[0] === "fight_started") {
+			setActivePanel("home")
+			setActiveModal("fightStarted")
 		}
 	}
 
@@ -160,6 +166,20 @@ const App = () => {
 		userBalances["are_notifications_enabled"] = true
 		await updateAreNotificationsEnabled(fetchedUser, true)
 
+	}
+
+	async function doReconnectForRejoin () {
+		socket.disconnect()
+		await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
+		window.location.href = ''
+	}
+
+	async function completeSubReward () {
+		await getSubAchievement()
+		let balances = await getUserBalances()
+		setUserBalances(balances)
+		setActiveView("main")
+		completeSnackBar("Теперь ты крутой саб")
 	}
 
 	// console.log("Scroll bars: ", document.documentElement.clientWidth, window.innerWidth)
@@ -175,7 +195,7 @@ const App = () => {
 		})
 
 		socket.on("online", (data) => {
-			if (activePanel !== "game" || activePanel !== "rejoinedGame") {
+			if (activePanel !== "game" || activePanel !== "rejoinedGame" || activePanel !== "intro_1") {
 				setOnline(data)
 			}
 			console.log("new Online", data)
@@ -188,44 +208,156 @@ const App = () => {
 				completeSnackBar("Уведомления включены")
 			} else if (type === "VKWebAppCopyTextResult") {
 				completeSnackBar("Скопировано!")
+			} else if (type === "VKWebAppJoinGroupResult") {
+				completeSubReward()
+			} else if (type === "VKWebAppViewHide") { // закрытие прилы
+				socket.disconnect()
+			} else if (type === "VKWebAppViewRestore" && !socket.connected && !isOfflineNeedShowInSnackBar) { // доставание из кэша
+				setPopout(<ScreenSpinner/>)
+				socket.connect()
+				getAllUserInfo()
+					.then((userData) => {
+						const user = userData[0]
+						if (userData[1]) {
+							isOfflineNeedShowInSnackBar = true
+							setActivePanel("home")
+							setActiveView("alreadyConnected")
+							setPopout(null)
+						} else if (user["status"].split("_")[0] === "fight") {
+							socket.emit("rejoin room", {
+								"secret_id": user["status"].split("_")[1],
+								"vk_id": user.vk_id,
+								"avatar": user.avatar,
+								"params": window.location.search.replace('?', '')
+							}, (data) => {
+								console.log(data)
+								secretId = user["status"].split("_")[1]
+								if (data[0] === "waiting_for_players") {
+									needUsersInFight = data[2]
+									setActivePanel("waitingForStart")
+									setPopout(null)
+								} else if (data[0] === "waiting_for_the_fight") {
+									const now = new Date();
+									const fightStart = new Date(data[1])
+									const time = new Date(fightStart - now)
+									startCount = time.getSeconds() - 30
+									if (startCount === -30) {
+										startCount = 30
+									}
+									setActivePanel("waitingForTheFight")
+									setPopout(null)
+								} else if (data[0] === "fight") {
+									doReconnectForRejoin()
+								}
+							})
+						} else {
+
+							if (secretId.length > 0 && beatenPlayers === "") { // beatenPlayers нужно для того, что бы не крашилось приложение после просмотра рекламы в рейт файт
+								setActivePanel("home")
+								secretId = ""
+							}
+
+							let hash = window.location.hash
+							console.log(hash)
+
+							if (hash.indexOf("#fight=") !== -1) {
+								console.log(hash)
+								hash = hash.slice(7)
+								console.log(hash)
+								if (typeof (hash) !== NaN) {
+									console.log(hash)
+									getFight(hash)
+										.then((fight) => {
+											if (fight === null) {
+												console.log("noFight")
+											} else if (fight["status"] === "waiting_for_players") {
+												needUsersInFight = fight["max_user_number"]
+												secretId = hash
+												if (user["tickets"] === 0) {
+													setPopout(null)
+													setActiveModal("noTickets")
+												} else {
+													setPopout(
+														<Alert
+															actions={[{
+																title: 'Войти',
+																autoclose: true,
+																action: () => {
+																	joinRoom({
+																		"id": user.vk_id,
+																		"photo_200": user.avatar,
+																	}, hash);
+																	setActivePanel("waitingForStart")
+																},
+															}, {
+																title: 'Отмена',
+																autoclose: true,
+																mode: 'cancel'
+															}]}
+															onClose={() => setPopout(null)}
+														>
+															<h2>Войти в комнату?</h2>
+															<p>Ты перешёл по ссылке для присоединения к комнате</p>
+														</Alert>
+													)
+												}
+											} else {
+												setPopout(null)
+											}
+										})
+
+								} else {
+									setPopout(null)
+								}
+							} else {
+								setPopout(null)
+							}
+						}
+					})
 			}
 		});
 
 		async function fetchData() {
 			isLoadingInitData = true
-			const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme"]})
-			console.log("storageGetData", storageGetData)
-			const isReloading = storageGetData["keys"][0]["value"]
 			if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
-				let theme = storageGetData["keys"][1]["value"]
-				console.log("THEME ", theme)
-				const schemeAttribute = document.createAttribute('scheme');
-				schemeAttribute.value = theme ? theme : 'client_light';
-				document.body.attributes.setNamedItem(schemeAttribute);
+				const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme"]})
+				console.log("storageGetData", storageGetData)
+				const isReloading = storageGetData["keys"][0]["value"]
+				if (isReloading) {
+					let theme = storageGetData["keys"][1]["value"]
+					console.log("THEME ", theme)
+					const schemeAttribute = document.createAttribute('scheme');
+					schemeAttribute.value = theme ? theme : 'client_light';
+					document.body.attributes.setNamedItem(schemeAttribute);
+					await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": ""});
+				}
 			}
-			await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": ""});
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
 			setUser(fetchUser)
 			let user = await init(fetchUser)
+			console.log("INIT")
 			setUserBalances(user)
 			socket.connect()
 			const timeNow = new Date()
 			initTimeInSeconds = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
 
 			if (user["status"] === "connected") {
-				isUserAlreadyConnected = true
+				isOfflineNeedShowInSnackBar = true
 				setActiveView("alreadyConnected")
+				setPopout(null)
 			} else if (user["status"] === "banned") {
-				isUserAlreadyConnected = true
+				isOfflineNeedShowInSnackBar = true
 				setActiveView("banned")
+				setPopout(null)
 			} else if (user["status"] === "temporaryBanned") {
-				isUserAlreadyConnected = true
+				isOfflineNeedShowInSnackBar = true
 				const timeNow = new Date()
 				const ours_now = timeNow.getDate() * 24 + timeNow.getHours()
 				const bannedTime = new Date(user["last_activity"])
 				const banned_ours = bannedTime.getDate() * 24 + bannedTime.getHours()
 				temporaryBannedOurs = banned_ours + 24 - ours_now
 				setActiveView("temporaryBanned")
+				setPopout(null)
 			}
 
 			else if (user["status"] === "success") {
@@ -238,9 +370,11 @@ const App = () => {
 						await addReferral(fetchUser, hash)
 					}
 				}
+				isOfflineNeedShowInSnackBar = true
 
 				setActivePanel("intro_1")
 				setActiveView("main")
+				setPopout(null)
 			} else if (user["status"].split("_")[0] === "fight") {
 				console.log("rejoin fight")
 
@@ -251,16 +385,17 @@ const App = () => {
 					"params": window.location.search.replace('?', '')
 				}, (data) => {
 					console.log(data)
+					let newPanel
+					secretId = user["status"].split("_")[1]
 					if (data[0] === "waiting_for_players") {
-						secretId = user["status"].split("_")[1]
 						needUsersInFight = data[2]
-						setActivePanel("waitingForStart")
+						newPanel = "waitingForStart"
 					} else if (data[0] === "waiting_for_the_fight") {
 						const now = new Date();
 						const fightStart = new Date(data[1])
 						const time = new Date(fightStart - now)
 						startCount = time.getSeconds() - 30
-						setActivePanel("waitingForTheFight")
+						newPanel = "waitingForTheFight"
 					} else if (data[0] === "fight") {
 						mapName = data[7]
 						colorMotion = data[1]
@@ -271,13 +406,14 @@ const App = () => {
 						gameTime = data[6]
 						userColor = data[8]
 						usersInFight = data[9]
-						secretId = user["status"].split("_")[1]
-						setActivePanel("rejoinedGame")
+						startGameTimer = data[10]
+						newPanel = "rejoinedGame"
 
 					}
+					setActivePanel(newPanel)
+					setActiveView("main")
+					setPopout(null)
 				})
-
-				setActiveView("main")
 			} else {
 
 				let newActiveModal = null
@@ -285,7 +421,9 @@ const App = () => {
 				let hash = window.location.hash
 				console.log(hash)
 
-				if (hash.indexOf("#fight=") !== -1) {
+				if (hash === "#donut") {
+					newActiveModal = "aboutVkDonut"
+				} else if (hash.indexOf("#fight=") !== -1) {
 					console.log(hash)
 					hash = hash.slice(7)
 					console.log(hash)
@@ -300,9 +438,9 @@ const App = () => {
 							secretId = hash
 							if (user["tickets"] === 0) {
 								newActiveModal = "noTickets"
-								console.log("noTickets")
 							} else {
-								setTimeout(() => {joinRoom(fetchUser, hash); setActivePanel("waitingForStart")}, 300);
+								joinRoom(fetchUser, hash);
+								setActivePanel("waitingForStart")
 							}
 						} else if (fight["status"] === "fight_finished") {
 							newActiveModal = "fightFinished"
@@ -313,11 +451,9 @@ const App = () => {
 				}
 
 				setActiveView("main")
-				setUserBalances(user)
-				console.log(newActiveModal)
 				setTimeout(() => setActiveModal(newActiveModal), 300)
+				setPopout(null)
 			}
-			setPopout(null)
 			isLoadingInitData = false
 		}
 
@@ -333,7 +469,7 @@ const App = () => {
 			console.log(timeInSecondsNow - initTimeInSeconds)
 			if (timeInSecondsNow - initTimeInSeconds < 1000) {
 				setTimeout(() => goToOffline(), 500)
-			} else if (isUserAlreadyConnected) {
+			} else if (isOfflineNeedShowInSnackBar) {
 				errorSnackBar("Интернет соединение потеряно")
 			} else {
 				goToOffline()
@@ -409,25 +545,6 @@ const App = () => {
 		}
 	}
 
-	const goBackBySwipeBack = () => {
-		if (history[history.length - 1] !== "history" || history[history.length - 1] !== "achievements") {
-			if (history.length === 1) {  // Если в массиве одно значение:
-				bridge.send("VKWebAppClose", {"status": "success"}); // Отправляем bridge на закрытие сервиса.
-			} else if (history.length > 1) { // Если в массиве больше одного значения:
-				history.pop() // удаляем последний элемент в массиве.
-				setActivePanel(history[history.length - 1]) // Изменяем массив с иторией и меняем активную панель.
-			}
-		}
-	}
-
-	const getSwipeBackHistory = () => {
-		if (history[history.length - 1] !== "history" || history[history.length - 1] !== "achievements") {
-			return ["home"]
-		} else {
-			return history
-		}
-	}
-
 	const updateUserBalances = async () => {
 		const user = await getUserBalances(fetchedUser)
 		setUserBalances(user)
@@ -481,7 +598,8 @@ const App = () => {
 							</PanelHeaderButton>
 						}
 					>
-						Подписки
+						Подписка
+						{/*Подписки*/}
 					</ModalPageHeader>
 				}
 			>
@@ -512,13 +630,14 @@ const App = () => {
 				id={"ticketFromSubscribing"}
 				onClose={() => setActiveModal(null)}
 				icon={<Icon56Users3Outline />}
-				header="Билет за подписку"
-				caption="Подпишись на сообщество и получи необходимый для игры билет"
+				header="5 билетов за подписку"
+				caption="Подпишись на официальное сообщество и получи 5 билетов"
 				actions={[{
 					title: 'Подписаться',
 					mode: 'primary',
 					action: () => {
 						setActiveModal(null);
+						bridge.send("VKWebAppJoinGroup", {"group_id": 206549924});
 					}
 				}]}
 			>
@@ -653,7 +772,11 @@ const App = () => {
 						title: 'Получить',
 						mode: 'primary',
 						action: () => {
-							changeActiveModal("ticketFromAd")
+							if (userBalances["achievements"].indexOf(7) === -1 && userBalances["fights"] >= 5) {
+								changeActiveModal("ticketFromSubscribing")
+							} else {
+								changeActiveModal("ticketFromAd")
+							}
 						}
 					},
 					{
@@ -809,18 +932,8 @@ const App = () => {
 		</ModalRoot>
 	);
 
-	function arrayRandElement(arr) {
-		const rand = Math.floor(Math.random() * arr.length);
-		return arr[rand];
-	}
-
 	function changeActiveModal (newActiveModal) {
-		if (newActiveModal === 'getTicket') {
-			setActiveModal(arrayRandElement(["ticketFromAddToFavorites", "ticketFromSubscribing", "ticketFromAd"]))
-		} else {
-			setActiveModal(newActiveModal)
-		}
-
+		setActiveModal(newActiveModal)
 	}
 
 	function goToCreatingRoom () {
@@ -900,8 +1013,12 @@ const App = () => {
 	}
 
 	function openAchievementModal (title, caption, isCompleted) {
-		setAchievementModalData([title, caption, isCompleted])
-		setActiveModal('achievementModal')
+		if (title === "Sub" && !isCompleted) {
+			bridge.send("VKWebAppJoinGroup", {"group_id": 206549924});
+		} else {
+			setAchievementModalData([title, caption, isCompleted])
+			setActiveModal('achievementModal')
+		}
 	}
 
 	function completeSnackBar (text) {
@@ -921,7 +1038,9 @@ const App = () => {
 		console.log(text)
 		setPopout(
 			<Snackbar
-				layout="vertical"
+				action="Закрыть"
+				onActionClick={() => setPopout(null)}
+				layout="horizontal"
 				duration={5000}
 				onClose={() => setPopout(null)}
 				before={<Icon28CancelCircleFillRed width={24} height={24} />}
@@ -940,6 +1059,17 @@ const App = () => {
 	}
 
 	async function endIntro () {
+		if (!window.navigator.onLine) {
+			errorSnackBar("Интернет соединение потеряно")
+			return
+		}
+
+		if (!socket.connected) {
+			socket.connect()
+		}
+
+		isOfflineNeedShowInSnackBar = false
+
 		let newActiveModal = null
 
 		let hash = window.location.hash
@@ -992,7 +1122,7 @@ const App = () => {
 						{/*<canvas id='example' style={{"width": 1080 / 2, "height": 1920 / 2}} />*/}
 					</Panel>
 				</View>
-				<View id='main' history={getSwipeBackHistory()} onSwipeBack={goBackBySwipeBack} activePanel={activePanel} popout={popout} modal={modal}>
+				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
 					<Intro id='intro_1' panel_go={panel_go} endIntro={endIntro} changeActiveModal={changeActiveModal}/>
 					<Home
 						id={'home'}
@@ -1012,7 +1142,7 @@ const App = () => {
 						goToAchievements={goToAchievements}
 					/>
 					<WaitingForStart goIsolated={goIsolated2} id={'waitingForStart'} go={go} are_notifications_enabled={userBalances["are_notifications_enabled"]} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
-					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} />
+					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} secretId={secretId} />
 					<Game
 						id={'game'}
 						changeActiveModal={changeActiveModal}
@@ -1045,6 +1175,8 @@ const App = () => {
 						fightStart={fightStart}
 						userBalances={userBalances}
 						usersInFight={usersInFight}
+						changePopout={(newPopout) => setPopout(newPopout) }
+						startGameTimer={startGameTimer}
 					/>
 					<Profile
 						id={'profile'}
@@ -1071,11 +1203,23 @@ const App = () => {
 					/>
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>
-					<RateFight id={'rateFight'} goIsolated={goIsolated2} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
-					<FightResults id={'fightResults'} secretId={secretId} finishData={finishData} updateUserBalances={updateUserBalances} beatenPlayersColors={beatenPlayers} fetchedUser={fetchedUser} goToMainView={goToMainViewHome} fightResultsSharing={fightResultsSharing} goToTemporaryBanned={goToTemporaryBanned}/>
+					<RateFight id={'rateFight'} goIsolated={goIsolated2} secretId={secretId} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
+					<FightResults
+						id={'fightResults'}
+						secretId={secretId}
+						finishData={finishData}
+						updateUserBalances={updateUserBalances}
+						beatenPlayersColors={beatenPlayers}
+						fetchedUser={fetchedUser}
+						goToMainView={goToMainViewHome}
+						fightResultsSharing={fightResultsSharing}
+						goToTemporaryBanned={goToTemporaryBanned}
+						resetSecretId={() => secretId = ""}
+						resetBeatenPlayers={() => beatenPlayers = ""}
+					/>
 				</View>
 				<View activePanel={"offline"} id="offline" >
-					<Offline id={'offline'} changePopou={(newPopout) => setPopout(newPopout)} isLoadingInitData={isLoadingInitData} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
+					<Offline id={'offline'} screenSpinnerOff={screenSpinnerOff} changePopou={(newPopout) => setPopout(newPopout)} isLoadingInitData={isLoadingInitData} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
 				</View>
 				<View activePanel={"clearCache"} id="clearCache" >
 					<ClearCache id='clearCache'/>

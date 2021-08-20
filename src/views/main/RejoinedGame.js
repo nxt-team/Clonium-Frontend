@@ -6,7 +6,18 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
-import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
+import {
+    IOS,
+    platform,
+    Caption,
+    Separator,
+    SimpleCell,
+    WriteBar,
+    WriteBarIcon,
+    CardScroll,
+    Card,
+    Group
+} from "@vkontakte/vkui";
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
@@ -16,6 +27,8 @@ import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
 import {getFight} from "../../api/api";
+import PhraseButtons from "../../components/PhraseButtons";
+import Phrase from "../../components/Phrase";
 let userColor = ""
 let colors
 
@@ -62,7 +75,7 @@ function getColorInfo (color) {
     }
 }
 
-const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHome, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight}) => {
+const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, changePopout}) => {
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
@@ -73,10 +86,10 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
         console.log(beatenPlayers)
     }
 
-    console.log("TIME", isGlobalTimer, game_time)
-    console.log(
-        " Color motion: " + colorMotion,
-    )
+    // console.log("TIME", isGlobalTimer, game_time)
+    // console.log(
+    //     " Color motion: " + colorMotion,
+    // )
 
     useEffect(() => {
         console.log("CONNECTED COORDS")
@@ -254,10 +267,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
 
     function onCellClick(row, column) {
         console.log(
-            "main on cell click" + row, column + " \n",
-            " Color motion: " + colorMotion,
-            "----------------------------"
-        )
+            "onCellClick " + row, column)
 
         // if ( map[row - 1][column - 1]['color'] === colorMotion) { //  && colorMotion === userColor
         // 	console.log("making onCellClick")
@@ -368,6 +378,16 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
         }
     }
 
+    // function doPhrase (text) {
+    //     if (!phrase) {
+    //         // sendPhrase(id)
+    //         console.log(text)
+    //         phraseColor = userColor
+    //         changePopout(<Phrase map={map} color={phraseColor} text={text} />)
+    //         setTimeout(() => changePopout(null), 3000)
+    //     }
+    // }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -384,6 +404,8 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, goToMainViewHo
             <GameScore count={count} />
             <GetMap onCellClickFromUser={onCellClickFromUser}  lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
+            {/*<PhraseButtons doPhrase={doPhrase} />*/}
+            {/*<Separator wide={false}/>*/}
             <div
                 style={{
                     marginBottom: 0,

@@ -41,7 +41,7 @@ export default function InfoBanners(props) {
 
             </Card>
             <Card  >
-                <Link target="_blank" href="https://vk.com/pipeweb" >
+                <Link target="_blank" href="https://vk.com/clonium.group" >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Blue" >
                         <Icon28Users3Outline className="InfoBanner__Icon__Blue" width={32} height={32}/>
@@ -55,7 +55,7 @@ export default function InfoBanners(props) {
             </Card>
             <Card  >
                 <Link target="_blank"
-                      // href="https://vk.me/join/zJ8DxkYAjOlAxQX/y74M/HYEjtfHxOWCMIM="
+                      href="https://vk.me/join/AJQ1d0WO6BzyVMdzHKr5f5pu"
                 >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Red" >
@@ -68,7 +68,7 @@ export default function InfoBanners(props) {
                 </div>
                 </Link>
             </Card>
-            { // (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
+            {(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
                 <Card onClick={() => changeActiveModal("aboutVkDonut")} >
                     <div className="InfoBanner" >
                         <div className="InfoBanner__Icon__Before__Orange" >

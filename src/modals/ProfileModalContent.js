@@ -77,9 +77,9 @@ const achievementsList = [
     },
     {
         achievement_id: 7,
-        rank: "Гений игры",
-        task: "Сыграть супер бой",
-        reward: 10
+        rank: "Sub",
+        task: "Подписаться на сообщество",
+        reward: 5
     },
     {
         achievement_id: 8,

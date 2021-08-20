@@ -38,7 +38,7 @@ let updateHeight
 const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVkId }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
-    const [superFightBanner, setSuperFightBanner] = useState(true)
+    const [superFightBanner, setSuperFightBanner] = useState(false)
     const [globalTop, setGlobalTop] = useState([])
     const [friendsTop, setFriendsTop] = useState([])
     const [searchData, setSearchData] = useState("")
@@ -68,7 +68,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         "user_id": fetchedUser.id,
                         "fields": "photo_200,sex",
                         "q": "",
-                        "v": "5.21",
+                        "v": "5.131",
                         "count": 10,
                         "access_token": token["access_token"]
                     }
@@ -247,6 +247,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                             </Group>
                         </>
                     }
+                    <div style={{height: "calc(8px + var(--safe-area-inset-bottom))"}} />
                 </>
             )
         }

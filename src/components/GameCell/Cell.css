@@ -16,6 +16,38 @@
     cursor: pointer;
 }
 
+.active_cell_blue {
+    background: rgba(0, 217, 253, 0.3);
+    margin: 1px;
+    border-radius: 10%;
+    cursor: pointer;
+
+}
+
+.active_cell_red {
+    background: rgba(254, 121, 202, 0.3);
+    margin: 1px;
+    border-radius: 10%;
+    cursor: pointer;
+
+}
+
+.active_cell_green {
+    background: rgba(47, 227, 104, 0.3);
+    margin: 1px;
+    border-radius: 10%;
+    cursor: pointer;
+
+}
+
+.active_cell_yellow {
+    background: rgba(254, 178, 43, 0.3);
+    margin: 1px;
+    border-radius: 10%;
+    cursor: pointer;
+
+}
+
 .motion_cell {
     background-color: var(--text_secondary);
     margin: 1px;

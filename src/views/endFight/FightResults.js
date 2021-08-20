@@ -18,7 +18,7 @@ import {fightResultsPostShare} from "../../sharing/sharing";
 import {getBeatenPlayers} from "../../api/api";
 
 let userBalances
-const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances, goToTemporaryBanned }) => {
+const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances, goToTemporaryBanned, resetSecretId, resetBeatenPlayers }) => {
 
     const [beatenPlayers, setBeatenPlayers] = useState(null)
     const [isSkipButtonDisabled, setIsSkipButtonDisabled] = useState(true)
@@ -31,6 +31,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
                 const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
                 setBeatenPlayers(bp)
                 console.log(beatenPlayers)
+                resetSecretId()
             }
         }
 
@@ -40,6 +41,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
     }, [])
 
     function go () {
+        resetBeatenPlayers()
         if (userBalances["warnings"] === 3) {
             goToTemporaryBanned()
         } else {

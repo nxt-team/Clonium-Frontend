@@ -302,13 +302,13 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
             </Title>
             <div className={"containerProfile"}>
                 <div className={'fullContainer'} >
-                    <SimpleCell before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites") /* bridge.send("VKWebAppAddToMenu")*/ }  >Добавь сервис в избранные</SimpleCell>
-                    <SimpleCell before={<Icon28ShareOutline/>} onClick={() => postShare(fetchedUser.id)} expandable >Рассказать друзьям</SimpleCell>
-                    <SimpleCell before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
-                    <SimpleCell before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
-                    <SimpleCell before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promocodeActivation")} expandable >Активировать промокод</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites")}  >Добавь сервис в избранные</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28ShareOutline/>} onClick={() => postShare(fetchedUser.id)} expandable >Рассказать друзьям</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promocodeActivation")} expandable >Активировать промокод</SimpleCell>
                     {osName === ANDROID &&
-                        <SimpleCell before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
+                        <SimpleCell style={{cursor: "pointer"}} before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
                     }
                 </div>
 
@@ -335,15 +335,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 }
 
 
-            </div>
-            <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
-                Тестерам
-            </Title>
-            <div className={"containerProfile"}>
-                <div className={'fullContainer'} >
-                    <SimpleCell before={<Icon28DeleteOutline/>} onClick={async () => {await deleteUser(); goToClearCache();}} expandable >Удалить свой профиль из бд</SimpleCell>
-                    <SimpleCell before={<Icon28ChatsOutline/>} href="https://vk.me/join/4nXMHh_Bj2OFh8X_AH33onT2ILbd18WTg3Y=" target="_blank" expandable >Беседа для тестеров</SimpleCell>
-                </div>
             </div>
             <div style={{height: 12}}/>
 

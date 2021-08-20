@@ -13,6 +13,10 @@
     animation: pulseHover 1s infinite;
 }
 
+.players_container {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
 
 @-webkit-keyframes pulse {
     0% {

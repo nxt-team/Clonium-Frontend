@@ -1,5 +1,5 @@
 .friendsSlide {
-    height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom) - var(--panelheader_height_ios) - 53px);
+    height: calc(100vh - var(--safe-area-inset-top) - var(--panelheader_height_ios) - 53px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }

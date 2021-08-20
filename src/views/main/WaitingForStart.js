@@ -23,12 +23,11 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
     useEffect(() => {
         socket.once("avatars", (data) => {
             setPhotos(data)
-            console.log(data)
         });
     })
 
     function notificationsOn () {
-        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 199025669, "key": "dBuBKe1kFcdemzB"})
+        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 206549924, "key": "dBuBKe1kFcdemzB"})
             .then(
                 () => updateNotifications()
             )

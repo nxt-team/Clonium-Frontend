@@ -1,0 +1,14 @@
+.phrase_message {
+    border-radius: 12px;
+    background: var(--content_tint_background);
+    padding: 6px 12px;
+    height: 24px;
+    width: max-content;
+    border: 1px solid #FF79CB;
+}
+
+.phrase_message_container {
+    position: absolute;
+    top: 220px;
+    left: 70px;
+}
