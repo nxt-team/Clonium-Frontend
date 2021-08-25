@@ -1,18 +1,15 @@
 import React from 'react';
-import AnimatedPlayIcon from "../components/animatedPlayIcon";
-import PlayIcon from "../components/playIcon";
 import bridge from "@vkontakte/vk-bridge";
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
+const user_platform = startupParameters.get('vk_platform')
 
-
-function callTapticEngine (startupParameters) {
-    const user_platform = startupParameters.get('vk_platform')
+function callTapticEngine () {
     if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
         bridge.send("VKWebAppTapticImpactOccurred", {"style": "light"});
     }
 }
 
-function callHeavyTapticEngine (startupParameters) {
-    const user_platform = startupParameters.get('vk_platform')
+function callHeavyTapticEngine () {
     if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
         bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
     }

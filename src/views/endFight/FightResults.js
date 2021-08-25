@@ -28,15 +28,15 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
         async function getPlayers () {
             userBalances = await updateUserBalances()
             if (beatenPlayersColors.length !== 0) {
-                const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
-                setBeatenPlayers(bp)
+                // const bp = await getBeatenPlayers(secretId, beatenPlayersColors)
+                setBeatenPlayers(beatenPlayersColors)
                 console.log(beatenPlayers)
-                resetSecretId()
             }
+            resetSecretId()
         }
 
         getPlayers()
-        setTimeout(() => setIsSkipButtonDisabled(false), 3000)
+        setTimeout(() => setIsSkipButtonDisabled(false), 2000)
 
     }, [])
 

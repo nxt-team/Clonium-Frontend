@@ -16,7 +16,7 @@ import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
 
-const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated}) => {
+const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated}) => {
 
     const [photos, setPhotos] = useState([])
 
@@ -110,7 +110,7 @@ const WaitingForStart = ({ id, go, secretId, fetchedUser, needUsersInFight, upda
                         alignItems: "center",
                     }}
                 >
-                    <Button onClick={() => {leaveFight(fetchedUser); setTimeout(() => goIsolated("home"), 300)}} data-to="home" mode="tertiary">Покинуть комнату</Button>
+                    <Button onClick={() => {leaveFight(fetchedUser); resetSecretId(); setTimeout(() => goIsolated("home"), 300)}} data-to="home" mode="tertiary">Покинуть комнату</Button>
                 </div>
             </FixedLayout>
         </Panel>

@@ -31,7 +31,7 @@ export const fightResultsPostShare = (userId, place, players) => {
     }
     for (let item of players) {
         message += "\n"
-        message += "- " + "@id" + item["vk_id"] + "(" + item["user_name"] + ")"
+        message += "- " + "@id" + item["vk_id"] + "(" + item["username"] + ")"
     }
     message += "\nи занял " + place + " место 😎"
 

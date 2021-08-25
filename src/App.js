@@ -29,15 +29,11 @@ import Offline from './views/offline/offline'
 import Messenger from "./components/Messenger";
 import FightResults from "./views/endFight/FightResults"
 import {
-	Div,
 	ModalPage,
 	ModalRoot,
 	Root,
-	Spinner,
 	ConfigProvider,
 	ModalCard,
-	File,
-	Input,
 	ScreenSpinner,
 	ActionSheetItem,
 	ActionSheet,
@@ -62,13 +58,13 @@ import {
 	getFight, getSubAchievement,
 	getTicket,
 	getUserBalances,
-	init,
+	init, maintainingStat,
 	updateAreNotificationsEnabled
 } from "./api/api";
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {doDisconnect, doReconnect, joinRoom, rejoinRoom, socket} from "./api/socket";
+import {doDisconnect, joinRoom, rejoinRoom, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
@@ -105,7 +101,8 @@ let isCustomizationLeaving = false
 let initTimeInSeconds = 0
 let isLoadingInitData = true
 let isOfflineNeedShowInSnackBar = false
-
+let isInCustomization = false
+let isStartTooltip = false
 let startGameTimer
 
 const App = () => {
@@ -155,6 +152,11 @@ const App = () => {
 			setActivePanel("game")
 		} else if (status[0] === "finish") {
 			const data = JSON.parse(status[1])
+			let s = newStatus
+			s = s.substring(s.indexOf('-') + 1)
+			s = s.substring(s.indexOf('-') + 1)
+			console.log(s)
+			beatenPlayers = JSON.parse(s)
 			setFinishData(data)
 		} else if (status[0] === "fight_started") {
 			setActivePanel("home")
@@ -203,6 +205,7 @@ const App = () => {
 		bridge.subscribe(({ detail: { type, data }}) => {
 			console.log(type, data)
 			if (type === 'VKWebAppAddToFavoritesResult') {
+				maintainingStat("adds_to_favorite")
 				completeSnackBar("Мини приложение в избранных")
 			} else if (type === "VKWebAppAllowMessagesFromGroupResult") {
 				completeSnackBar("Уведомления включены")
@@ -210,13 +213,14 @@ const App = () => {
 				completeSnackBar("Скопировано!")
 			} else if (type === "VKWebAppJoinGroupResult") {
 				completeSubReward()
-			} else if (type === "VKWebAppViewHide") { // закрытие прилы
+			} else if (type === "VKWebAppViewHide" && !isInCustomization) { // закрытие прилы
 				socket.disconnect()
-			} else if (type === "VKWebAppViewRestore" && !socket.connected && !isOfflineNeedShowInSnackBar) { // доставание из кэша
+			} else if (type === "VKWebAppViewRestore" && !socket.connected && !isOfflineNeedShowInSnackBar && !isLoadingInitData) { // доставание из кэша
+				console.log(socket.connected, isOfflineNeedShowInSnackBar, isLoadingInitData)
 				setPopout(<ScreenSpinner/>)
-				socket.connect()
 				getAllUserInfo()
 					.then((userData) => {
+						socket.connect()
 						const user = userData[0]
 						if (userData[1]) {
 							isOfflineNeedShowInSnackBar = true
@@ -314,6 +318,14 @@ const App = () => {
 							}
 						}
 					})
+			} else if (type === "VKWebAppShowStoryBoxLoadFinish") {
+				maintainingStat("story_sharing")
+			} else if (type === "VKWebAppShareResult") {
+				maintainingStat("link_sharing")
+			} else if (type === "VKWebAppShowWallPostBoxResult") {
+				maintainingStat("post_sharing")
+			} else if (type === "VKWebAppAddToHomeScreenResult") {
+				maintainingStat("adds_to_menu")
 			}
 		});
 
@@ -336,8 +348,8 @@ const App = () => {
 			setUser(fetchUser)
 			let user = await init(fetchUser)
 			console.log("INIT")
-			setUserBalances(user)
 			socket.connect()
+			setUserBalances(user)
 			const timeNow = new Date()
 			initTimeInSeconds = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
 
@@ -358,9 +370,7 @@ const App = () => {
 				temporaryBannedOurs = banned_ours + 24 - ours_now
 				setActiveView("temporaryBanned")
 				setPopout(null)
-			}
-
-			else if (user["status"] === "success") {
+			} else if (user["status"] === "success") {
 
 				let hash = window.location.hash
 
@@ -424,7 +434,7 @@ const App = () => {
 				if (hash === "#donut") {
 					newActiveModal = "aboutVkDonut"
 				} else if (hash.indexOf("#fight=") !== -1) {
-					console.log(hash)
+					console.log(hash, 442)
 					hash = hash.slice(7)
 					console.log(hash)
 					if (typeof (hash) !== NaN) {
@@ -480,6 +490,9 @@ const App = () => {
 
 	const go = e => {
 		const panel = e.currentTarget.dataset.to
+		if (panel === "customization") {
+			isInCustomization = true
+		}
 		window.history.pushState( {panel: panel}, panel ); // Создаём новую запись в истории браузера
 		setActivePanel( panel ); // Меняем активную панель
 		history.push( panel ); // Добавляем панель в историю
@@ -540,6 +553,7 @@ const App = () => {
 
 			if (history[history.length - 1] === "profile") {
 				isCustomizationLeaving = true
+				isInCustomization = false
 				setTimeout(() => isCustomizationLeaving = false, 500)
 			}
 		}
@@ -965,7 +979,7 @@ const App = () => {
 	}
 
 	async function goToEndFight (beatenPlayersColors) {
-		beatenPlayers = beatenPlayersColors
+		// beatenPlayers = beatenPlayersColors
 
 		if (popout) {
 			setPopout(null)
@@ -1095,7 +1109,7 @@ const App = () => {
 			}
 			setTimeout(() => setActiveModal(newActiveModal), 300)
 		}
-
+		isStartTooltip = true
 		setActivePanel("home")
 	}
 
@@ -1140,8 +1154,20 @@ const App = () => {
 						online={online}
 						goToHistory={goToHistory}
 						goToAchievements={goToAchievements}
+						isStartTooltip={isStartTooltip}
+						resetIsStartTooltip={() => isStartTooltip = false}
 					/>
-					<WaitingForStart goIsolated={goIsolated2} id={'waitingForStart'} go={go} are_notifications_enabled={userBalances["are_notifications_enabled"]} secretId={secretId} updateNotifications={updateNotifications} fetchedUser={fetchedUser} needUsersInFight={needUsersInFight} />
+					<WaitingForStart
+						goIsolated={goIsolated2}
+						id={'waitingForStart'}
+						go={go}
+						are_notifications_enabled={userBalances["are_notifications_enabled"]}
+						secretId={secretId}
+						updateNotifications={updateNotifications}
+						fetchedUser={fetchedUser}
+						needUsersInFight={needUsersInFight}
+						resetSecretId={() => secretId = ""}
+					/>
 					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} secretId={secretId} />
 					<Game
 						id={'game'}
@@ -1196,10 +1222,15 @@ const App = () => {
 					<UserProfile id='userProfile' vk_id={userProfileVkId} changeActiveModal={changeActiveModal} />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom">
-					<CreatingRoom id={'creatingRoom'} goToMainView={goToMainView} goToPage={goToPage} fetchedUser={fetchedUser}
-								  updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
-								  updateSecretId={(newId) => secretId = newId }
-								  goIsolated={goIsolated2}
+					<CreatingRoom
+						id={'creatingRoom'}
+						goToMainView={goToMainView}
+						goToPage={goToPage}
+						fetchedUser={fetchedUser}
+						vkDonut={userBalances["vk_donut"]}
+						updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
+						updateSecretId={(newId) => secretId = newId }
+						goIsolated={goIsolated2}
 					/>
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>

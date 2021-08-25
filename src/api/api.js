@@ -532,6 +532,22 @@ export async function getDonateLink () {
     return await response.json()
 }
 
+export async function maintainingStat (stat_name) {
+    const data = {
+        "stat_name": stat_name
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/stats/add/count', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
 export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser, errorSnackBar, closeModal) => {
     setImgLink('loading')
     let image = e.target.files;

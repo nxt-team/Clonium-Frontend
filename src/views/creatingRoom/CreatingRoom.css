@@ -6,3 +6,21 @@
     align-items: center;
     cursor: pointer;
 }
+
+.mapForDonuts {
+    filter: blur(12px);
+    -webkit-filter: blur(12px);
+}
+
+.mapForDonutsContainer {
+    position: absolute;
+    padding: 8px;
+    top: 0;
+    left: 0;
+    height: calc(100% - 16px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}

@@ -5,30 +5,18 @@ import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import '../main/waitingForStart.css'
 import './CreatingRoom.css'
 import bridge from '@vkontakte/vk-bridge';
+import { Icon28LockOutline } from '@vkontakte/icons';
 import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
-import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
-import Icon24NotificationOutline from '@vkontakte/icons/dist/24/notification_outline';
-import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
 import {
     Checkbox,
     Radio,
     FormLayout,
     FormLayoutGroup,
     Card,
-    Placeholder,
-    platform,
-    Separator,
-    Tabs,
-    TabsItem,
     CardScroll, IOS, CardGrid,
     PanelHeaderClose, Spinner
 } from "@vkontakte/vkui";
-import { Icon28CancelOutline, Icon28UserOutline, Icon28UsersOutline, Icon28Users3Outline } from '@vkontakte/icons';
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
-import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
-import Icon28Notifications from "@vkontakte/icons/dist/28/notifications";
-import { Icon24DismissDark } from '@vkontakte/icons';
 import DonutSize6 from '../../mapsPreview/DonutSize6';
 import DonutSize8 from '../../mapsPreview/DonutSize8';
 import GridSize8 from '../../mapsPreview/GridSize8';
@@ -36,12 +24,10 @@ import GridSize10 from '../../mapsPreview/GridSize10';
 import PassageSize10 from '../../mapsPreview/PassageSize10';
 import SquareSize6 from '../../mapsPreview/SquareSize6';
 import SquareSize8 from '../../mapsPreview/SquareSize8';
-import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
-import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
-import Icon24Back from "@vkontakte/icons/dist/24/back";
 import {createFight} from "../../api/api";
 import {joinRoom} from "../../api/socket";
-
+import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const selected = {
     border: '1px solid var(--dynamic_blue)',
     backgroundColor: 'var(--background_page)',
@@ -55,7 +41,7 @@ const unselcted = {
 let turnTime = true // ограничено
 let gameTime = 600
 
-const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId, goIsolated }) => {
+const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId, goIsolated, vkDonut }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
@@ -68,13 +54,30 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
     }, [])
 
     const changeMapSelect = (mapId) => {
-        setMapsSelect(mapId);
-        bridge.send("VKWebAppTapticSelectionChanged", {});
+        if (mapId === 6) {
+            if (vkDonut) {
+                setMapsSelect(mapId);
+                const user_platform = startupParameters.get('vk_platform')
+                if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
+                    bridge.send("VKWebAppTapticSelectionChanged", {});
+                }
+            }
+        } else {
+            setMapsSelect(mapId);
+            const user_platform = startupParameters.get('vk_platform')
+            if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
+                bridge.send("VKWebAppTapticSelectionChanged", {});
+            }
+        }
+
     }
 
     const changePlayersNumber = (playersNumber) => {
         setPlayersNumber(playersNumber);
-        bridge.send("VKWebAppTapticSelectionChanged", {});
+        const user_platform = startupParameters.get('vk_platform')
+        if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
+            bridge.send("VKWebAppTapticSelectionChanged", {});
+        }
     }
 
     const privateChanged = () => {
@@ -266,10 +269,31 @@ const CreatingRoom = ({ id, goToPage, goToMainView, fetchedUser, updateNeedUsers
                                     alignItems: '',
                                 }}
                             >
-                                <Title level="2" weight="regular">
-                                    Проход
-                                </Title>
-                                <PassageSize10 />
+                                {vkDonut
+                                    ?
+                                    <div>
+                                        <Title level="2" weight="regular">
+                                            Проход
+                                        </Title>
+                                        <PassageSize10 />
+                                    </div>
+                                    :
+                                    <div>
+                                        <div className={"mapForDonuts"}>
+                                            <Title level="2" weight="regular">
+                                                Проход
+                                            </Title>
+                                            <PassageSize10/>
+                                        </div>
+                                        <div className={"mapForDonutsContainer"} >
+                                            <Icon28LockOutline style={{color: "var(--placeholder_icon_foreground_secondary)", marginBottom: 6}}/>
+                                            <Text weight="regular">
+                                                Доступно оформившим VK Donut
+                                            </Text>
+                                        </div>
+                                    </div>
+                                }
+
                             </div>
                         </Card>
                     </CardScroll>

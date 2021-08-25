@@ -32,7 +32,7 @@ const PlayerPreview = ({ avaUrl, userName, rank, pieceAvatarUrl, color, vkDonut 
         if (pieceAvatarUrl.length > 1) {
             return (
                 <div style={{width: 32, height: 32}} >
-                    <ImgPlayIcon  imgLink={pieceAvatarUrl} color={color} size={3} />
+                    <ImgPlayIcon imgLink={pieceAvatarUrl} color={color} size={3} />
                 </div>
             )
         } else {
@@ -89,6 +89,7 @@ const PlayerPreview = ({ avaUrl, userName, rank, pieceAvatarUrl, color, vkDonut 
                     </div>
                 }
                 description={rank}
+                after={getAvatar()}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>

@@ -12,7 +12,7 @@ import {
     SimpleCell,
     RichCell,
     UsersStack,
-    PanelHeaderButton, Spinner, Group, HorizontalScroll, CardScroll, Card
+    PanelHeaderButton, Spinner, Group, HorizontalScroll, CardScroll, Card, Tooltip
 } from '@vkontakte/vkui';
 
 import {
@@ -48,9 +48,10 @@ const numericIndicator = {
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
 
-const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory}) => {
+const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory}) => {
 
     const [fights, setFights] = useState([])
+    const [isShownStartTooltip, setIsShownStartTooltip] = useState(isStartTooltip)
 
     useEffect(() => {
         async function fights() {
@@ -237,7 +238,7 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
             }}>
 
             <Div>
-                <div className={"profile_preview_container"} onClick={go}
+                <div className={"profile_preview_container"} onClick={!isShownStartTooltip && go}
                      data-to="profile">
                     <div className={'profile_preview'}>
                         <div style={{
@@ -265,7 +266,19 @@ const Home = ({id, go, changeActiveModal, goToCreatingRoom, fetchedUser, userBal
                                 </Title>
                             </div>
                         </div>
-                        <UserStat exp={userBalances["exp"]} games={userBalances["fights"]} loses={userBalances["losses"]} tickets={userBalances["tickets"]} wins={userBalances["wins"]}/>
+                        <Tooltip
+                            mode="light"
+                            text="Попробуй проскролить справа налево блоки статистики"
+                            header="Здесь горизонтальный скролл"
+                            isShown={isShownStartTooltip}
+                            onClose={() => {setIsShownStartTooltip(false); resetIsStartTooltip()}}
+                            offsetX={10}
+                            offsetY={0}
+                        >
+                            <div>
+                                <UserStat exp={userBalances["exp"]} games={userBalances["fights"]} loses={userBalances["losses"]} tickets={userBalances["tickets"]} wins={userBalances["wins"]}/>
+                            </div>
+                        </Tooltip>
                     </div>
                     <div
                         className={"profile_preview_icon"}>
