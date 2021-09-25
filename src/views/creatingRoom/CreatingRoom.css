@@ -24,3 +24,7 @@
     text-align: center;
     flex-direction: column;
 }
+
+#gameTimeSlider .Slider__dragger::before {
+    background: var(--accent) !important;
+}

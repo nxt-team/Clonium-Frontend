@@ -21,7 +21,7 @@ import {getGlobalTop, isDonut, isPieceAvatar, updatePieceAvatar} from "../../api
 import {Icon28CancelCircleFillRed, Icon32ErrorCircleOutline} from "@vkontakte/icons";
 import { Icon56LockOutline } from '@vkontakte/icons';
 const osName = platform();
-
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 
 const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
@@ -45,6 +45,12 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
         setIsPieceAvatarPhoto(!isPieceAvatarPhoto)
         if (isPieceAvatarPhoto) {
             await updatePieceAvatar(fetchedUser, "0")
+        }
+    }
+
+    function showDonut () {
+        if (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") {
+            changeActiveModal('aboutVkDonut')
         }
     }
 
@@ -76,7 +82,7 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
                     >
                         Вам не хватает прав доступа
                     </Placeholder>
-                    <SimpleCell before={<Icon28CancelCircleFillRed/>} >Платная подписка VK Donut</SimpleCell>
+                    <SimpleCell onClick={showDonut} before={<Icon28CancelCircleFillRed/>} >Доступно с подпиской Clonium Pass</SimpleCell>
                 </>
             )
         }
@@ -91,7 +97,7 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
                     {osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                 </PanelHeaderButton>}
             >
-                Кастомизация
+                Аватарка фишки
             </PanelHeader>
             {renderCustomization()}
             {/*<svg*/}

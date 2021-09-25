@@ -19,6 +19,7 @@ import GridSize10Map from "../../maps/GridSize10/map.json";
 import PassageSize10Map from "../../maps/PassageSize10/map.json";
 import SquareSize6Map from "../../maps/SquareSize6/map.json";
 import SquareSize8Map from "../../maps/SquareSize8/map.json";
+import CrossSize9 from "../../maps/CrossSize9/map.json";
 import {getFight} from "../../api/api";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
@@ -62,6 +63,8 @@ function getStartJson(mapName) {
 		return SquareSize6Map
 	} else if (mapName === 'SquareSize8') {
 		return SquareSize8Map
+	} else if (mapName === 'CrossSize9') {
+		return CrossSize9
 	}
 }
 
@@ -93,7 +96,7 @@ function getColorInfo (color) {
 	}
 }
 
-const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances}) => {
+const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances}) => {
 	const [map, setMap] = useState(getStartJson(mapName).slice());
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
@@ -156,6 +159,7 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 
 	useEffect(() => {
 		async function getFightInfo () {
+			screenSpinnerOn()
 			beatenPlayers = []
 			lastMotionCoords = [-1, -1]
 			lastColorMotion = "red"
@@ -173,13 +177,14 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 				}
 				pieceAvatarsConfig[item["color"]] = item["piece_avatar"]
 			})
-			setMap(getStartJson(mapName))
+			// setMap(getStartJson(mapName))
 			// setColorMotion(colors[0])
 			colors = ["red", "blue", "green", "yellow"]
 			colors = colors.splice(0, fight.max_user_number)
 			console.log(fight.max_user_number)
 			console.log(userColor, colors)
 			let newMap = map.slice()
+
 			for (let row of newMap) {
 				for (let column of row) {
 					if (column['color'] !== "disabled") {
@@ -189,29 +194,35 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 				}
 			}
 			const len = map.length
+			let specMap = 0
+			if(fight.map_name === "CrossSize9") {
+				specMap=1
+			}
+
 			if (colors.length === 2) {
-				newMap[1][1]['color'] = "red"
-				newMap[1][1]['state'] = 3
-				newMap[len - 2][len - 2]['color'] = "blue"
-				newMap[len - 2][len - 2]['state'] = 3
+				newMap[1+specMap][1+specMap]['color'] = "red"
+				newMap[1+specMap][1+specMap]['state'] = 3
+				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
+				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
 			} else if (colors.length === 3) {
-				newMap[1][1]['color'] = "red"
-				newMap[1][1]['state'] = 3
-				newMap[len - 2][len - 2]['color'] = "blue"
-				newMap[len - 2][len - 2]['state'] = 3
-				newMap[1][len - 2]['color'] = "green"
-				newMap[1][len - 2]['state'] = 3
+				newMap[1+specMap][1+specMap]['color'] = "red"
+				newMap[1+specMap][1+specMap]['state'] = 3
+				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
+				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
+				newMap[1+specMap][len - 2 - specMap]['color'] = "green"
+				newMap[1+specMap][len - 2 - specMap]['state'] = 3
 			} else if (colors.length === 4) {
-				newMap[1][1]['color'] = "red"
-				newMap[1][1]['state'] = 3
-				newMap[len - 2][len - 2]['color'] = "blue"
-				newMap[len - 2][len - 2]['state'] = 3
-				newMap[1][len - 2]['color'] = "green"
-				newMap[1][len - 2]['state'] = 3
-				newMap[len - 2][1]['color'] = "yellow"
-				newMap[len - 2][1]['state'] = 3
+				newMap[1+specMap][1+specMap]['color'] = "red"
+				newMap[1+specMap][1+specMap]['state'] = 3
+				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
+				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
+				newMap[1+specMap][len - 2 - specMap]['color'] = "green"
+				newMap[1+specMap][len - 2 - specMap]['state'] = 3
+				newMap[len - 2 - specMap][1+specMap]['color'] = "yellow"
+				newMap[len - 2 - specMap][1+specMap]['state'] = 3
 			}
 			setMap(newMap)
+			screenSpinnerOff()
 		}
 		getFightInfo()
 	},[])
@@ -224,25 +235,6 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 				lastMotionCoords = [row, column]
 			}
 		}
-	}
-
-	function countBeatenPlayers () {
-		const basicColors = ["red", "blue", "green", "yellow"]
-		const userPoints = count(userColor)
-		const userColorIndex = basicColors.indexOf(userColor)
-		console.log(beatenPlayers, userPoints, userColorIndex)
-
-		colors.forEach((color) => {
-			if (color !== userColor) {
-				console.log(count(color), basicColors.indexOf(color))
-				if (count(color) < userPoints) {
-					beatenPlayers.push(color)
-				} else if (count(color) === userPoints && userColorIndex < basicColors.indexOf(color)) {
-					beatenPlayers.push(color)
-				}
-			}
-		})
-		console.log(beatenPlayers)
 	}
 
 	function changeColorMotion (color, isUserChange) {
@@ -453,27 +445,28 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 			>
 			</PanelHeader>
 			{/*<Phrase map={map} color={phraseColor} text={phrase} />*/}
+			{map.length &&
+				<>
+					{getMapInfo()}
 
-			{getMapInfo()}
+					<GameScore count={count} />
+					<GetMap onCellClickFromUser={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
-			<GameScore count={count} />
-			<GetMap onCellClickFromUser={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
-
-			<div
-				style={{
+					<div
+					style={{
 					marginBottom: 0,
 					display: 'flex',
 					justifyContent: 'center',
 					padding: 12,
 				}}
-			>
-				<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", borderRadius: 10, display: "flex"}} >
+					>
+					<div style={{backgroundColor: "var(--content_tint_background)", padding: "8px 12px", borderRadius: 10, display: "flex"}} >
 					<Caption level="2" style={{ color: "var(--text_secondary)"}} weight="regular">
-						Твой цвет:
+					Твой цвет:
 					</Caption>
 					{getColorInfo(userColor)}
-				</div>
-				{isGlobalTimer &&
+					</div>
+					{isGlobalTimer &&
 					<div style={{
 						backgroundColor: "var(--content_tint_background)",
 						padding: "8px 12px",
@@ -484,23 +477,26 @@ const Game = ({id, startupParameters, goToMainViewHome, mapName, secretId, fetch
 						<Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
 							До конца боя:
 						</Caption>
-						<GlobalTimer gameTime={game_time} countBeatenPlayers={countBeatenPlayers} />
+						<GlobalTimer gameTime={game_time} />
 					</div>
-				}
-			</div>
+					}
+					</div>
 
-			{/*<PhraseButtons doPhrase={doPhrase} />*/}
+				{/*<PhraseButtons doPhrase={doPhrase} />*/}
 
-			<div
-				style={{
+					<div
+					style={{
 					marginTop: 12,
 					marginBottom: 24,
 					display: 'flex',
 					justifyContent: 'center',
 				}}
-			>
-				<Button onClick={() => leaveFight(fetchedUser)} mode="tertiary">Сдаться</Button>
-			</div>
+					>
+					<Button onClick={() => leaveFight(fetchedUser)} mode="tertiary">Сдаться</Button>
+					</div>
+				</>
+			}
+
 		</Panel>
 	);
 };

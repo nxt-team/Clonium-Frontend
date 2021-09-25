@@ -118,6 +118,9 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                     case "SquareSize8":
                         mapName = "Квадрат 8 на 8"
                         break;
+                    case "CrossSize9":
+                        mapName = "Крест"
+                        break;
                 }
 
                 let stick = ""

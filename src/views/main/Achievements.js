@@ -54,7 +54,7 @@ const achievementsList = [
     {
         achievement_id: 5,
         rank: "Благодетель",
-        task: "Оформить VK Donut",
+        task: "Оформить Clonium Pass",
         reward: 15
     },
     {

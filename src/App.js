@@ -64,7 +64,7 @@ import {
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {doDisconnect, joinRoom, rejoinRoom, socket} from "./api/socket";
+import {doDisconnect, joinRoom, leaveFight, rejoinRoom, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
@@ -128,7 +128,8 @@ const App = () => {
 		"isUserInSuperFight": false,
 		"referrals": 0,
 		"warnings": 0,
-		"achievements": []
+		"achievements": [],
+		"donut_end": ""
 	})
 	const [ online, setOnline] = useState(1)
 
@@ -213,6 +214,13 @@ const App = () => {
 				completeSnackBar("Скопировано!")
 			} else if (type === "VKWebAppJoinGroupResult") {
 				completeSubReward()
+			} else if (type === "VKWebAppShowOrderBoxResult") {
+				setActiveModal(null)
+				updateUserBalances()
+					.then((newUserBalances) => {
+						setUserBalances(newUserBalances)
+						completeSnackBar("Clonium Pass подключен")
+					})
 			} else if (type === "VKWebAppViewHide" && !isInCustomization) { // закрытие прилы
 				socket.disconnect()
 			} else if (type === "VKWebAppViewRestore" && !socket.connected && !isOfflineNeedShowInSnackBar && !isLoadingInitData) { // доставание из кэша
@@ -398,6 +406,61 @@ const App = () => {
 					let newPanel
 					secretId = user["status"].split("_")[1]
 					if (data[0] === "waiting_for_players") {
+
+						let hash = window.location.hash
+						if (hash.indexOf("#fight=") !== -1) {
+							console.log(hash, 442)
+							hash = hash.slice(7)
+							console.log(hash, user["status"].split("_")[1])
+							if (typeof (hash) !== NaN && hash !== user["status"].split("_")[1]) {
+								setTimeout(() => setPopout(
+									<Alert
+										actionsLayout="vertical"
+										actions={[{
+											title: 'Присоединиться',
+											autoclose: true,
+											action: () => {
+												setPopout(<ScreenSpinner/>)
+												leaveFight(fetchUser)
+												setActivePanel('home')
+												setTimeout(async () => {
+													let newActiveModal
+													const fight = await getFight(hash)
+													if (fight === null) {
+														console.log("NULLLL")
+														newActiveModal = "noFight"
+													} else if (fight["status"] === "waiting_for_players") {
+														needUsersInFight = fight["max_user_number"]
+														secretId = hash
+														if (user["tickets"] === 0) {
+															newActiveModal = "noTickets"
+														} else {
+															joinRoom(fetchUser, hash);
+															setActivePanel("waitingForStart")
+														}
+													} else if (fight["status"] === "fight_finished") {
+														newActiveModal = "fightFinished"
+													} else {
+														newActiveModal = "fightStarted"
+													}
+													setPopout(null)
+													setTimeout(() => setActiveModal(newActiveModal), 200)
+												}, 300)
+											},
+										}, {
+											title: 'Отмена',
+											autoclose: true,
+											mode: 'cancel'
+										}]}
+										onClose={() => setPopout(null)}
+									>
+										<h2>Присоединиться к другой комнате?</h2>
+										<p>Ты перешёл по ссылке для присоединения к другой комнате, хотя сам уже находишься в одной</p>
+									</Alert>
+								),300)
+							}
+						}
+
 						needUsersInFight = data[2]
 						newPanel = "waitingForStart"
 					} else if (data[0] === "waiting_for_the_fight") {
@@ -612,8 +675,7 @@ const App = () => {
 							</PanelHeaderButton>
 						}
 					>
-						Подписка
-						{/*Подписки*/}
+						Clonium Pass
 					</ModalPageHeader>
 				}
 			>
@@ -622,6 +684,7 @@ const App = () => {
 					completeSnackBar={completeSnackBar}
 					errorSnackBar={errorSnackBar}
 					updateUserBalances={updateUserBalances}
+					userBalances={userBalances}
 					/>
 			</ModalPage>
 			<ModalCard
@@ -1180,6 +1243,7 @@ const App = () => {
 						goToMainViewHome={goToMainViewHome}
 						finishData={finishData}
 						userBalances={userBalances}
+						screenSpinnerOff={screenSpinnerOff}
 						screenSpinnerOn={screenSpinnerOn}
 					/>
 					<RejoinedGame
@@ -1215,13 +1279,15 @@ const App = () => {
 						screenSpinnerOn={screenSpinnerOn}
 						errorSnackBar={errorSnackBar}
 						goToClearCache={goToClearCache}
+						completeSnackBar={completeSnackBar}
+						updateUserBalances={updateUserBalances}
 					/>
 					<Top goToPage={goToPage} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} updateUserProfileVkId={(newVkId) => userProfileVkId = newVkId} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
 					<Customization id='customization' go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} imgLink={imgLink} />
 					<UserProfile id='userProfile' vk_id={userProfileVkId} changeActiveModal={changeActiveModal} />
 				</View>
-				<View activePanel={"creatingRoom"} id="creatingRoom">
+				<View activePanel={"creatingRoom"} id="creatingRoom" modal={modal}>
 					<CreatingRoom
 						id={'creatingRoom'}
 						goToMainView={goToMainView}
@@ -1231,6 +1297,7 @@ const App = () => {
 						updateNeedUsersInFight={(newPlayers) => needUsersInFight = newPlayers}
 						updateSecretId={(newId) => secretId = newId }
 						goIsolated={goIsolated2}
+						changeActiveModal={changeActiveModal}
 					/>
 				</View>
 				<View activePanel={activePanel} id="endFight" popout={popout}>

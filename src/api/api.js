@@ -37,7 +37,8 @@ export async function init (fetchedUser) {
             "isUserInSuperFight": false,
             "referrals": 0,
             "warnings": 0,
-            "achievements": []
+            "achievements": [],
+            "donut_end": ""
         }
     }
 
@@ -87,7 +88,8 @@ export async function init (fetchedUser) {
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
         "warnings": result[0]["warnings"],
-        "achievements": result[0]["achievements"]
+        "achievements": result[0]["achievements"],
+        "donut_end": result[0]["donut_end"]
     }
 }
 
@@ -118,7 +120,8 @@ export async function getUserBalances (fetchedUser) {
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
         "warnings": result[0]["warnings"],
-        "achievements": result[0]["achievements"]
+        "achievements": result[0]["achievements"],
+        "donut_end": result[0]["donut_end"]
     }
 }
 
@@ -224,7 +227,7 @@ export async function changeUserRank (fetchedUser, achievement_id) {
 
 export async function createFight (fetchedUser, map_id, max_user_number, is_private, turn_time, game_time) {
 
-    const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10"]
+    const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10", "CrossSize9"]
 
     const data = {
         "vk_id_creator": window.location.search.replace('?', ''),
@@ -506,6 +509,22 @@ export async function deleteUser () {
     }
 
     const response = await fetch('https://pipeweb.ru/api/user/delete/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function doChange () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/user/exchange', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'

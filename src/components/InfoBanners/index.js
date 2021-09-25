@@ -75,7 +75,7 @@ export default function InfoBanners(props) {
                             <Icon28BombOutline className="InfoBanner__Icon__Orange" width={32} height={32}/>
                         </div>
                     <div className="InfoBanner__TextContainer" >
-                        <Text weight="regular" >Подписка</Text>
+                        <Text weight="regular" >Clonium Pass</Text>
                         <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >специальные <br/> возможнсоти</Caption>
                         </div>
                     </div>

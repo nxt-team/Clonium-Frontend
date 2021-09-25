@@ -13,7 +13,7 @@ import {
     FormLayout,
     FormLayoutGroup,
     Card,
-    CardScroll, IOS, CardGrid,
+    CardScroll, Slider, CardGrid,
     PanelHeaderClose, Spinner
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
@@ -27,6 +27,7 @@ import SquareSize8 from '../../mapsPreview/SquareSize8';
 import {createFight} from "../../api/api";
 import {joinRoom} from "../../api/socket";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
+import CrossSize9 from "../../mapsPreview/CrossSize9";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const selected = {
     border: '1px solid var(--dynamic_blue)',
@@ -41,12 +42,13 @@ const unselcted = {
 let turnTime = true // ограничено
 let gameTime = 600
 
-const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId, goIsolated, vkDonut }) => {
+const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, updateSecretId, goIsolated, vkDonut, changeActiveModal }) => {
 
     const [mapsSelect, setMapsSelect] = useState(0)
     const [playersNumber, setPlayersNumber] = useState(2)
     const [isPrivate, setIsPrivate] = useState(false)
     const [isCreating, setIsCreating] = useState(false)
+    const [isCustomGameTime, setIsCustomGameTime] = useState(false)
 
     useEffect(() => {
         turnTime = true
@@ -54,13 +56,15 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     }, [])
 
     const changeMapSelect = (mapId) => {
-        if (mapId === 6) {
+        if (mapId === 6 || mapId === 7) {
             if (vkDonut) {
                 setMapsSelect(mapId);
                 const user_platform = startupParameters.get('vk_platform')
                 if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
                     bridge.send("VKWebAppTapticSelectionChanged", {});
                 }
+            } else if (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") {
+                changeActiveModal('aboutVkDonut')
             }
         } else {
             setMapsSelect(mapId);
@@ -89,7 +93,17 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     }
 
     const gameTimeChanged = (event) => {
-        gameTime = event.target.value
+        console.log(event.target.value)
+        if (event.target.value === "custom") {
+            gameTime = 300
+            setIsCustomGameTime(300)
+        } else if (event.target.value < 0) {
+            gameTime = -1
+            setIsCustomGameTime(false)
+            console.log("!")
+        } else {
+            gameTime = event.target.value
+        }
     }
 
     async function createFightAndGo () {
@@ -288,12 +302,55 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                                         <div className={"mapForDonutsContainer"} >
                                             <Icon28LockOutline style={{color: "var(--placeholder_icon_foreground_secondary)", marginBottom: 6}}/>
                                             <Text weight="regular">
-                                                Доступно оформившим VK Donut
+                                                Доступно оформившим Clonium Pass
                                             </Text>
                                         </div>
                                     </div>
                                 }
 
+                            </div>
+                        </Card>
+                        <Card
+                            onClick={() => changeMapSelect(7)}
+                            size="s"
+                            style={mapsSelect === 7 ? selected : unselcted}
+                        >
+                            <div
+                                style={{
+                                    cursor: "pointer",
+                                    height: '100%',
+                                    width: 144,
+                                    display: 'flex',
+                                    padding: 12,
+                                    flexDirection: 'column',
+                                    justifyContent: '',
+                                    alignItems: '',
+                                }}
+                            >
+                                {vkDonut
+                                    ?
+                                    <div>
+                                        <Title level="2" weight="regular">
+                                            Крест
+                                        </Title>
+                                        <CrossSize9 />
+                                    </div>
+                                    :
+                                    <div>
+                                        <div className={"mapForDonuts"}>
+                                            <Title level="2" weight="regular">
+                                                Крест
+                                            </Title>
+                                            <CrossSize9/>
+                                        </div>
+                                        <div className={"mapForDonutsContainer"} >
+                                            <Icon28LockOutline style={{color: "var(--placeholder_icon_foreground_secondary)", marginBottom: 6}}/>
+                                            <Text weight="regular">
+                                                Доступно оформившим Clonium Pass
+                                            </Text>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </Card>
                     </CardScroll>
@@ -339,18 +396,39 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                         </Card>
                     </CardGrid>
                 </FormLayoutGroup>
-
-                <FormLayoutGroup top="Время игры">
-                    <Radio name="time" onChange={gameTimeChanged} value={600} defaultChecked >
-                        10 минут
-                    </Radio>
-                    <Radio name="time" onChange={gameTimeChanged} value={900} >
-                        15 минут
-                    </Radio>
-                    <Radio name="time" onChange={gameTimeChanged} value={-1}>
-                        Бесконечное время
-                    </Radio>
-                </FormLayoutGroup>
+                {vkDonut
+                    ?
+                    <FormLayoutGroup top={isCustomGameTime ? "Время игры " + gameTime / 60 + " мин" : "Время игры" }>
+                        <Radio name="time" onChange={gameTimeChanged} value={"custom"} >
+                            Кастомное
+                        </Radio>
+                        {isCustomGameTime&&
+                        <Slider
+                            id="gameTimeSlider"
+                            step={60}
+                            min={300}
+                            max={2700}
+                            value={isCustomGameTime}
+                            onChange={value => {gameTime = value; setIsCustomGameTime(value)}}
+                        />
+                        }
+                        <Radio name="time" onChange={gameTimeChanged} value={-1} defaultChecked >
+                            Бесконечное время
+                        </Radio>
+                    </FormLayoutGroup>
+                    :
+                    <FormLayoutGroup top="Время игры">
+                        <Radio name="time" onChange={gameTimeChanged} value={600} defaultChecked >
+                            10 минут
+                        </Radio>
+                        <Radio name="time" onChange={gameTimeChanged} value={900} >
+                            15 минут
+                        </Radio>
+                        <Radio name="time" onChange={gameTimeChanged} value={-1}>
+                            Бесконечное время
+                        </Radio>
+                    </FormLayoutGroup>
+                }
 
                 <FormLayoutGroup top="Дополнительно">
                     <Checkbox onChange={privateChanged} >Приватно</Checkbox>

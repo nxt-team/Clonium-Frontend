@@ -16,6 +16,7 @@ function callHeavyTapticEngine () {
 }
 
 function basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons) {
+    console.log(map)
     const mapSize = map[0].length
     if (0 < row < mapSize && 0 < column < mapSize) {
         let newMap = map.slice();

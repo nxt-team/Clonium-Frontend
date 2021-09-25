@@ -5,7 +5,7 @@ import useInterval from "@use-it/interval";
 
 let seconds
 let finalSeconds
-export default function GlobalTimer({gameTime, countBeatenPlayers}) {
+export default function GlobalTimer({gameTime}) {
 
     const [count, setCount] = useState(gameTime);
 
@@ -24,10 +24,6 @@ export default function GlobalTimer({gameTime, countBeatenPlayers}) {
         seconds = "0" + count % 60
     } else {
         seconds = count % 60
-    }
-
-    if (count === 1) {
-        countBeatenPlayers()
     }
 
     if (count < 1) {

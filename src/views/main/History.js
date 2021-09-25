@@ -3,7 +3,7 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './achievements.css'
-import {Icon28CancelOutline, Icon28Dice4Outline} from '@vkontakte/icons';
+import {Icon28CancelOutline, Icon28Dice4Outline, Icon28SortHorizontalOutline} from '@vkontakte/icons';
 import { Icon28ArrowRightOutline } from '@vkontakte/icons';
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
 import {
@@ -63,6 +63,13 @@ const History = ({ id, fetchedUser, goToMainView }) => {
                         <SimpleCell disabled={true} before={<Icon28AchievementCircleFillBlue/>} after={item["history_award"]}
                                     description={history_event[1]}>{history_event[0]}</SimpleCell>
                     )
+
+                } else if (history_event[0] === "Обмен") {
+                    content.push(
+                        <SimpleCell disabled={true} before={<Icon28SortHorizontalOutline/>} after={item["history_award"]}
+                                    description={history_event[1]}>{history_event[0]}</SimpleCell>
+                    )
+
                 } else if (history_event[0].slice(0, 3) === "Бой") {
                     content.push(
                         <SimpleCell disabled={true} before={<Icon28Dice4Outline/>} after={item["history_award"]}

@@ -65,3 +65,25 @@
 	justify-content: center;
 	align-items: flex-start;
 }
+
+.cellSize9 {
+	width: 11.2px;
+	height: 11.2px;
+	background-color: var(--background_content);
+	border-radius: 3.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.cellDisabledSize9 {
+	width: 11.2px;
+	height: 11.2px;
+	background-color: var(--background_page);
+	border-radius: 3.2px;
+	margin: 0.5px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}

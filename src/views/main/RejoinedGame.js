@@ -7,16 +7,7 @@ import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './game.css'
 import {
-    IOS,
-    platform,
-    Caption,
-    Separator,
-    SimpleCell,
-    WriteBar,
-    WriteBarIcon,
-    CardScroll,
-    Card,
-    Group
+    Caption
 } from "@vkontakte/vkui";
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
@@ -26,9 +17,7 @@ import Timer from "../../components/Timer";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
-import {getFight} from "../../api/api";
-import PhraseButtons from "../../components/PhraseButtons";
-import Phrase from "../../components/Phrase";
+
 let userColor = ""
 let colors
 
@@ -431,7 +420,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
                     <Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
                         До конца боя:
                     </Caption>
-                    <GlobalTimer gameTime={game_time} countBeatenPlayers={countBeatenPlayers}/>
+                    <GlobalTimer gameTime={game_time}/>
 
                 </div>
                 }

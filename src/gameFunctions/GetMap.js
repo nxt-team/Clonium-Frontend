@@ -6,6 +6,7 @@ import GridSize10 from '../maps/GridSize10'
 import PassageSize10 from '../maps/PassageSize10'
 import SquareSize6 from '../maps/SquareSize6'
 import SquareSize8 from '../maps/SquareSize8'
+import CrossSize9 from '../maps/CrossSize9'
 
 export default function GetMap({mapName, getCellContent, onCellClickFromUser, map, colorMotion, lastMotionCoords}) {
     // console.log(mapName, getCellContent, onCellClickFromUser, onCellClickFromUser, map, colorMotion)
@@ -23,5 +24,7 @@ export default function GetMap({mapName, getCellContent, onCellClickFromUser, ma
         return <SquareSize6 onCellClick={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     } else if (mapName === 'SquareSize8') {
         return <SquareSize8 onCellClick={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
+    } else if (mapName === 'CrossSize9') {
+        return <CrossSize9 onCellClick={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} />
     }
 }

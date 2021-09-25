@@ -19,7 +19,7 @@ import { Icon24ErrorCircleOutline } from '@vkontakte/icons';
 import { Icon28PaletteOutline } from '@vkontakte/icons';
 import Icon28ServicesOutline from '@vkontakte/icons/dist/28/services_outline';
 import Icon24FavoriteOutline from '@vkontakte/icons/dist/24/favorite_outline';
-import { Icon28SmartphoneOutline } from '@vkontakte/icons';
+import { Icon28SmartphoneOutline, Icon28SortHorizontalOutline } from '@vkontakte/icons';
 import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline';
 import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
 import Icon24StoryOutline from '@vkontakte/icons/dist/24/story_outline';
@@ -45,11 +45,11 @@ import {
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
-import {deleteUser} from "../../api/api";
+import {deleteUser, doChange} from "../../api/api";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, goToClearCache }) => {
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, completeSnackBar, updateUserBalances, errorSnackBar }) => {
 
     function getTickets(tickets) {
         if (tickets % 100 !== 11 && tickets % 10 === 1) {
@@ -295,7 +295,33 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                     </div>
                 </Card>
             </CardScroll>
+            {/*{userBalances["vk_donut"]*/}
+            {/*    ?*/}
+            {/*    <Banner*/}
+            {/*        before={<Avatar mode="app"><Icon28SortHorizontalOutline*/}
+            {/*            style={{color: "var(--text_primary)"}}/></Avatar>}*/}
+            {/*        header={<span>Обмен</span>}*/}
+            {/*        subheader={<span>Обменяй 1 единицу опыта на 3 билета</span>}*/}
+            {/*        actions={*/}
+            {/*            <Button mode="primary" onClick={async () => {*/}
+            {/*                if (userBalances["exp"] > 0) {*/}
+            {/*                    screenSpinnerOn()*/}
+            {/*                    await doChange();*/}
+            {/*                    await updateUserBalances()*/}
+            {/*                    screenSpinnerOff()*/}
+            {/*                    completeSnackBar("Успешно")*/}
+            {/*                } else {*/}
+            {/*                    errorSnackBar("Недостаточно опыта")*/}
+            {/*                }*/}
 
+            {/*            }*/}
+            {/*            }>Обменять</Button>*/}
+            {/*        }*/}
+            {/*    />*/}
+            {/*    :*/}
+            {/*    <>*/}
+            {/*    </>*/}
+            {/*}*/}
 
             <Title level="1" weight="semibold" style={{ marginLeft: 16, marginTop: 32 }} >
                 Прочее
@@ -304,9 +330,9 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 <div className={'fullContainer'} >
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites")}  >Добавь сервис в избранные</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28ShareOutline/>} onClick={() => postShare(fetchedUser.id)} expandable >Рассказать друзьям</SimpleCell>
-                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Кастомизация</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promocodeActivation")} expandable >Активировать промокод</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Аватарка фишки</SimpleCell>
                     {osName === ANDROID &&
                         <SimpleCell style={{cursor: "pointer"}} before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
                     }
@@ -316,7 +342,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                     <div className="Other__notify">
                         <div className="Other__notify__cont_wrap">
                             <div className="Other__notify__cont">
-                                <div className="Other__notify__title">Оформи подписку VK Donut</div>
+                                <div className="Other__notify__title">Оформи Clonium Pass</div>
                                 <div className="Other__notify__caption">
                                     Поддержи разработчика и получи доступ к крутым функциям и плюшкам
                                 </div>

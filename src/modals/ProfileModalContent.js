@@ -66,7 +66,7 @@ const achievementsList = [
     {
         achievement_id: 5,
         rank: "Благодетель",
-        task: "Оформить VK Donut",
+        task: "Оформить Clonium Pass",
         reward: 15
     },
     {
@@ -253,7 +253,7 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                                 <Icon28FavoriteOutline/>
                             </div>
                         }
-                        header="У пользователя оформлена подписка VK Donut"
+                        header="У пользователя оформлена подписка Clonium Pass"
                         subheader="Оформи тоже для игры с комфортом"
                         asideMode="dismiss"
                         actions={(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
