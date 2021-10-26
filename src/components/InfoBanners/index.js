@@ -27,18 +27,19 @@ export default function InfoBanners(props) {
     return (
         <CardScroll>
             <Card  >
-                <Link target="_blank" href="https://vk.com/@pipeweb-clonium" >
-                    <div className="InfoBanner"  >
-                        <div className="InfoBanner__Icon__Before__Green" >
-                            <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
+                <Link target="_blank"
+                      href="https://vk.me/join/AJQ1d0WO6BzyVMdzHKr5f5pu"
+                >
+                    <div className="InfoBanner" >
+                        <div className="InfoBanner__Icon__Before__Red" >
+                            <Icon28ChatsOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
                         </div>
                         <div className="InfoBanner__TextContainer" >
-                            <Text weight="regular" >Справка</Text>
-                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >об игре, правилах <br/> и нюансах</Caption>
+                            <Text weight="regular" >Беседа</Text>
+                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >общение с другими <br/> игроками</Caption>
                         </div>
                     </div>
                 </Link>
-
             </Card>
             <Card  >
                 <Link target="_blank" href="https://vk.com/clonium.group" >
@@ -54,19 +55,18 @@ export default function InfoBanners(props) {
                 </Link>
             </Card>
             <Card  >
-                <Link target="_blank"
-                      href="https://vk.me/join/AJQ1d0WO6BzyVMdzHKr5f5pu"
-                >
-                <div className="InfoBanner" >
-                    <div className="InfoBanner__Icon__Before__Red" >
-                        <Icon28ChatsOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
+                <Link target="_blank" href="https://vk.com/@pipeweb-clonium" >
+                    <div className="InfoBanner"  >
+                        <div className="InfoBanner__Icon__Before__Green" >
+                            <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>
+                        </div>
+                        <div className="InfoBanner__TextContainer" >
+                            <Text weight="regular" >Справка</Text>
+                            <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >об игре, правилах <br/> и нюансах</Caption>
+                        </div>
                     </div>
-                    <div className="InfoBanner__TextContainer" >
-                        <Text weight="regular" >Беседа</Text>
-                        <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >общение с другими <br/> игроками</Caption>
-                    </div>
-                </div>
                 </Link>
+
             </Card>
             {(startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android") &&
                 <Card onClick={() => changeActiveModal("aboutVkDonut")} >

@@ -130,6 +130,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         rank={item["user_rank"]}
                         userName={item["username"]}
                         vkDonut={item["vk_donut"]}
+                        
                     />
                 )
             })
@@ -164,6 +165,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         rank={item["user_rank"]}
                         userName={item["username"]}
                         vkDonut={item["vk_donut"]}
+                        piece_avatar={item["piece_avatar"]}
                     />
                 )
             })

@@ -3,6 +3,8 @@ import React from "react";
 import '../views/main/Top.css'
 import {Icon20DonateCircleFillYellow, Icon28DonateCircleFillYellow} from '@vkontakte/icons';
 import {Icon201CircleFillGold, Icon202CircleFillSilver, Icon203CircleFillBronze} from "@vkontakte/icons";
+import ImgPlayIcon from "./ImgPlayIcon";
+import PlayIcon from "./playIcon";
 
 const numericIndicator = {
     height: 20,
@@ -14,7 +16,17 @@ const numericIndicator = {
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
 
-const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, onClick }) => {
+const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, onClick, piece_avatar }) => {
+
+    function getAvatar () {
+        if (piece_avatar.length > 1) {
+            return (
+                <div style={{width: 32, height: 32}} >
+                    <ImgPlayIcon imgLink={piece_avatar} color={"red"} size={3} />
+                </div>
+            )
+        }
+    }
 
     if (vkDonut === 1) {
         return (
@@ -35,6 +47,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, o
                     </div>
                 }
                 description={rank + ", " + exp + " опыта"}
+                after={getAvatar()}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>
@@ -71,6 +84,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, o
                     </div>
                 }
                 description={rank + ", " + exp + " опыта"}
+                after={getAvatar()}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>

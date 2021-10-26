@@ -88,3 +88,22 @@
     from {opacity: 1;} to {opacity: 0;}
 }
 
+@keyframes color_p {
+    0% {
+        color: rgb(255, 51, 71);
+    }
+    20% {
+        color: rgb(255, 51, 71);
+    }
+
+    100% {
+        color: var(--text_primary);
+    }
+}
+
+
+.color_pulse {
+    animation: color_p 1s infinite;
+}
+
+

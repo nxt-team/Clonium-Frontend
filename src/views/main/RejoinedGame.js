@@ -64,7 +64,7 @@ function getColorInfo (color) {
     }
 }
 
-const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, changePopout}) => {
+const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, isVibration}) => {
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
@@ -264,7 +264,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
             isRecursion = true
             setIsAnimation(true)
         }
-        basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
+        basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons, isVibration)
     }
 
     function onCellClickFromUser (row, column) {

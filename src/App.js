@@ -41,7 +41,7 @@ import {
 	IOS,
 	Panel,
 	Snackbar,
-	Avatar, Alert
+	Avatar, Alert, Link
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
@@ -76,6 +76,8 @@ import AnimatedDoneIcon from "./components/AnimatedDoneIcon";
 import Banned from "./views/banned/Banned";
 import TemporaryBanned from "./views/temporaryBanned/TemporaryBanned";
 import TicketAnimation from "./components/TicketAnimation";
+import Button from "@vkontakte/vkui/dist/components/Button/Button";
+import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -104,6 +106,7 @@ let isOfflineNeedShowInSnackBar = false
 let isInCustomization = false
 let isStartTooltip = false
 let startGameTimer
+let isVibration = true
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
@@ -143,7 +146,11 @@ const App = () => {
 			setActivePanel("waitingForStart")
 		} else if (status[0] === "waiting_for_the_fight") {
 			startCount = 28
-			setPopout(<TicketAnimation/>)
+			if (status[1] === "0") {
+				setPopout(<TicketAnimation/>)
+			} else {
+				setPopout(<ScreenSpinner/>)
+			}
 			setTimeout( () => {setActivePanel("waitingForTheFight"); setPopout(null)}, 2700)
 		} else if (status[0] === "fight") {
 			mapName = status[1]
@@ -160,8 +167,12 @@ const App = () => {
 			beatenPlayers = JSON.parse(s)
 			setFinishData(data)
 		} else if (status[0] === "fight_started") {
-			setActivePanel("home")
-			setActiveModal("fightStarted")
+			setTimeout(() => {
+				setActivePanel("home")
+				setTimeout(() => {
+					setActiveModal("fightStarted")
+				}, 500)
+			}, 1000)
 		}
 	}
 
@@ -174,7 +185,11 @@ const App = () => {
 	async function doReconnectForRejoin () {
 		socket.disconnect()
 		await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
-		window.location.href = ''
+		if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
+			window.location.reload()
+		} else {
+			window.location.href = ''
+		}
 	}
 
 	async function completeSubReward () {
@@ -216,11 +231,20 @@ const App = () => {
 				completeSubReward()
 			} else if (type === "VKWebAppShowOrderBoxResult") {
 				setActiveModal(null)
-				updateUserBalances()
-					.then((newUserBalances) => {
-						setUserBalances(newUserBalances)
-						completeSnackBar("Clonium Pass подключен")
+				setPopout(<ScreenSpinner/>)
+				setTimeout(() => updateUserBalances()
+						.then((newUserBalances) => {
+							setUserBalances(newUserBalances)
+							setPopout(null)
+							completeSnackBar("Clonium Pass подключен")
+						})
+					, 1000)
+			} else if (type === "VKWebAppShowWallPostBoxResult") {
+				getTicket()
+					.then((userData) => {
+						updateUserBalances()
 					})
+				maintainingStat("post_sharing")
 			} else if (type === "VKWebAppViewHide" && !isInCustomization) { // закрытие прилы
 				socket.disconnect()
 			} else if (type === "VKWebAppViewRestore" && !socket.connected && !isOfflineNeedShowInSnackBar && !isLoadingInitData) { // доставание из кэша
@@ -330,18 +354,18 @@ const App = () => {
 				maintainingStat("story_sharing")
 			} else if (type === "VKWebAppShareResult") {
 				maintainingStat("link_sharing")
-			} else if (type === "VKWebAppShowWallPostBoxResult") {
-				maintainingStat("post_sharing")
 			} else if (type === "VKWebAppAddToHomeScreenResult") {
 				maintainingStat("adds_to_menu")
+			} else if (type === "VKWebAppShowNativeAdsResult" && data.result) {
+				maintainingStat("ad_views")
 			}
 		});
 
 		async function fetchData() {
 			isLoadingInitData = true
 			if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
-				const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme"]})
-				console.log("storageGetData", storageGetData)
+				const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme", "no_vibration"]})
+				setTimeout(() => console.log("storageGetData", storageGetData), 5000)
 				const isReloading = storageGetData["keys"][0]["value"]
 				if (isReloading) {
 					let theme = storageGetData["keys"][1]["value"]
@@ -350,6 +374,9 @@ const App = () => {
 					schemeAttribute.value = theme ? theme : 'client_light';
 					document.body.attributes.setNamedItem(schemeAttribute);
 					await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": ""});
+				} if (storageGetData["keys"][2]["value"]) {
+					isVibration = false
+					console.log("isVibration = false")
 				}
 			}
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
@@ -496,6 +523,8 @@ const App = () => {
 
 				if (hash === "#donut") {
 					newActiveModal = "aboutVkDonut"
+				} else if (hash === "#chat_url" && user["vk_donut"] !== 0) {
+					newActiveModal = "chatUrl"
 				} else if (hash.indexOf("#fight=") !== -1) {
 					console.log(hash, 442)
 					hash = hash.slice(7)
@@ -664,6 +693,32 @@ const App = () => {
 				/>
 			</ModalPage>
 			<ModalPage
+				id={'fightResultsStoryShare'}
+				settlingHeight={100}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() => setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Настройка истории
+					</ModalPageHeader>
+				}
+			>
+				<FightResultsStoryModal
+					closeModal={() => setActiveModal(null)}
+					beatenPlayers={beatenPlayers}
+					avaUrl={fetchedUser["photo_200"]}
+					screenSpinnerOn={screenSpinnerOn}
+					screenSpinnerOff={screenSpinnerOff}
+					completeSnackBar={completeSnackBar}
+					updateUserBalances={updateUserBalances}
+				/>
+			</ModalPage>
+			<ModalPage
 				id={"aboutVkDonut"}
 				settlingHeight={50}
 				onClose={() => setActiveModal(null)}
@@ -705,7 +760,7 @@ const App = () => {
 			</ModalCard>
 			<ModalCard
 				id={"ticketFromSubscribing"}
-				onClose={() => setActiveModal(null)}
+				onClose={() => {setActiveModal(null); setTimeout(() => setActiveModal("ticketFromAd"), 500)}}
 				icon={<Icon56Users3Outline />}
 				header="5 билетов за подписку"
 				caption="Подпишись на официальное сообщество и получи 5 билетов"
@@ -718,6 +773,15 @@ const App = () => {
 					}
 				}]}
 			>
+			</ModalCard>
+			<ModalCard
+				id={"chatUrl"}
+				onClose={() => setActiveModal(null)}
+				icon={<Icon56Users3Outline />}
+				header="Приглашение в беседу"
+				caption="Ты оформил подписку, а значит тебе доступна закрытая беседа для крутых игроков. Вступай!"
+			>
+				<Button style={{marginTop: 32}} size="xl" target="_blank" href="https://vk.me/join/K33Fz/cHb0gHofB0QJrzB0eiKKAxPRnuiDI=" >Присоединиться</Button>
 			</ModalCard>
 			<ModalCard
 				id={"ticketFromAd"}
@@ -842,8 +906,8 @@ const App = () => {
 				id={"noTickets"}
 				onClose={() => setActiveModal(null)}
 				icon={<AnimatedErrorIcon/>}
-				header="Нет билетов"
-				caption="У тебя закончались билеты, а они нужны для игры"
+				header="Закончились билеты"
+				caption="Каждый день даётся 5 билетов. Дополнительно их можно получить за просмотр рекламы"
 				actions={[
 					{
 						title: 'Получить',
@@ -1048,11 +1112,11 @@ const App = () => {
 			setPopout(null)
 		}
 
-		if (activePanel !== "rateFight" && userBalances["vk_donut"] === 0) {
+		if (activePanel !== "fightResults" && userBalances["vk_donut"] === 0 && userBalances["exp"] > 10) {
 			bridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
 		}
 
-		setActivePanel("rateFight")
+		setActivePanel("fightResults")
 		setActiveView("endFight")
 
 	}
@@ -1231,9 +1295,10 @@ const App = () => {
 						needUsersInFight={needUsersInFight}
 						resetSecretId={() => secretId = ""}
 					/>
-					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} secretId={secretId} />
+					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} secretId={secretId} isVibration={isVibration}/>
 					<Game
 						id={'game'}
+						isVibration={isVibration}
 						changeActiveModal={changeActiveModal}
 						fetchedUser={fetchedUser}
 						secretId={secretId}
@@ -1248,6 +1313,7 @@ const App = () => {
 					/>
 					<RejoinedGame
 						id={'rejoinedGame'}
+						isVibration={isVibration}
 						changeActiveModal={changeActiveModal}
 						fetchedUser={fetchedUser}
 						secretId={secretId}
@@ -1281,6 +1347,8 @@ const App = () => {
 						goToClearCache={goToClearCache}
 						completeSnackBar={completeSnackBar}
 						updateUserBalances={updateUserBalances}
+						isVibration={isVibration}
+						switchSsVibration={() => isVibration = !isVibration}
 					/>
 					<Top goToPage={goToPage} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} updateUserProfileVkId={(newVkId) => userProfileVkId = newVkId} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
@@ -1300,7 +1368,7 @@ const App = () => {
 						changeActiveModal={changeActiveModal}
 					/>
 				</View>
-				<View activePanel={activePanel} id="endFight" popout={popout}>
+				<View activePanel={activePanel} id="endFight" popout={popout} modal={modal}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated2} secretId={secretId} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
 					<FightResults
 						id={'fightResults'}
@@ -1314,6 +1382,10 @@ const App = () => {
 						goToTemporaryBanned={goToTemporaryBanned}
 						resetSecretId={() => secretId = ""}
 						resetBeatenPlayers={() => beatenPlayers = ""}
+						changeActiveModal={changeActiveModal}
+						completeSnackBar={completeSnackBar}
+						screenSpinnerOff={screenSpinnerOff}
+						screenSpinnerOn={screenSpinnerOn}
 					/>
 				</View>
 				<View activePanel={"offline"} id="offline" >

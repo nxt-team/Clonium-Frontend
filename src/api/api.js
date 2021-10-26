@@ -7,6 +7,7 @@ export async function init (fetchedUser) {
         "vk_id": window.location.search.replace('?', ''),
         "username": fetchedUser.first_name + " " + fetchedUser.last_name,
         "avatar": fetchedUser.photo_200,
+        "version": "kim loh 1",
     }
 
     let response = await fetch('https://pipeweb.ru/api/user/init', {
@@ -76,7 +77,7 @@ export async function init (fetchedUser) {
     }
 
     return {
-        "tickets": result[0]["tickets"],
+        "tickets": result[0]["vk_donut"] ? "∞" : result[0]["tickets"],
         "exp": result[0]["exp"],
         "fights": result[0]["stats"][0]["fights"],
         "losses": result[0]["stats"][0]["losses"],
@@ -108,7 +109,7 @@ export async function getUserBalances (fetchedUser) {
 
     const result = await response.json()
     return {
-        "tickets": result[0]["tickets"],
+        "tickets": result[0]["vk_donut"] ? "∞" : result[0]["tickets"],
         "exp": result[0]["exp"],
         "fights": result[0]["stats"][0]["fights"],
         "losses": result[0]["stats"][0]["losses"],
@@ -227,7 +228,7 @@ export async function changeUserRank (fetchedUser, achievement_id) {
 
 export async function createFight (fetchedUser, map_id, max_user_number, is_private, turn_time, game_time) {
 
-    const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10", "CrossSize9"]
+    const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10", "CrossSize9", "WhirlSize10"]
 
     const data = {
         "vk_id_creator": window.location.search.replace('?', ''),
@@ -458,6 +459,22 @@ export async function getTicket (fetchedUser) {
     }
 
     const response = await fetch('https://pipeweb.ru/api/user/set/taskComplete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
+export async function getThreeTickets () {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/user/storySharing', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'

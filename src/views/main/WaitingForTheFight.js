@@ -13,10 +13,11 @@ import LeaderBoardPlace from "../../components/LeaderBoardPlace";
 import {Icon201CircleFillGold} from "@vkontakte/icons";
 import {getAnyUser, getFight} from "../../api/api";
 import PlayerPreview from "../../components/PlayerPreview";
+const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 
 let finalSeconds
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
-const WaitingForTheFight = ({ id, startCount, secretId}) => {
+const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
 
     const [count, setCount] = useState(startCount);
     const [players, setPlayers] = useState([]);
@@ -39,7 +40,7 @@ const WaitingForTheFight = ({ id, startCount, secretId}) => {
             const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60
             if (count < 6) {
                 const user_platform = startupParameters.get('vk_platform')
-                if (user_platform === 'mobile_android' || user_platform === 'mobile_ipad' || user_platform === 'mobile_iphone' || user_platform === 'mobile_iphone_messenger') {
+                if (mobile_platforms.indexOf(user_platform) !== -1 && isVibration) {
                     bridge.send("VKWebAppTapticImpactOccurred", {"style": "medium"});
                 }
             }

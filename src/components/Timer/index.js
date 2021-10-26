@@ -30,7 +30,14 @@ export default function Timer({onExpiration, colorMotion}) {
     if (localColorMotion !== colorMotion) {
         setCount(15)
         localColorMotion = colorMotion
+        if (document.getElementById("motionTimer")) {
+            document.getElementById("motionTimer").classList.remove('color_pulse');
+        }
 
+    }
+
+    if (count < 6) {
+        document.getElementById("motionTimer").classList.add('color_pulse');
     }
 
 
@@ -38,6 +45,7 @@ export default function Timer({onExpiration, colorMotion}) {
             setCount((currentCount) => currentCount - 1);
             if (count < 1) {
                 onExpiration()
+                document.getElementById("motionTimer").classList.remove('color_pulse');
                 setCount(15)
             }
         }, 1000);
@@ -45,8 +53,11 @@ export default function Timer({onExpiration, colorMotion}) {
     return (
         <div style={{
             marginLeft: 12
-        }}>
+        }}
+             id={"motionTimer"}
+        >
             <Title level="1" weight="bold"
+
                    style={{marginLeft: 12}}>
                 {count}
             </Title>

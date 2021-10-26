@@ -25,8 +25,15 @@ export default function GlobalTimer({gameTime}) {
     } else {
         seconds = count % 60
     }
+    
+    if (count < 10 && document.getElementById("globalTimer")) {
+        document.getElementById("globalTimer").classList.add('color_pulse');
+    }
 
     if (count < 1) {
+        if (document.getElementById("globalTimer")) {
+            document.getElementById("globalTimer").classList.remove('color_pulse');
+        }
         return (
             <Caption level="2" style={{ marginLeft: 6}}>
                 0:00
@@ -34,7 +41,7 @@ export default function GlobalTimer({gameTime}) {
         )
     } else {
         return (
-            <Caption level="2" style={{marginLeft: 6}}>
+            <Caption level="2" style={{marginLeft: 6}} id={"globalTimer"}>
                 {Math.floor(count / 60) + ":" + seconds}
             </Caption>
         )

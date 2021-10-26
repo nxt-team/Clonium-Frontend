@@ -14,12 +14,17 @@ import {getAnyUser, updateIsUserInSuperFight} from "../api/api";
 import {
     Icon24ChevronCompactRight,
     Icon24FavoriteOutline,
-    Icon28AchievementCircleFillBlue, Icon28ArrowDownOutline, Icon28ArrowUpOutline,
+    Icon24Users3Outline,
+    Icon28ArrowDownOutline,
+    Icon28ArrowUpOutline,
+    Icon24Recent,
     Icon28DonateCircleFillYellow,
-    Icon28FavoriteOutline, Icon28TicketOutline, Icon36GameOutline
+    Icon28FavoriteOutline,
+    Icon28TicketOutline,
+    Icon36GameOutline,
+    Icon28PincodeOutline
 } from "@vkontakte/icons";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
-
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const numericIndicator = {
     height: 20,
@@ -113,7 +118,9 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
     }
 
     function ticketsCaption (tickets) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
-        if (tickets % 100 !== 11 && tickets % 10 === 1) {
+        if (userData["vk_donut"] !== 0) {
+            return "Билетов"
+        } if (tickets % 100 !== 11 && tickets % 10 === 1) {
             return 'Билет'
         } if (tickets % 100 !== 12 && tickets % 100 !== 13 && tickets % 100 !== 14 && (tickets % 10 === 2 || tickets % 10 === 3 || tickets % 10 === 4)) {
             return 'Билета'
@@ -285,7 +292,7 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                             <SimpleCell
                                 disabled={true}
                                 before={<Icon28TicketOutline/>}
-                                after={userData["tickets"]}
+                                after={userData["vk_donut"] !== 0 ? "∞" : userData["tickets"] }
                             >
                                 {ticketsCaption(userData["tickets"])}
                             </SimpleCell>
@@ -310,11 +317,22 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                             >
                                 {losesCaption(userData["stats"][0]["losses"])}
                             </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon24Users3Outline/>}
+                                after={userData["referrals"].length}
+                            >
+                                Приглашено игроков
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon28PincodeOutline/>}
+                                after={userData["activated_promocodes"].length}
+                            >
+                                Активировано промокодов
+                            </SimpleCell>
                         </div>
                     </Div>
-                    {/*<div style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12, padding: "1px 0", marginTop: 12}}>*/}
-                    {/*    <UserStat exp={userData["exp"]} games={userData["stats"][0]["fights"]} loses={userData["stats"][0]["losses"]} tickets={userData["tickets"]} wins={userData["stats"][0]["wins"]}/>*/}
-                    {/*</div>*/}
                     <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32}}>
                         Достижения
                     </Title>

@@ -8,20 +8,21 @@ import {
     Slider,
     WriteBarIcon,
     Button,
-    Text, Progress, FixedLayout, Spinner,
+    Text, Progress, FixedLayout, Spinner, SimpleCell,
 } from "@vkontakte/vkui";
 import './FightResults.css'
-import { Icon28FavoriteOutline } from '@vkontakte/icons';
+import {Icon28FavoriteOutline, Icon28PaletteOutline} from '@vkontakte/icons';
 import { Icon24CupOutline } from '@vkontakte/icons';
 import { Icon28PollSquareOutline } from '@vkontakte/icons';
-import {fightResultsPostShare} from "../../sharing/sharing";
+import {fightResultsNativeStoryShare, fightResultsPostShare} from "../../sharing/sharing";
 import {getBeatenPlayers} from "../../api/api";
+import { Icon28StoryOutline } from '@vkontakte/icons';
+import { Icon28InfoCircleOutline } from '@vkontakte/icons';
 
 let userBalances
-const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetchedUser, secretId, updateUserBalances, goToTemporaryBanned, resetSecretId, resetBeatenPlayers }) => {
+const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, changeActiveModal, fetchedUser, updateUserBalances, goToTemporaryBanned, resetSecretId, resetBeatenPlayers, completeSnackBar, screenSpinnerOff, screenSpinnerOn }) => {
 
     const [beatenPlayers, setBeatenPlayers] = useState(null)
-    const [isSkipButtonDisabled, setIsSkipButtonDisabled] = useState(true)
 
     useEffect(() => {
 
@@ -36,7 +37,6 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
         }
 
         getPlayers()
-        setTimeout(() => setIsSkipButtonDisabled(false), 2000)
 
     }, [])
 
@@ -49,6 +49,29 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
         }
     }
 
+    function share () {
+        if (fetchedUser.id % 2 === 1) {
+            changeActiveModal("fightResultsStoryShare")
+        } else {
+            let theme
+            if (document.body.getAttribute("scheme") === "client_light" || document.body.getAttribute("scheme") === "bright_light") {
+                theme = "bright"
+            } else {
+                theme = "dark"
+            }
+            screenSpinnerOn()
+            fightResultsNativeStoryShare(
+                screenSpinnerOff,
+                completeSnackBar,
+                updateUserBalances,
+                beatenPlayers,
+                fetchedUser.photo_200,
+                theme,
+                Math.floor(Math.random() * 3)
+            )
+        }
+    }
+
     return (
         <Panel
             id={id}
@@ -57,11 +80,13 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
                 separator={false}
                 transparent={true}
             />
+            <div id="d2">аа</div>
+            <div id="d1">.</div>
             <Div className={"fight__title__container"}>
                 <Title level="1" weight="semibold">
                     Бой завершён!
                 </Title>
-                <Text style={{color: "var(--text_secondary)", marginTop: 4}}>Вот твои результаты:</Text>
+                <Text style={{color: "var(--text_secondary)", marginTop: 4}}>{finishData[3]}</Text>
             </Div>
 
 
@@ -105,64 +130,36 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, fetch
                         </Text>
                     </div>
                 </div>
-                {/*<div style={{display: "flex"}} >*/}
-                {/*    <div className={"result__container__vertical"}>*/}
-                {/*        <div style={{display: "flex", alignItems: "center", marginLeft: 4 }} >*/}
-                {/*            <div className={"icon__container"}>*/}
-                {/*                <Icon24CupOutline height={28} width={28}/>*/}
-                {/*            </div>*/}
-                {/*            <div>*/}
-                {/*                <Title level="1" weight="semibold">*/}
-                {/*                    1*/}
-                {/*                </Title>*/}
-                {/*                <Text style={{color: "var(--text_secondary)", marginTop: 4}}>*/}
-                {/*                    место ты занял*/}
-                {/*                </Text>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div className={"result__container__vertical"} style={{marginLeft: 12}}>*/}
-                {/*        <div className={"icon__container"}>*/}
-                {/*            <Icon28PollSquareOutline/>*/}
-                {/*        </div>*/}
-                {/*        <div style={{*/}
-                {/*            // display: "flex", alignItems: "center"*/}
-                {/*             marginTop: 4, marginLeft: 4 }} >*/}
-                {/*            <Title level="1" weight="semibold" >*/}
-                {/*                3*/}
-                {/*            </Title>*/}
-                {/*            <Text style={{color: "var(--text_secondary)"}}>*/}
-                {/*                игрока обыграно*/}
-                {/*            </Text>*/}
-                {/*        </div>*/}
-
-                {/*    </div>*/}
-                {/*</div>*/}
 
 
             </Div>
+            {finishData[1] - finishData[0] !== 0 &&
+                <SimpleCell multiline={true} before={<Icon28InfoCircleOutline/>} disabled={true} >Получи 3 билета, поделившись результатом боя</SimpleCell>
+            }
 
-            <div style={{height: 112}}/>
 
-
-            <FixedLayout vertical="bottom">
-                <Div className={"buttons__container"}>
-                    {finishData[1] - finishData[0] === 0
-                        ?
-                        <Button size="xl" onClick={goToMainView} >Завершить</Button>
-                        :
-                        <>
-                            <Button size="xl" before={ beatenPlayers === null &&
+            <Div className={"buttons__container"}>
+                {finishData[1] - finishData[0] === 0
+                    ?
+                    <Button size="xl" onClick={goToMainView} >Завершить</Button>
+                    :
+                    <>
+                        <Button
+                            size="xl"
+                            before={ beatenPlayers === null &&
                                 <Spinner size={"m"} />
-                            } disabled={beatenPlayers === null} onClick={() => fightResultsPostShare(fetchedUser.id, finishData[0], beatenPlayers)} >Похвастаться</Button>
-                            <Button className={"skip__button"} disabled={isSkipButtonDisabled} style={{color: "var(--text_secondary)", marginTop: 12}} onClick={go} mode="tertiary">
-                                Пропустить
-                            </Button>
-                        </>
-                    }
-                </Div>
-
-            </FixedLayout>
+                            }
+                            disabled={beatenPlayers === null}
+                            onClick={share}
+                        >
+                            Поделиться результатом
+                        </Button>
+                        <Button style={{marginTop: 12}} onClick={go} mode="tertiary">
+                            Завершить
+                        </Button>
+                    </>
+                }
+            </Div>
 
 
         </Panel>

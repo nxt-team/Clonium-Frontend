@@ -20,6 +20,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    margin-top: max(calc(100vh - var(--safe-area-inset-bottom) - var(--safe-area-inset-top) - 420px - 76px - 48px - 112px - 52px), 12px);
 }
 
 .icon__container {
@@ -53,4 +54,36 @@
     margin-bottom: 12px;
     overflow: hidden;
     margin-top: 12px;
+}
+
+.phrase__card__content {
+    cursor: pointer;
+    width: auto;
+    display: flex;
+    padding: 18px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fight_results_button_container {
+    padding-top: 12px;
+    padding-bottom: calc(var(--safe-area-inset-bottom) + 12px);
+    background-color: var(--content_tint_background);
+    border-top: solid;
+    border-width: 1px;
+    border-color: var(--separator_common);
+}
+
+.story_spinner {
+    width: 100%;
+    border-radius: 24px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#story_settings .FormLayout__row {
+    padding-bottom: 0;
 }

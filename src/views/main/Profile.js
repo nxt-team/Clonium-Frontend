@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
@@ -30,6 +30,7 @@ import { motion } from "framer-motion"
 import './Profile.css'
 import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
 import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
+import { Icon28RadiowavesLeftAndRightOutline } from '@vkontakte/icons';
 import {
     Card,
     CardScroll,
@@ -41,15 +42,33 @@ import {
     platform,
     SimpleCell,
     ANDROID,
-    Link, CardGrid
+    Link, Switch
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
 import {deleteUser, doChange} from "../../api/api";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
+import { Icon28SmartphoneStarsOutline } from '@vkontakte/icons';
+import InfoBanners from "../../components/InfoBanners";
 const osName = platform();
 
-const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, completeSnackBar, updateUserBalances, errorSnackBar }) => {
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
+const user_platform = startupParameters.get('vk_platform')
+const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
+
+const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, isVibration, switchSsVibration, errorSnackBar }) => {
+
+    const [vibration, setVibration] = useState(isVibration);
+    if (vibration !== isVibration) {
+        switchSsVibration()
+        if (!vibration) {
+            bridge.send("VKWebAppStorageSet", {"key": "no_vibration", "value": "1"});
+            console.log("value", "1")
+        } else {
+            bridge.send("VKWebAppStorageSet", {"key": "no_vibration", "value": ""});
+            console.log("value", " ")
+        }
+    }
 
     function getTickets(tickets) {
         if (tickets % 100 !== 11 && tickets % 10 === 1) {
@@ -336,6 +355,14 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                     {osName === ANDROID &&
                         <SimpleCell style={{cursor: "pointer"}} before={<Icon28SmartphoneOutline/>} onClick={() => bridge.send("VKWebAppAddToHomeScreen")} expandable >Добавить на главный экран</SimpleCell>
                     }
+                    {mobile_platforms.indexOf(user_platform) !== -1 &&
+                        <SimpleCell before={<Icon28SmartphoneStarsOutline/>} disabled after={
+                            <Switch
+                                onChange={() => setVibration(!vibration)}
+                                checked={vibration}
+                            />
+                        }>Вибрация</SimpleCell>
+                    }
                 </div>
 
                 {(userBalances["vk_donut"] === 0 && (startupParameters.get('vk_platform') === "mobile_web" || startupParameters.get('vk_platform') === "desktop_web" || startupParameters.get('vk_platform') === "mobile_android"))&&
@@ -362,6 +389,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
 
             </div>
+            <InfoBanners changeActiveModal={changeActiveModal} startupParameters={startupParameters} />
             <div style={{height: 12}}/>
 
 

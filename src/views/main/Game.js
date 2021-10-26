@@ -20,6 +20,7 @@ import PassageSize10Map from "../../maps/PassageSize10/map.json";
 import SquareSize6Map from "../../maps/SquareSize6/map.json";
 import SquareSize8Map from "../../maps/SquareSize8/map.json";
 import CrossSize9 from "../../maps/CrossSize9/map.json";
+import WhirlSize10 from "../../maps/WhirlSize10/map.json";
 import {getFight} from "../../api/api";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
@@ -65,6 +66,8 @@ function getStartJson(mapName) {
 		return SquareSize8Map
 	} else if (mapName === 'CrossSize9') {
 		return CrossSize9
+	} else if (mapName === 'WhirlSize10') {
+		return WhirlSize10
 	}
 }
 
@@ -96,7 +99,7 @@ function getColorInfo (color) {
 	}
 }
 
-const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances}) => {
+const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances, isVibration}) => {
 	const [map, setMap] = useState(getStartJson(mapName).slice());
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
@@ -321,7 +324,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 			isRecursion = true
 			setIsAnimation(true)
 		}
-		basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons)
+		basicOnCellClick(row, column, map, startupParameters, setMap, onCellClick, findAnimateIcons, isVibration)
 	}
 
 	function onCellClickFromUser (row, column) {

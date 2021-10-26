@@ -48,7 +48,7 @@ const numericIndicator = {
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
 
-const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory}) => {
+const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory, goToPage}) => {
 
     const [fights, setFights] = useState([])
     const [isShownStartTooltip, setIsShownStartTooltip] = useState(isStartTooltip)
@@ -120,6 +120,9 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                         break;
                     case "CrossSize9":
                         mapName = "Крест"
+                        break;
+                    case "WhirlSize10":
+                        mapName = "Вихрь"
                         break;
                 }
 
@@ -292,16 +295,17 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
 
             <Online online={online} />
             <MainButtons
-                go={go}
+                goToPage={goToPage}
                 goToAchievements={goToAchievements}
                 updateNotifications={updateNotifications}
                 changeActiveModal={changeActiveModal}
+                vkDonut={userBalances["vk_donut"]}
                 areNotificationsEnabled={userBalances["are_notifications_enabled"]}
                 isUserInSuperFight={false}
             />
 
             <div className={'fullContainer'}>
-                <Title level="1" weight="semibold" style={{marginLeft: 16}}>
+                <Title level="1" weight="semibold" style={{marginLeft: 16}} >
                     Доступные комнаты
                 </Title>
 

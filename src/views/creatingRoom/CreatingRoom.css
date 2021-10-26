@@ -8,8 +8,8 @@
 }
 
 .mapForDonuts {
-    filter: blur(12px);
-    -webkit-filter: blur(12px);
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
 }
 
 .mapForDonutsContainer {
@@ -27,4 +27,25 @@
 
 #gameTimeSlider .Slider__dragger::before {
     background: var(--accent) !important;
+}
+
+.donut__map__card {
+    position: relative;
+    margin: 6px 8px 0 0;
+}
+
+.lock__indicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    z-index: 2;
+}
+
+.map__card__content {
+    cursor: pointer;
+    height: 136px;
+    width: 144px;
+    display: flex;
+    padding: 12px;
+    flex-direction: column;
 }

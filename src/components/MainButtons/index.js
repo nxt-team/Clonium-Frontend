@@ -7,8 +7,8 @@ import { Icon28RadiowavesAroundOutline, Icon28FireOutline, Icon24CupOutline, Ico
 
 export default function MainButtons(props) {
     const {
-        go,
-        changeActiveModal,
+        goToPage,
+        vkDonut,
         areNotificationsEnabled,
         isUserInSuperFight,
         updateNotifications,
@@ -20,6 +20,15 @@ export default function MainButtons(props) {
             .then(
                 () => updateNotifications()
             )
+    }
+
+    function goToTop () {
+        // if (vkDonut === 0) {
+        //     bridge.send("VKWebAppShowNativeAds", {ad_format:"interstitial"})
+        // }
+
+        goToPage("top")
+
     }
 
     const renderButton = (areNotificationsEnabled, isUserInSuperFight) => {
@@ -43,7 +52,7 @@ export default function MainButtons(props) {
     return (
         <Div className="buttons_container">
             {renderButton(areNotificationsEnabled, isUserInSuperFight)}
-            <Button size="xl" before={<Icon24CupOutline width={28} height={28} />} onClick={go} data-to="top" stretched mode="secondary">Топ</Button>
+            <Button size="xl" before={<Icon24CupOutline width={28} height={28} />} onClick={goToTop} stretched mode="secondary">Топ</Button>
         </Div>
     )
 }

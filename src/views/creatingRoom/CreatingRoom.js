@@ -5,7 +5,7 @@ import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import '../main/waitingForStart.css'
 import './CreatingRoom.css'
 import bridge from '@vkontakte/vk-bridge';
-import { Icon28LockOutline } from '@vkontakte/icons';
+import {Icon201CircleFillGold, Icon28LockOutline, Icon32SearchOutline} from '@vkontakte/icons';
 import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
 import {
     Checkbox,
@@ -14,7 +14,7 @@ import {
     FormLayoutGroup,
     Card,
     CardScroll, Slider, CardGrid,
-    PanelHeaderClose, Spinner
+    PanelHeaderClose, Spinner, Avatar, Placeholder
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import DonutSize6 from '../../mapsPreview/DonutSize6';
@@ -28,6 +28,9 @@ import {createFight} from "../../api/api";
 import {joinRoom} from "../../api/socket";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 import CrossSize9 from "../../mapsPreview/CrossSize9";
+import { Icon28AddCircleFillBlue } from '@vkontakte/icons';
+import WhirlSize10 from "../../mapsPreview/WhirlSize10"
+import GradientLock from "../../components/GradientLock";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const selected = {
     border: '1px solid var(--dynamic_blue)',
@@ -38,6 +41,17 @@ const unselcted = {
     border: '1px solid var(--field_border)',
     backgroundColor: 'var(--background_page)',
 }
+
+const lockIcon = <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56" fill="none">
+    <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="url(#paint0_linear_301:1494)"/>
+    <path d="M28 13.2143C31.5504 13.2143 34.4286 16.0925 34.4286 19.6429L34.4297 23.518C35.3401 23.5685 35.9563 23.7303 36.594 24.0714C37.3491 24.4752 37.9533 25.0794 38.3572 25.8346C38.7817 26.6284 38.9286 27.3888 38.9286 28.725V36.275C38.9286 37.6112 38.7817 38.3716 38.3572 39.1655C37.9533 39.9206 37.3491 40.5248 36.594 40.9286C35.8002 41.3532 35.0398 41.5 33.7036 41.5H22.2964C20.9602 41.5 20.1998 41.3532 19.406 40.9286C18.6508 40.5248 18.0467 39.9206 17.6428 39.1655C17.2183 38.3716 17.0714 37.6112 17.0714 36.275V28.725C17.0714 27.3888 17.2183 26.6284 17.6428 25.8346C18.0467 25.0794 18.6508 24.4752 19.406 24.0714C20.0438 23.7303 20.6601 23.5684 21.5709 23.518L21.5714 19.6429C21.5714 16.0925 24.4496 13.2143 28 13.2143ZM33.7036 25.4286H22.2964C21.1502 25.4286 20.7345 25.5479 20.3155 25.772C19.8964 25.9961 19.5675 26.325 19.3434 26.7441C19.1193 27.1631 19 27.5788 19 28.725V36.275C19 37.4213 19.1193 37.8369 19.3434 38.256C19.5675 38.675 19.8964 39.0039 20.3155 39.228C20.7345 39.4521 21.1502 39.5714 22.2964 39.5714H33.7036C34.8498 39.5714 35.2654 39.4521 35.6845 39.228C36.1035 39.0039 36.4324 38.675 36.6565 38.256C36.8806 37.8369 37 37.4213 37 36.275V28.725C37 27.5788 36.8806 27.1631 36.6565 26.7441C36.4324 26.325 36.1035 25.9961 35.6845 25.772C35.2654 25.5479 34.8498 25.4286 33.7036 25.4286ZM28 29.2857C29.0651 29.2857 29.9286 30.1492 29.9286 31.2143C29.9286 32.0538 29.3922 32.768 28.6434 33.0329L28.6428 35.0714C28.6428 35.4265 28.355 35.7143 28 35.7143C27.6449 35.7143 27.3571 35.4265 27.3571 35.0714L27.3572 33.0331C26.6081 32.7684 26.0714 32.054 26.0714 31.2143C26.0714 30.1492 26.9349 29.2857 28 29.2857ZM28 15.1429C25.5147 15.1429 23.5 17.1576 23.5 19.6429V23.5H32.5V19.6429C32.5 17.1576 30.4853 15.1429 28 15.1429Z" fill="white"/>
+    <defs>
+        <linearGradient id="paint0_linear_301:1494" x1="-28" y1="28" x2="28" y2="84" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#B1B6BD"/>
+            <stop offset="1" stop-color="#99A2AD"/>
+        </linearGradient>
+    </defs>
+</svg>
 
 let turnTime = true // ограничено
 let gameTime = 600
@@ -53,10 +67,13 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     useEffect(() => {
         turnTime = true
         gameTime = 600
+        if (vkDonut) {
+            gameTime = -1
+        }
     }, [])
 
     const changeMapSelect = (mapId) => {
-        if (mapId === 6 || mapId === 7) {
+        if (mapId === 6 || mapId === 7 || mapId === 8) {
             if (vkDonut) {
                 setMapsSelect(mapId);
                 const user_platform = startupParameters.get('vk_platform')
@@ -85,10 +102,10 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     }
 
     const privateChanged = () => {
-        setIsPrivate(!isPrivate)
-        if (!isPrivate) {
+        if (isPrivate) {
             turnTime = true
         }
+        setIsPrivate(!isPrivate)
         console.log(turnTime)
     }
 
@@ -126,233 +143,155 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                 Создание
             </PanelHeader>
             <FormLayout>
-                <FormLayoutGroup top="Карта">
+                <FormLayoutGroup top={'Карта'}>
                     <CardScroll>
-                        <Card
-                            onClick={() => changeMapSelect(0)}
-                            size="s"
-                            style={mapsSelect === 0 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Квадрат 8 на 8
-                                </Title>
-                                <SquareSize8 />
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(0)}
+                                    size="s"
+                                    style={mapsSelect === 0 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Квадрат 8 на 8
+                                        </Title>
+                                        <SquareSize8 />
+                                    </div>
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(1)}
-                            size="s"
-                            style={mapsSelect === 1 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Бублик 8 на 8
-                                </Title>
-                                <DonutSize8 />
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(1)}
+                                    size="s"
+                                    style={mapsSelect === 1 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Бублик 8 на 8
+                                        </Title>
+                                        <DonutSize8 />
+                                    </div>
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(2)}
-                            size="s"
-                            style={mapsSelect === 2 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Сетка 8 на 8
-                                </Title>
-                                <GridSize8 />
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(3)}
+                                    size="s"
+                                    style={mapsSelect === 3 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Бублик 6 на 6
+                                        </Title>
+                                        <DonutSize6 />
+                                    </div>
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(3)}
-                            size="s"
-                            style={mapsSelect === 3 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Бублик 6 на 6
-                                </Title>
-                                <DonutSize6 />
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(4)}
+                                    size="s"
+                                    style={mapsSelect === 4 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Квадрат 6 на 6
+                                        </Title>
+                                        <SquareSize6 />
+                                    </div>
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(4)}
-                            size="s"
-                            style={mapsSelect === 4 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Квадрат 6 на 6
-                                </Title>
-                                <SquareSize6 />
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(5)}
+                                    size="s"
+                                    style={mapsSelect === 5 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Сетка 10 на 10
+                                        </Title>
+                                        <GridSize10 />
+                                    </div>
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(5)}
-                            size="s"
-                            style={mapsSelect === 5 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                <Title level="2" weight="regular">
-                                    Сетка 10 на 10
-                                </Title>
-                                <GridSize10 />
-                            </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(6)}
-                            size="s"
-                            style={mapsSelect === 6 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                {vkDonut
-                                    ?
-                                    <div>
+                        </div>
+
+
+
+
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(6)}
+                                    size="s"
+                                    style={mapsSelect === 6 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
                                         <Title level="2" weight="regular">
                                             Проход
                                         </Title>
                                         <PassageSize10 />
                                     </div>
-                                    :
-                                    <div>
-                                        <div className={"mapForDonuts"}>
-                                            <Title level="2" weight="regular">
-                                                Проход
-                                            </Title>
-                                            <PassageSize10/>
-                                        </div>
-                                        <div className={"mapForDonutsContainer"} >
-                                            <Icon28LockOutline style={{color: "var(--placeholder_icon_foreground_secondary)", marginBottom: 6}}/>
-                                            <Text weight="regular">
-                                                Доступно оформившим Clonium Pass
-                                            </Text>
-                                        </div>
-                                    </div>
-                                }
-
+                                </Card>
                             </div>
-                        </Card>
-                        <Card
-                            onClick={() => changeMapSelect(7)}
-                            size="s"
-                            style={mapsSelect === 7 ? selected : unselcted}
-                        >
-                            <div
-                                style={{
-                                    cursor: "pointer",
-                                    height: '100%',
-                                    width: 144,
-                                    display: 'flex',
-                                    padding: 12,
-                                    flexDirection: 'column',
-                                    justifyContent: '',
-                                    alignItems: '',
-                                }}
-                            >
-                                {vkDonut
-                                    ?
-                                    <div>
+                            {vkDonut === 0 &&
+                                <div className="lock__indicator" >
+                                    <GradientLock />
+                                </div>
+                            }
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(7)}
+                                    size="s"
+                                    style={mapsSelect === 7 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
                                         <Title level="2" weight="regular">
                                             Крест
                                         </Title>
                                         <CrossSize9 />
                                     </div>
-                                    :
-                                    <div>
-                                        <div className={"mapForDonuts"}>
-                                            <Title level="2" weight="regular">
-                                                Крест
-                                            </Title>
-                                            <CrossSize9/>
-                                        </div>
-                                        <div className={"mapForDonutsContainer"} >
-                                            <Icon28LockOutline style={{color: "var(--placeholder_icon_foreground_secondary)", marginBottom: 6}}/>
-                                            <Text weight="regular">
-                                                Доступно оформившим Clonium Pass
-                                            </Text>
-                                        </div>
-                                    </div>
-                                }
+                                </Card>
                             </div>
-                        </Card>
+                            {vkDonut === 0 &&
+                            <div className="lock__indicator" >
+                                <GradientLock />
+                            </div>
+                            }
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
+                                    onClick={() => changeMapSelect(8)}
+                                    size="s"
+                                    style={mapsSelect === 8 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Вихрь
+                                        </Title>
+                                        <WhirlSize10 />
+                                    </div>
+                                </Card>
+                            </div>
+                            {vkDonut === 0 &&
+                            <div className="lock__indicator" >
+                                <GradientLock />
+                            </div>
+                            }
+                        </div>
                     </CardScroll>
                 </FormLayoutGroup>
                 <FormLayoutGroup top={'Кол-во игроков'}>
@@ -430,14 +369,14 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                     </FormLayoutGroup>
                 }
 
-                <FormLayoutGroup top="Дополнительно">
-                    <Checkbox onChange={privateChanged} >Приватно</Checkbox>
-                    <Checkbox onChange={() => turnTime = !turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
-                </FormLayoutGroup>
-                <Button size="xl" onClick={createFightAndGo}  >
-                    {isCreating ? <Spinner size="regular" /> : "Создать"}
-                </Button>
-            </FormLayout>
+            <FormLayoutGroup top="Дополнительно">
+                <Checkbox onChange={privateChanged} >Приватно</Checkbox>
+                <Checkbox onChange={() => {turnTime = !turnTime; console.log(turnTime)}} value={turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
+            </FormLayoutGroup>
+            <Button size="xl" onClick={createFightAndGo}  >
+                {isCreating ? <Spinner size="regular" /> : "Создать"}
+            </Button>
+        </FormLayout>
         </Panel>
     )
 };
