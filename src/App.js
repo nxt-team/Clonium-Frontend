@@ -58,7 +58,7 @@ import {
 	getFight, getSubAchievement,
 	getTicket,
 	getUserBalances,
-	init, maintainingStat,
+	init, maintainingStat, sendLogs,
 	updateAreNotificationsEnabled
 } from "./api/api";
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
@@ -381,14 +381,29 @@ const App = () => {
 			}
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
 			setUser(fetchUser)
-			let user = await init(fetchUser)
+			let user = await init(fetchUser, window.location.hash)
 			console.log("INIT")
 			socket.connect()
 			setUserBalances(user)
 			const timeNow = new Date()
 			initTimeInSeconds = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
-
-			if (user["status"] === "connected") {
+			if (user["status"] === "error") {
+				isOfflineNeedShowInSnackBar = true
+				setPopout(
+					<Alert
+						actionsLayout="vertical"
+						actions={[{
+							title: 'Закрыть',
+							autoclose: true,
+							mode: 'cancel'
+						}]}
+						onClose={() => bridge.send("VKWebAppClose", {"status": "success"})}
+					>
+						<h2>{user["error"]}</h2>
+						<p>{user["error_description"]}</p>
+					</Alert>
+				)
+			} else if (user["status"] === "connected") {
 				isOfflineNeedShowInSnackBar = true
 				setActiveView("alreadyConnected")
 				setPopout(null)
@@ -1253,6 +1268,31 @@ const App = () => {
 		setActiveView('temporaryBanned')
 	}
 
+	async function gameError () {
+		setPopout(
+			<Alert
+				actionsLayout="vertical"
+				actions={[{
+					title: 'Закрыть',
+					autoclose: true,
+					mode: 'cancel'
+				}]}
+				onClose={() => setPopout(null)}
+			>
+				<h2>Произошла ошибка!</h2>
+				<p>Не сворачивайте игру. В течение нескольких секунд произойдет автоматическая перезагрузка</p>
+			</Alert>
+		)
+		setTimeout(async () => {
+			await sendLogs(JSON.stringify(console.logs))
+			doReconnectForRejoin()
+		}, 2000)
+
+		console.log("a")
+		console.log("a")
+
+	}
+
 	return (
 		<ConfigProvider
 			// scheme={scheme}
@@ -1310,6 +1350,7 @@ const App = () => {
 						userBalances={userBalances}
 						screenSpinnerOff={screenSpinnerOff}
 						screenSpinnerOn={screenSpinnerOn}
+						gameError={gameError}
 					/>
 					<RejoinedGame
 						id={'rejoinedGame'}
@@ -1333,6 +1374,7 @@ const App = () => {
 						usersInFight={usersInFight}
 						changePopout={(newPopout) => setPopout(newPopout) }
 						startGameTimer={startGameTimer}
+						gameError={gameError}
 					/>
 					<Profile
 						id={'profile'}

@@ -9,6 +9,13 @@ const startupParameters = new URLSearchParams(window.location.search.replace('?'
 const user_platform = startupParameters.get('vk_platform')
 const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 
+console.defaultLog = console.log.bind(console);
+console.logs = [];
+console.log = function(){
+  console.defaultLog.apply(console, arguments);
+  console.logs.push(Array.from(arguments));
+}
+
 // Init VK  Mini App
 bridge.send("VKWebAppInit").then(r => console.log(r));
 bridge.subscribe(({ detail: { type, data }}) => {

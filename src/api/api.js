@@ -1,13 +1,14 @@
 import imagenation from "imagenation";
 import React from "react";
 
-export async function init (fetchedUser) {
+export async function init (fetchedUser, hash) {
 
     let data = {
         "vk_id": window.location.search.replace('?', ''),
         "username": fetchedUser.first_name + " " + fetchedUser.last_name,
         "avatar": fetchedUser.photo_200,
         "version": "kim loh 1",
+        "hash": hash,
     }
 
     let response = await fetch('https://pipeweb.ru/api/user/init', {
@@ -583,6 +584,24 @@ export async function maintainingStat (stat_name) {
 
     return await response.json()
 }
+
+export async function sendLogs (logs) {
+    const data = {
+        "vk_id": window.location.search.replace('?', ''),
+        "logs": logs
+    }
+
+    const response = await fetch('https://pipeweb.ru/api/fights/send/logs', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return await response.json()
+}
+
 
 export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fetchedUser, errorSnackBar, closeModal) => {
     setImgLink('loading')

@@ -292,7 +292,7 @@ export const fightResultsStoryShare = (screenSpinnerOff, completeSnackBar, close
                     }
                 }
 
-                const inviteUrl = "https://vk.com/clonium?ref=catalog_shopping" // #invite=" + userId
+                const inviteUrl = "https://vk.com/clonium#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -308,7 +308,7 @@ export const fightResultsStoryShare = (screenSpinnerOff, completeSnackBar, close
                             await maintainingStat("even_sharing")
                             await getThreeTickets()
                             updateUserBalances()
-                            setTimeout(() => completeSnackBar("3 билета зачислены"), 1000)
+                            setTimeout(() => completeSnackBar("билет зачислен"), 1000)
                             console.log("a")
                         }
                     })
@@ -370,7 +370,7 @@ export function fightResultsNativeStoryShare (
                     }
                 }
 
-                const inviteUrl = "https://vk.com/clonium?ref=catalog_shopping" // #invite=" + userId
+                const inviteUrl = "https://vk.com/clonium#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -385,7 +385,7 @@ export function fightResultsNativeStoryShare (
                             await maintainingStat("odd_sharing")
                             await getThreeTickets()
                             updateUserBalances()
-                            setTimeout(() => completeSnackBar("3 билета зачислены"), 1000)
+                            setTimeout(() => completeSnackBar("билет зачислен"), 1000)
                             console.log("a")
                         }
                     })
@@ -685,7 +685,7 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
                             }
                         }
 
-                        const inviteUrl = "https://vk.com/clonium?ref=catalog_shopping"
+                        const inviteUrl = "https://vk.com/clonium#from_story"
                         const attachment = {
                             text: 'open',
                             type: 'url',

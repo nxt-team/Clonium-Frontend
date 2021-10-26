@@ -27,7 +27,7 @@ let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 10
 let beatenPlayers = []
-
+let serverColorMotion
 let lastMotionCoords = [-1, -1]
 let pieceAvatarsConfig = {
     "red": "",
@@ -64,7 +64,7 @@ function getColorInfo (color) {
     }
 }
 
-const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, isVibration}) => {
+const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, isVibration}) => {
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
@@ -89,6 +89,9 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
             console.log(
                 " Color motion: " + colorMotion,
             )
+
+            serverColorMotion = data[2]
+
             changeLastMotionCoords(data[0], data[1])
             onCellClick(data[0], data[1])
             changeColorMotion(lastColorMotion, true)
@@ -125,6 +128,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
 
         lastMotionCoords = [-1, -1]
         lastColorMotion = startColorMotion
+        serverColorMotion = startColorMotion
         colors = startColors
         userColor = startUserColor
 
@@ -241,6 +245,10 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
                 }
             })
             setIsAnimation(false)
+            if (serverColorMotion && lastColorMotion !== serverColorMotion) {
+                console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+                gameError()
+            }
         }
 
         console.log("FLag: " + flag)
@@ -270,6 +278,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, startGameTimer
     function onCellClickFromUser (row, column) {
         console.log("click from user \n", "is animation: ", isAnimation)
         if (!isAnimation && map[row - 1][column - 1]['color'] === colorMotion && colorMotion === userColor ) {
+            serverColorMotion = ""
             changeLastMotionCoords(row, column)
             onCellClick(row, column)
             clickMap(secretId, fetchedUser, row, column)

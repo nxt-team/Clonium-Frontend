@@ -134,7 +134,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, chang
 
             </Div>
             {finishData[1] - finishData[0] !== 0 &&
-                <SimpleCell multiline={true} before={<Icon28InfoCircleOutline/>} disabled={true} >Получи 3 билета, поделившись результатом боя</SimpleCell>
+                <SimpleCell multiline={true} before={<Icon28InfoCircleOutline/>} onClick={share} >Верни свой билет, поделившись результатом боя</SimpleCell>
             }
 
 

@@ -37,7 +37,7 @@ let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 0
 let beatenPlayers = []
-
+let serverColorMotion
 let lastMotionCoords = [-1, -1]
 let pieceAvatarsConfig = {
 	"red": "",
@@ -99,7 +99,7 @@ function getColorInfo (color) {
 	}
 }
 
-const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances, isVibration}) => {
+const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances, isVibration, gameError}) => {
 	const [map, setMap] = useState(getStartJson(mapName).slice());
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
@@ -127,6 +127,9 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 			console.log(
 				" Color motion: " + colorMotion
 			)
+
+			serverColorMotion = data[2]
+
 			changeLastMotionCoords(data[0], data[1])
 			onCellClick(data[0], data[1])
 			changeColorMotion(lastColorMotion, true)
@@ -166,6 +169,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 			beatenPlayers = []
 			lastMotionCoords = [-1, -1]
 			lastColorMotion = "red"
+			serverColorMotion = "red"
 			const fight = await getFight(secretId)
 			turn_time = fight["turn_time"]
 			if (fight["game_time"] === -1) {
@@ -301,6 +305,10 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 				}
 			})
 			setIsAnimation(false)
+			if (serverColorMotion && lastColorMotion !== serverColorMotion) {
+				console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+				gameError()
+			}
 		}
 
 		console.log("FLag: " + flag)
@@ -330,6 +338,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 	function onCellClickFromUser (row, column) {
 		console.log("click from user \n", "is animation: ", isAnimation)
 		if (!isAnimation && map[row - 1][column - 1]['color'] === colorMotion && colorMotion === userColor ) {
+			serverColorMotion = ""
 			changeLastMotionCoords(row, column)
 			onCellClick(row, column)
 			clickMap(secretId, fetchedUser, row, column)
