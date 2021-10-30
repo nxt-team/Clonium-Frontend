@@ -91,11 +91,21 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
             )
 
             serverColorMotion = data[2]
+            let flag = false
+            if (map[data[0] - 1][data[1] - 1]['state'] !== 3) {
+                flag = true
+            }
 
             changeLastMotionCoords(data[0], data[1])
             onCellClick(data[0], data[1])
             changeColorMotion(lastColorMotion, true)
-
+            if (flag) {
+                console.log(lastColorMotion, serverColorMotion, " проверка на ебаное очко")
+                if (serverColorMotion && lastColorMotion !== serverColorMotion) {
+                    console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+                    gameError()
+                }
+            }
         });
 
         socket.on("leave", (color) => {
@@ -245,6 +255,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
                 }
             })
             setIsAnimation(false)
+            console.log(lastColorMotion, serverColorMotion, " ПРОВЕРКА НА ЕБАНОЕ ОЧКО")
             if (serverColorMotion && lastColorMotion !== serverColorMotion) {
                 console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
                 gameError()

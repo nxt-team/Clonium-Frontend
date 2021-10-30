@@ -134,7 +134,7 @@ export const drawFightResultsStory = (theme, phrase, beatenPlayers, avaUrl) => {
                 }
                 bpava2.crossOrigin = 'anonymous';
                 bpava2.onload = function () {
-                    ctx.drawImage(bpava1, 705, 944, 166, 166);
+                    ctx.drawImage(bpava2, 705, 944, 166, 166);
                 }
 
                 const mask = new Image()
@@ -195,7 +195,7 @@ export const drawFightResultsStory = (theme, phrase, beatenPlayers, avaUrl) => {
                 }
                 bpava2.crossOrigin = 'anonymous';
                 bpava2.onload = function () {
-                    ctx.drawImage(bpava1, 473, 980, 134, 134);
+                    ctx.drawImage(bpava2, 473, 980, 134, 134);
                 }
 
                 const bpava3 = new Image()
@@ -206,7 +206,7 @@ export const drawFightResultsStory = (theme, phrase, beatenPlayers, avaUrl) => {
                 }
                 bpava3.crossOrigin = 'anonymous';
                 bpava3.onload = function () {
-                    ctx.drawImage(bpava1, 827, 980, 134, 134);
+                    ctx.drawImage(bpava3, 827, 980, 134, 134);
                 }
 
                 const mask = new Image()
@@ -485,7 +485,7 @@ export function fightResultsNativeStoryShare (
             }
             bpava2.crossOrigin = 'anonymous';
             bpava2.onload = function () {
-                ctx.drawImage(bpava1, 705, 944, 166, 166);
+                ctx.drawImage(bpava2, 705, 944, 166, 166);
             }
 
             const mask = new Image()
@@ -549,7 +549,7 @@ export function fightResultsNativeStoryShare (
             }
             bpava2.crossOrigin = 'anonymous';
             bpava2.onload = function () {
-                ctx.drawImage(bpava1, 473, 980, 134, 134);
+                ctx.drawImage(bpava2, 473, 980, 134, 134);
             }
 
             const bpava3 = new Image()
@@ -560,7 +560,7 @@ export function fightResultsNativeStoryShare (
             }
             bpava3.crossOrigin = 'anonymous';
             bpava3.onload = function () {
-                ctx.drawImage(bpava1, 827, 980, 134, 134);
+                ctx.drawImage(bpava3, 827, 980, 134, 134);
             }
 
             const mask = new Image()

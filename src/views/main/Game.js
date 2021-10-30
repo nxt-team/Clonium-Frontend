@@ -130,9 +130,21 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 
 			serverColorMotion = data[2]
 
+			let flag = false
+			if (map[data[0] - 1][data[1] - 1]['state'] !== 3) {
+				flag = true
+			}
+
 			changeLastMotionCoords(data[0], data[1])
 			onCellClick(data[0], data[1])
 			changeColorMotion(lastColorMotion, true)
+			if (flag) {
+				console.log(lastColorMotion, serverColorMotion, " проверка на ебаное очко")
+				if (serverColorMotion && lastColorMotion !== serverColorMotion) {
+					console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+					gameError()
+				}
+			}
 
 		});
 
@@ -305,6 +317,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 				}
 			})
 			setIsAnimation(false)
+			console.log(lastColorMotion, serverColorMotion, " ПРОВЕРКА НА ЕБАНОЕ ОЧКО")
 			if (serverColorMotion && lastColorMotion !== serverColorMotion) {
 				console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
 				gameError()
