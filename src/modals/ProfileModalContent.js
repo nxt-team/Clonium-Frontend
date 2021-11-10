@@ -22,7 +22,7 @@ import {
     Icon28FavoriteOutline,
     Icon28TicketOutline,
     Icon36GameOutline,
-    Icon28PincodeOutline
+    Icon28PincodeOutline, Icon24CupOutline
 } from "@vkontakte/icons";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -157,6 +157,10 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
         }
     }
 
+    function rateCaption (rate) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        return "Рейтинг"
+    }
+
     function renderAchievements () {
         if (userData["achievements"].length !== 0) {
             const content = []
@@ -288,6 +292,13 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                                 after={userData["exp"]}
                             >
                                 {expCaption(userData["exp"])}
+                            </SimpleCell>
+                            <SimpleCell
+                                disabled={true}
+                                before={<Icon24CupOutline width={28} height={28}/>}
+                                after={Math.round(userData["rating"])}
+                            >
+                                {rateCaption(userData["rating"])}
                             </SimpleCell>
                             <SimpleCell
                                 disabled={true}

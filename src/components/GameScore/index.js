@@ -18,13 +18,13 @@ export default function GameScore({count}) {
                     cx="19"
                     cy="19"
                     r="18"
-                    fill="#00D8FF"
+                    fill="#FF79CB"
                     stroke="currentColor"
                     stroke-width="2"
                 />
                 <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
             </svg>
-            <div style={{ flexGrow: 1 }}>{count('blue')}</div>
+            <div style={{ flexGrow: 1 }} >{count('red')}</div>
             <svg
                 style={{ flexGrow: 1 }}
                 width="22"
@@ -37,13 +37,13 @@ export default function GameScore({count}) {
                     cx="19"
                     cy="19"
                     r="18"
-                    fill="#FFB327"
+                    fill="#00D8FF"
                     stroke="currentColor"
                     stroke-width="2"
                 />
                 <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
             </svg>
-            <div style={{ flexGrow: 1 }}>{count('yellow')}</div>
+            <div style={{ flexGrow: 1 }}>{count('blue')}</div>
             <svg
                 style={{ flexGrow: 1 }}
                 width="22"
@@ -75,13 +75,13 @@ export default function GameScore({count}) {
                     cx="19"
                     cy="19"
                     r="18"
-                    fill="#FF79CB"
+                    fill="#FFB327"
                     stroke="currentColor"
                     stroke-width="2"
                 />
                 <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
             </svg>
-            <div style={{ flexGrow: 0.5 }} >{count('red')}</div>
+            <div style={{ flexGrow: 0.5 }}>{count('yellow')}</div>
         </div>
     )
 }

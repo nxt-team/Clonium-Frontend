@@ -24,18 +24,12 @@ import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline'
 import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
 import Icon24StoryOutline from '@vkontakte/icons/dist/24/story_outline';
 import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
-import { Icon28DeleteOutline } from '@vkontakte/icons';
-import { Icon28ChatsOutline } from '@vkontakte/icons';
 import { motion } from "framer-motion"
 import './Profile.css'
-import Icon36GameOutline from '@vkontakte/icons/dist/36/game_outline';
-import Icon28TicketOutline from '@vkontakte/icons/dist/28/ticket_outline';
 import { Icon28RadiowavesLeftAndRightOutline } from '@vkontakte/icons';
 import {
     Card,
     CardScroll,
-    Input,
-    FormLayoutGroup,
     Group,
     IOS,
     Placeholder,
@@ -46,9 +40,8 @@ import {
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
 import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
-import {deleteUser, doChange} from "../../api/api";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
-import { Icon28SmartphoneStarsOutline } from '@vkontakte/icons';
+import { Icon28SmartphoneStarsOutline, Icon24CupOutline, Icon28TicketOutline, Icon36GameOutline } from '@vkontakte/icons';
 import InfoBanners from "../../components/InfoBanners";
 const osName = platform();
 
@@ -94,6 +87,14 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
             return 'игра сыграна'
         } else {
             return 'игр сыграно'
+        }
+    }
+
+    function rateCaption (rate) { // https://poisk2.ru/okonchaniya-suschestvitelnyh-posle-chislitelnyh/
+        if (rate % 100 !== 11 && rate % 10 === 1) {
+            return 'рейтинг'
+        }else {
+            return 'рейтинга'
         }
     }
 
@@ -173,6 +174,34 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 separator="hide"
                 >
                 <CardScroll style={{marginBottom: 6}}>
+                    <Card size="s"  >
+                        <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <div style={{ justifyContent: 'center',
+                                alignItems: "center",
+                                display: "flex",
+                                width: 144,
+                                height: 56,
+                                padding: 4,
+                                flexDirection: "row"}} >
+                                <Icon24CupOutline width={32} height={32} style={{color: '#ffc107'}} />
+                                <div
+                                    style={{ justifyContent: 'center',
+                                        display: "flex",
+                                        marginLeft: 6,
+                                        flexDirection: "column"}}
+                                >
+                                    <Caption level="1" weight="regular">{userBalances["rate"]}</Caption>
+                                    <Caption style={{color: "var(--text_secondary)"}} level="3"
+                                             weight="regular">{rateCaption(userBalances["rate"])}</Caption>
+                                </div>
+
+
+                            </div>
+                        </motion.div>
+                    </Card>
                     <Card size="s"  >
                         <motion.div
                             whileHover={{ scale: 1.1 }}

@@ -47,7 +47,7 @@ const Svg = ({ start, svgSize, end, changed, color }) => {
                 r="18"
                 fill={fill}
                 stroke="currentColor"
-                stroke-width="2"
+                strokeWidth="2"
             />
             <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
         </svg>

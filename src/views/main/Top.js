@@ -26,12 +26,14 @@ import {
     SimpleCell,
     Tabs,
     Header,
-    TabsItem, FixedLayout, Banner, Spinner
+    TabsItem, FixedLayout, Banner, Spinner, Counter
 } from "@vkontakte/vkui";
 import {getFriendsTop, getGlobalTop} from "../../api/api";
 import bridge from '@vkontakte/vk-bridge';
 import SwipeableViews from "react-swipeable-views";
 import {refLinkShare} from "../../sharing/sharing";
+import ExpGlobalLeaderBoardPlace from "../../components/ExpGlobalLeaderBoardPlace";
+import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 const osName = platform();
 let updateHeight
 
@@ -113,7 +115,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
         
         else if (searchData.trim().length > 0) {
             const search = searchData.toLowerCase()
-            const data = globalTop[0].filter(({username}) => username.toLowerCase().indexOf(search) > -1);
+            const data = globalTop[2].filter(({username}) => username.toLowerCase().indexOf(search) > -1);
             let content = []
             console.log(data)
             data.forEach((item, index) => {
@@ -125,12 +127,12 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                             changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
-                        exp={item["exp"]}
+                        rate={Math.round(item["rating"])}
                         place={index + 1}
                         rank={item["user_rank"]}
                         userName={item["username"]}
                         vkDonut={item["vk_donut"]}
-                        
+                        piece_avatar={item["piece_avatar"]}
                     />
                 )
             })
@@ -149,9 +151,8 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
             }
         } else {
             let content = []
-            console.log(globalTop)
             console.log(globalTop[0])
-            globalTop[0].forEach((item, index) => {
+            globalTop[2].forEach((item, index) => {
                 content.push(
                     <GlobalLeaderBoardPlace
                         onClick={() => {
@@ -160,7 +161,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                             changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
-                        exp={item["exp"]}
+                        rate={Math.round(item["rating"])}
                         place={index + 1}
                         rank={item["user_rank"]}
                         userName={item["username"]}
@@ -255,6 +256,57 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
         }
     }
 
+    function renderExpTop () {
+        if (globalTop.length === 0) {
+            return (
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <Spinner size="regular" style={{marginTop: 20}}/>
+                </div>
+            )
+        } else {
+            let content = [
+
+            ]
+            globalTop[0].forEach((item, index) => {
+                content.push(
+                    <ExpGlobalLeaderBoardPlace
+                        onClick={() => {
+                            updateUserProfileVkId(item["vk_id"])
+                            changeActiveModal("profileModal")
+                        }}
+                        avaUrl={item["avatar"]}
+                        exp={item["exp"]}
+                        place={index + 1}
+                        rank={item["user_rank"]}
+                        userName={item["username"]}
+                        vkDonut={item["vk_donut"]}
+                        piece_avatar={item["piece_avatar"]}
+                        illumination={item["username"] === fetchedUser.first_name + ' ' + fetchedUser.last_name}
+                    />
+                )
+            })
+
+            return content
+        }
+    }
+
+    function getUserStat () {
+        if (slideIndex === 1) {
+            if (globalTop[1]["position"] !== 0) {
+                return globalTop[1]["exp"] + " опыта · " + globalTop[1]["position"] + " место"
+            } else {
+                return globalTop[1]["exp"] + " опыта"
+            }
+
+        } else if (slideIndex === 2) {
+            if (globalTop[3]["position"] !== 0) {
+                return "рейтинг " + Math.round(globalTop[3]["rating"]) + " · " + globalTop[3]["position"] + " место"
+            } else {
+                return "рейтинг " + Math.round(globalTop[3]["rating"])
+            }
+        }
+    }
+
     return (
         <Panel id={id} style={{position: "fixed"}}>
             <PanelHeader
@@ -278,8 +330,17 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                 <TabsItem
                     onClick={() => setSlideIndex(1)}
                     selected={slideIndex === 1}
+                    after={globalTop.length &&
+                            <Counter mode="prominent" size={"s"} >{globalTop[1]["position"]}</Counter>
+                    }
                 >
-                    Все
+                    Опыт
+                </TabsItem>
+                <TabsItem
+                    onClick={() => setSlideIndex(2)}
+                    selected={slideIndex === 2}
+                >
+                    Рейтинг
                 </TabsItem>
             </Tabs>
             <SwipeableViews
@@ -298,54 +359,40 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                     {renderFriendsTop()}
                 </div>
                 <div className={"globalSlide"} >
+                    <Banner
+                        mode="image"
+                        style={{margin: 0, marginBottom: 4}}
+                        imageTheme={"light"}
+                        before={<Avatar src={"https://media.discordapp.net/attachments/655117045616082974/905169136798290000/256-removebg-preview.png"}/>}
+                        header={
+                            <Title level="2" weight="semibold" className={"top_exp_banner_header"} >
+                                Раздаём призы топу
+                            </Title>
+                        } // <span className={"top_exp_banner_header"}>Раздаем призы топу</span>
+                        subheader={<span className={"top_exp_banner_subheader"} >Каждую неделю этот топ обнуляется. Лучшие получают стикеры и Clonium Pass.</span>}
+                        background={
+                            <div className={"top_exp_banner"} />
+                        }
+                        actions={
+                            <React.Fragment >
+                                <Button style={{backgroundColor: '#fff', color: '#000'}} href="https://vk.com/@pipeweb-topy-klonii" target="_blank" >Подробнее</Button>
+                            </React.Fragment>
+                        }
+                    />
+                    {renderExpTop()}
+                </div>
+                <div className={"globalSlide"} >
                     <Search
                         id="topSearch"
                         value={searchData}
                         onChange={(e) => setSearchData(e.target.value)}
                         after={null}
                     />
-                    {superFightBanner&&
-                    <Banner
-                        mode="image"
-                        style={{margin: 0, marginBottom: 4}}
-                        before={<Icon28FireOutline fill={'#fff'}/>}
-                        header={<span>Супер бой</span>}
-                        subheader={<span>Поле 16×11 и 10 игроков. Победитель получает стикерпак!</span>}
-                        asideMode="dismiss"
-                        onDismiss={() => setSuperFightBanner(false)}
-                        background={
-                            <div
-                                style={{
-                                    backgroundColor: '#ec644c',
-                                }}
-                            />
-                        }
-                        actions={
-                            <React.Fragment >
-                                <Button style={{backgroundColor: '#fff', color: '#000'}} onClick={() => changeActiveModal('superFight')} >Подробнее</Button>
-                            </React.Fragment>
-                        }
-                    />
-                    }
                     {renderGlobalTop()}
                 </div>
             </SwipeableViews>
-            {/*<Gallery*/}
-            {/*    slideWidth="100%"*/}
-            {/*    align="center"*/}
-            {/*    style={{ height: "100%" }}*/}
-            {/*    slideIndex={slideIndex}*/}
-            {/*    onChange={slideIndex => {*/}
-            {/*        if (slideIndex === 0) {*/}
-            {/*            document.getElementById("topSearch").blur()*/}
-            {/*        }*/}
-            {/*        setSlideIndex(slideIndex)*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    */}
-            {/*</Gallery>*/}
 
-            {(slideIndex === 1 && globalTop.length !== 0)&&
+            {(slideIndex !== 0 && globalTop.length !== 0)&&
                 <>
                 <FixedLayout
                     style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
@@ -359,7 +406,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                                     <Avatar size={48} src={fetchedUser.photo_200} className="avatar__photo" />
                                 </div>
                             }
-                            description={globalTop[1]["exp"] + " опыта · " + globalTop[1]["position"] + " место"}
+                            description={getUserStat()}
                         >
                             {fetchedUser.first_name + ' ' + fetchedUser.last_name}
                         </SimpleCell>

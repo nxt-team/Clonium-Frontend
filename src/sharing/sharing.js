@@ -694,7 +694,13 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
                         console.log(url)
                         screenSpinnerOff()
                         bridge.send("VKWebAppShowStoryBox",
-                            { "background_type" : "image", "url" : url, "attachment": attachment, "locked": true});
+                            { "background_type" : "image", "url" : url, "attachment": attachment, "locked": true})
+                            .then(async data => {
+                                if (data.result === true) {
+                                    await maintainingStat("story_sharing")
+                                    console.log("a")
+                                }
+                            })
 
                     } else {
                         console.log('err2')

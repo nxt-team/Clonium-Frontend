@@ -16,7 +16,7 @@ const numericIndicator = {
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
 
-const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, onClick, piece_avatar }) => {
+const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, rate, rank, vkDonut, onClick, piece_avatar }) => {
 
     function getAvatar () {
         if (piece_avatar.length > 1) {
@@ -46,7 +46,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, o
                         </div>
                     </div>
                 }
-                description={rank + ", " + exp + " опыта"}
+                description={rank + ", рейтинг " + rate}
                 after={getAvatar()}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
@@ -83,7 +83,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, o
                         </div>
                     </div>
                 }
-                description={rank + ", " + exp + " опыта"}
+                description={rank + ", рейтинг " + rate}
                 after={getAvatar()}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
@@ -102,7 +102,7 @@ const GlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, vkDonut, o
                         <Avatar size={48} src={avaUrl} className="GlobalPlace__avatar" />
                     </div>
                 }
-                description={rank + ", " + exp + " опыта"}
+                description={rank + ", рейтинг " + rate}
             >
                 <span dangerouslySetInnerHTML={{__html: userName}}/>
             </SimpleCell>

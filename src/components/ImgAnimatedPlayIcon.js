@@ -42,7 +42,7 @@ const Svg = ({ start, svgSize, end, changed, imgLink, color }) => {
             xmlns="http://www.w3.org/2000/svg"
         >
             <defs>
-                <pattern id="img1" patternUnits="userSpaceOnUse" width="100%" height="100%">
+                <pattern id={"img" + color} patternUnits="userSpaceOnUse" width="100%" height="100%">
                     <image className='twombly' xlinkHref={imgLink}
                            x="0" y="0"/>
                 </pattern>
@@ -52,9 +52,9 @@ const Svg = ({ start, svgSize, end, changed, imgLink, color }) => {
                 cx="19"
                 cy="19"
                 r="18"
-                fill="url(#img1)"
+                fill={"url(#img" + color + ")"}
                 stroke={fill}
-                stroke-width="2"
+                strokeWidth="2"
             />
             <circle cx="19" cy="19" r="3" fill={fill}/>
         </svg>

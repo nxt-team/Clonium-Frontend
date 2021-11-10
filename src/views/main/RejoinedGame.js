@@ -266,7 +266,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
     }
 
     function getCellContent (row, column) {
-        if (pieceAvatarsConfig[map[row - 1][column - 1]['color']] === "0") {
+        if (pieceAvatarsConfig[map[row - 1][column - 1]['color']] === "0" || map[row - 1][column - 1]['color'] === "dead") {
             return BasicGetCellContent({row, column, map})
         } else {
             return BasicGetImgCellContent({row, column, map, pieceAvatarsConfig})

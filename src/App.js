@@ -132,7 +132,8 @@ const App = () => {
 		"referrals": 0,
 		"warnings": 0,
 		"achievements": [],
-		"donut_end": ""
+		"donut_end": "",
+		"rate": 0
 	})
 	const [ online, setOnline] = useState(1)
 
@@ -155,8 +156,7 @@ const App = () => {
 		} else if (status[0] === "fight") {
 			mapName = status[1]
 			secretId = status[2]
-			// setPopout(<TicketAnimation/>)
-			// setTimeout(() => setPopout(null), 2700)
+			map = JSON.parse(status[3])
 			setActivePanel("game")
 		} else if (status[0] === "finish") {
 			const data = JSON.parse(status[1])
@@ -240,10 +240,6 @@ const App = () => {
 						})
 					, 1000)
 			} else if (type === "VKWebAppShowWallPostBoxResult") {
-				getTicket()
-					.then((userData) => {
-						updateUserBalances()
-					})
 				maintainingStat("post_sharing")
 			} else if (type === "VKWebAppViewHide" && !isInCustomization) { // закрытие прилы
 				socket.disconnect()
@@ -350,8 +346,6 @@ const App = () => {
 							}
 						}
 					})
-			} else if (type === "VKWebAppShowStoryBoxLoadFinish") {
-				maintainingStat("story_sharing")
 			} else if (type === "VKWebAppShareResult") {
 				maintainingStat("link_sharing")
 			} else if (type === "VKWebAppAddToHomeScreenResult") {
@@ -1334,6 +1328,7 @@ const App = () => {
 						fetchedUser={fetchedUser}
 						needUsersInFight={needUsersInFight}
 						resetSecretId={() => secretId = ""}
+						userBalances={userBalances}
 					/>
 					<WaitingForTheFight id={"waitingForTheFight"} startCount={startCount} secretId={secretId} isVibration={isVibration}/>
 					<Game
@@ -1351,6 +1346,7 @@ const App = () => {
 						screenSpinnerOff={screenSpinnerOff}
 						screenSpinnerOn={screenSpinnerOn}
 						gameError={gameError}
+						startMap={map}
 					/>
 					<RejoinedGame
 						id={'rejoinedGame'}
@@ -1410,7 +1406,7 @@ const App = () => {
 						changeActiveModal={changeActiveModal}
 					/>
 				</View>
-				<View activePanel={activePanel} id="endFight" popout={popout} modal={modal}>
+				<View activePanel={'fightResults'} id="endFight" popout={popout} modal={modal}>
 					<RateFight id={'rateFight'} goIsolated={goIsolated2} secretId={secretId} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
 					<FightResults
 						id={'fightResults'}

@@ -72,6 +72,14 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, chang
         }
     }
 
+    function getRateNum () {
+        if (finishData[1] === "?") {
+            return "?"
+        } else {
+            return !finishData[4] ? Math.round(finishData[1]) * -1 : Math.round(finishData[1])
+        }
+    }
+
     return (
         <Panel
             id={id}
@@ -106,6 +114,19 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, chang
                 </div>
                 <div className={"result__container"} >
                     <div className={"icon__container"}>
+                        <Icon28PollSquareOutline/>
+                    </div>
+                    <div>
+                        <Title level="1" weight="semibold">
+                            {getRateNum()}
+                        </Title>
+                        <Text style={{color: "var(--text_secondary)", marginTop: 4}}>
+                            {finishData[1] !== "?" ? "рейтинга получаешь" : "рейтинг обновится после завершения боя"}
+                        </Text>
+                    </div>
+                </div>
+                <div className={"result__container"} >
+                    <div className={"icon__container"}>
                         <Icon24CupOutline height={28} width={28}/>
                     </div>
                     <div>
@@ -117,29 +138,16 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, chang
                         </Text>
                     </div>
                 </div>
-                <div className={"result__container"} >
-                    <div className={"icon__container"}>
-                        <Icon28PollSquareOutline/>
-                    </div>
-                    <div>
-                        <Title level="1" weight="semibold">
-                            {finishData[1] - finishData[0]}
-                        </Title>
-                        <Text style={{color: "var(--text_secondary)", marginTop: 4}}>
-                            игроков обыграл
-                        </Text>
-                    </div>
-                </div>
 
 
             </Div>
-            {finishData[1] - finishData[0] !== 0 &&
+            {beatenPlayers &&
                 <SimpleCell multiline={true} before={<Icon28InfoCircleOutline/>} onClick={share} >Верни свой билет, поделившись результатом боя</SimpleCell>
             }
 
 
             <Div className={"buttons__container"}>
-                {finishData[1] - finishData[0] === 0
+                {!beatenPlayers
                     ?
                     <Button size="xl" onClick={goToMainView} >Завершить</Button>
                     :

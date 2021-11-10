@@ -63,6 +63,7 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     const [isPrivate, setIsPrivate] = useState(false)
     const [isCreating, setIsCreating] = useState(false)
     const [isCustomGameTime, setIsCustomGameTime] = useState(false)
+    const [deadPieces, setDeadPieces] = useState(true)
 
     useEffect(() => {
         turnTime = true
@@ -104,6 +105,7 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
     const privateChanged = () => {
         if (isPrivate) {
             turnTime = true
+            setDeadPieces( true)
         }
         setIsPrivate(!isPrivate)
         console.log(turnTime)
@@ -125,7 +127,7 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
 
     async function createFightAndGo () {
         setIsCreating(true)
-        const fight = await createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime)
+        const fight = await createFight(fetchedUser, mapsSelect, playersNumber, isPrivate, turnTime, gameTime, deadPieces)
         updateNeedUsersInFight(playersNumber)
         updateSecretId(fight["secret_id"])
         joinRoom(fetchedUser, fight["secret_id"])
@@ -372,6 +374,7 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
             <FormLayoutGroup top="Дополнительно">
                 <Checkbox onChange={privateChanged} >Приватно</Checkbox>
                 <Checkbox onChange={() => {turnTime = !turnTime; console.log(turnTime)}} value={turnTime} disabled={!isPrivate} >Время хода не ограничено</Checkbox>
+                <Checkbox onChange={() => setDeadPieces(!deadPieces)} checked={deadPieces} disabled={!isPrivate} >Мёртвые фишки</Checkbox>
             </FormLayoutGroup>
             <Button size="xl" onClick={createFightAndGo}  >
                 {isCreating ? <Spinner size="regular" /> : "Создать"}

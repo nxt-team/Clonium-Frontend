@@ -8,7 +8,7 @@ import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
 import { Icon24Copy } from '@vkontakte/icons';
 import {
     FixedLayout,
-    Group, Spinner,
+    Group, Spinner, Tooltip
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
@@ -16,15 +16,25 @@ import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
 
-const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated}) => {
+const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated, userBalances}) => {
 
     const [photos, setPhotos] = useState([])
+    const [isNotificationsTooltip, setIsNotificationsTooltip] = useState(false)
 
     useEffect(() => {
         socket.once("avatars", (data) => {
             setPhotos(data)
         });
+
     })
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (!are_notifications_enabled && userBalances["fights"] > 1) {
+                setIsNotificationsTooltip(true)
+            }
+        }, 7000)
+    }, [])
 
     function notificationsOn () {
         bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 206549924, "key": "dBuBKe1kFcdemzB"})
@@ -91,7 +101,23 @@ const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersIn
                     <Button size="l" before={<Icon24ShareOutline/>} onClick={() => fightInviteShare(secretId)} >Позвать друзей</Button>
                     {!are_notifications_enabled
                         ?
-                        <Button size="l" style={{ marginLeft: 8 }} onClick={notificationsOn} mode="secondary"><Icon24NotificationOutline /></Button>
+                        <Tooltip
+                            mode="light"
+                            text="Включи уведомления, чтобы не пропустить начало боя!"
+                            isShown={isNotificationsTooltip}
+                            onClose={() => setIsNotificationsTooltip(false)}
+                            offsetY={10}
+                            offsetX={-160}
+                            cornerOffset={160}
+                        >
+                            <Button
+                                size="l"
+                                style={{ marginLeft: 8 }}
+                                onClick={notificationsOn}
+                                mode="secondary">
+                                <Icon24NotificationOutline />
+                            </Button>
+                        </Tooltip>
                         :
                         <Button size="l" style={{ marginLeft: 8 }} onClick={() => copyFightLink(secretId)} mode="secondary"><Icon24Copy /></Button>
                     }

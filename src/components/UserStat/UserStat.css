@@ -4,3 +4,13 @@
     margin-left: 6px;
     flex-direction: column;
 }
+
+.UserStat_container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    height: 44px;
+    padding: 4px 0;
+    flex-direction: row;
+}

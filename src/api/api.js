@@ -7,7 +7,7 @@ export async function init (fetchedUser, hash) {
         "vk_id": window.location.search.replace('?', ''),
         "username": fetchedUser.first_name + " " + fetchedUser.last_name,
         "avatar": fetchedUser.photo_200,
-        "version": "kim loh 1",
+        "version": "kim loh 2",
         "hash": hash,
     }
 
@@ -21,7 +21,7 @@ export async function init (fetchedUser, hash) {
 
     const result = await response.json()
 
-    if (result["status"] === "connected" || result["status"] === "banned" || result["status"] === "temporaryBanned") {
+    if (result["status"] === "connected" || result["status"] === "banned" || result["status"] === "temporaryBanned" || result["status"] === "error") {
         return result
     }
 
@@ -40,7 +40,8 @@ export async function init (fetchedUser, hash) {
             "referrals": 0,
             "warnings": 0,
             "achievements": [],
-            "donut_end": ""
+            "donut_end": "",
+            "rate": 1500
         }
     }
 
@@ -91,7 +92,8 @@ export async function init (fetchedUser, hash) {
         "referrals": result[0]["referrals"].length,
         "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
-        "donut_end": result[0]["donut_end"]
+        "donut_end": result[0]["donut_end"],
+        "rate": Math.round(result[0]["rating"])
     }
 }
 
@@ -123,7 +125,8 @@ export async function getUserBalances (fetchedUser) {
         "referrals": result[0]["referrals"].length,
         "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
-        "donut_end": result[0]["donut_end"]
+        "donut_end": result[0]["donut_end"],
+        "rate": Math.round(result[0]["rating"])
     }
 }
 
@@ -227,7 +230,7 @@ export async function changeUserRank (fetchedUser, achievement_id) {
 }
 
 
-export async function createFight (fetchedUser, map_id, max_user_number, is_private, turn_time, game_time) {
+export async function createFight (fetchedUser, map_id, max_user_number, is_private, turn_time, game_time, deadPieces) {
 
     const maps = ["SquareSize8", "DonutSize8", "GridSize8", "DonutSize6", "SquareSize6", "GridSize10", "PassageSize10", "CrossSize9", "WhirlSize10"]
 
@@ -237,7 +240,8 @@ export async function createFight (fetchedUser, map_id, max_user_number, is_priv
         "max_user_number": max_user_number,
         "is_private": is_private,
         "turn_time": turn_time, // boolean | true - ограничено
-        "game_time": game_time // -1 если бесконечное
+        "game_time": game_time, // -1 если бесконечное
+        "dead_pieces": deadPieces
 
     }
 
@@ -631,12 +635,12 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
                 const height = this.height;
                 const width = this.width;
                 console.log(height, width)
-                if (!(height > 1500 || width > 1500)) {
+                if (!(height > 2500 || width > 2500)) {
                     console.log(image)
                     if ((image[0].type.indexOf("image/") + 1) !== 0) {
                         console.log(image[0])
                         try {
-                            let img = await imagenation(image[0], 1500)
+                            let img = await imagenation(image[0], 2500)
                             console.log(img)
                             if (img) {
                                 console.log('everything is okay')
@@ -709,7 +713,7 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
                 } else {
                     setImgLink(null)
                     closeModal()
-                    errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 1500px");
+                    errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 2500px");
                 }
 
             };
@@ -718,6 +722,6 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
     else {
         setImgLink(null)
         closeModal()
-        errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 1500px");
+        errorSnackBar("Файл не удалось прочитать. Выберите файл формата: JPEG или PNG, имеющий ширину и высоту менее 2500px");
     }
 }

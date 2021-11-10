@@ -15,7 +15,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
         fill = '#FFB327'
     }
 
-    const random_id = Math.floor(Math.random() * 100001)
+    const random_id = Math.floor(Math.random() * 10000000)
 
     if (size === 1) {
         return (
@@ -27,8 +27,8 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <defs>
-                    <pattern id={"img" + color + random_id} patternUnits="userSpaceOnUse" width="100%" height="100%">
-                        <image className='twombly' xlinkHref={imgLink}
+                    <pattern id={"img" + color} patternUnits="userSpaceOnUse" width="100%" height="100%">
+                        <image style={{width: "100%"}} xlinkHref={imgLink}
                                x="0" y="0"/>
                     </pattern>
 
@@ -37,9 +37,9 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     cx="19"
                     cy="19"
                     r="18"
-                    fill={"url(#img" + color + random_id + ")"}
+                    fill={"url(#img" + color + ")"}
                     stroke={fill}
-                    stroke-width="2"
+                    strokeWidth="2"
                 />
                 <circle cx="19" cy="19" r="3" fill={fill}/>
             </svg>
@@ -55,7 +55,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
             >
                 <defs>
                     <pattern id={"img" + color  + random_id} patternUnits="userSpaceOnUse" width="100%" height="100%">
-                        <image className='twombly' xlinkHref={imgLink}
+                        <image style={{width: "100%"}} xlinkHref={imgLink}
                                x="0" y="0"/>
                     </pattern>
 
@@ -66,7 +66,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     r="18"
                     fill={"url(#img" + color + random_id + ")"}
                     stroke={fill}
-                    stroke-width="2"
+                    strokeWidth="2"
                 />
                 <circle cx="15" cy="19" r="3" fill={fill} />
                 <circle cx="23" cy="19" r="3" fill={fill} />
@@ -83,7 +83,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
             >
                 <defs>
                     <pattern id={"img" + color + random_id} patternUnits="userSpaceOnUse" width="100%" height="100%">
-                        <image className='twombly' xlinkHref={imgLink}
+                        <image style={{width: "100%"}} xlinkHref={imgLink}
                                x="0" y="0"/>
                     </pattern>
 
@@ -94,7 +94,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     r="18"
                     fill={"url(#img" + color + random_id + ")"}
                     stroke={fill}
-                    stroke-width="2"
+                    strokeWidth="2"
                 />
                 <circle cx="19" cy="16" r="3" fill={fill}  />
                 <circle cx="15" cy="22" r="3" fill={fill}  />

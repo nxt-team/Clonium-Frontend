@@ -99,8 +99,22 @@ function getColorInfo (color) {
 	}
 }
 
-const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName, secretId, fetchedUser, goToEndFight, finishData, userBalances, isVibration, gameError}) => {
-	const [map, setMap] = useState(getStartJson(mapName).slice());
+const Game = ({
+				  id,
+				  startupParameters,
+				  screenSpinnerOff,
+				  screenSpinnerOn,
+				  mapName,
+				  secretId,
+				  fetchedUser,
+				  goToEndFight,
+				  finishData,
+				  userBalances,
+				  isVibration,
+				  gameError,
+				  startMap
+}) => {
+	const [map, setMap] = useState(startMap);
 	const [colorMotion, setColorMotion] = useState("red");
 	const [isAnimation, setIsAnimation] = useState(false)
 	const [phrase, setPhrase] = useState(null)
@@ -202,45 +216,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 			colors = colors.splice(0, fight.max_user_number)
 			console.log(fight.max_user_number)
 			console.log(userColor, colors)
-			let newMap = map.slice()
-
-			for (let row of newMap) {
-				for (let column of row) {
-					if (column['color'] !== "disabled") {
-						column['color'] = null
-						column['state'] = null
-					}
-				}
-			}
-			const len = map.length
-			let specMap = 0
-			if(fight.map_name === "CrossSize9") {
-				specMap=1
-			}
-
-			if (colors.length === 2) {
-				newMap[1+specMap][1+specMap]['color'] = "red"
-				newMap[1+specMap][1+specMap]['state'] = 3
-				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
-				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
-			} else if (colors.length === 3) {
-				newMap[1+specMap][1+specMap]['color'] = "red"
-				newMap[1+specMap][1+specMap]['state'] = 3
-				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
-				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
-				newMap[1+specMap][len - 2 - specMap]['color'] = "green"
-				newMap[1+specMap][len - 2 - specMap]['state'] = 3
-			} else if (colors.length === 4) {
-				newMap[1+specMap][1+specMap]['color'] = "red"
-				newMap[1+specMap][1+specMap]['state'] = 3
-				newMap[len - 2 - specMap][len - 2 - specMap]['color'] = "blue"
-				newMap[len - 2 - specMap][len - 2 - specMap]['state'] = 3
-				newMap[1+specMap][len - 2 - specMap]['color'] = "green"
-				newMap[1+specMap][len - 2 - specMap]['state'] = 3
-				newMap[len - 2 - specMap][1+specMap]['color'] = "yellow"
-				newMap[len - 2 - specMap][1+specMap]['state'] = 3
-			}
-			setMap(newMap)
+			console.log(fight["map"])
 			screenSpinnerOff()
 		}
 		getFightInfo()
@@ -328,7 +304,7 @@ const Game = ({id, startupParameters,screenSpinnerOff, screenSpinnerOn, mapName,
 	}
 
 	function getCellContent (row, column) {
-		if (pieceAvatarsConfig[map[row - 1][column - 1]['color']] === "0") {
+		if (pieceAvatarsConfig[map[row - 1][column - 1]['color']] === "0" || map[row - 1][column - 1]['color'] === "dead") {
 			return BasicGetCellContent({row, column, map})
 		} else {
 			return BasicGetImgCellContent({row, column, map, pieceAvatarsConfig})

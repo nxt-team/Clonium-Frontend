@@ -282,7 +282,12 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                             offsetY={0}
                         >
                             <div>
-                                <UserStat exp={userBalances["exp"]} games={userBalances["fights"]} loses={userBalances["losses"]} tickets={userBalances["tickets"]} wins={userBalances["wins"]}/>
+                                <UserStat
+                                    exp={userBalances["exp"]}
+                                    tickets={userBalances["tickets"]}
+                                    warns={userBalances["warnings"]}
+                                    rate={userBalances["rate"]}
+                                />
                             </div>
                         </Tooltip>
                     </div>
