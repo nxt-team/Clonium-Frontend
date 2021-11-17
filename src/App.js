@@ -58,7 +58,7 @@ import {
 	getFight, getSubAchievement,
 	getTicket,
 	getUserBalances,
-	init, maintainingStat, sendLogs,
+	init, maintainingEvents, maintainingStat, sendLogs,
 	updateAreNotificationsEnabled
 } from "./api/api";
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
@@ -78,6 +78,7 @@ import TemporaryBanned from "./views/temporaryBanned/TemporaryBanned";
 import TicketAnimation from "./components/TicketAnimation";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
+import {setLocalColor} from "./components/Timer";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -136,6 +137,32 @@ const App = () => {
 		"rate": 0
 	})
 	const [ online, setOnline] = useState(1)
+	// const [dynamicRejoinComponent, setDynamicRejoinComponent] = useState(
+	// 	<RejoinedGame
+	// 		id={'rejoinedGame'}
+	// 		isVibration={isVibration}
+	// 		changeActiveModal={changeActiveModal}
+	// 		fetchedUser={fetchedUser}
+	// 		secretId={secretId}
+	// 		startupParameters={startupParameters}
+	// 		goToEndFight={goToEndFight}
+	// 		mapName={mapName}
+	// 		goToMainViewHome={goToMainViewHome}
+	// 		startMap={map}
+	// 		startColorMotion={colorMotion}
+	// 		startColors={colors}
+	// 		startUserColor={userColor}
+	// 		finishData={finishData}
+	// 		gameTime={gameTime}
+	// 		turnTime={turnTime}
+	// 		fightStart={fightStart}
+	// 		userBalances={userBalances}
+	// 		usersInFight={usersInFight}
+	// 		changePopout={(newPopout) => setPopout(newPopout) }
+	// 		startGameTimer={startGameTimer}
+	// 		gameError={gameError}
+	// 	/>
+	// )
 
 	function updateStatusPanel (newStatus) {
 		const status = newStatus.split('-')
@@ -185,11 +212,7 @@ const App = () => {
 	async function doReconnectForRejoin () {
 		socket.disconnect()
 		await bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
-		if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
-			window.location.reload()
-		} else {
-			window.location.href = ''
-		}
+		window.location.reload()
 	}
 
 	async function completeSubReward () {
@@ -287,62 +310,63 @@ const App = () => {
 							if (secretId.length > 0 && beatenPlayers === "") { // beatenPlayers нужно для того, что бы не крашилось приложение после просмотра рекламы в рейт файт
 								setActivePanel("home")
 								secretId = ""
-							}
+							} else {
 
-							let hash = window.location.hash
-							console.log(hash)
+								let hash = window.location.hash
+								console.log(hash)
 
-							if (hash.indexOf("#fight=") !== -1) {
-								console.log(hash)
-								hash = hash.slice(7)
-								console.log(hash)
-								if (typeof (hash) !== NaN) {
+								if (hash.indexOf("#fight=") !== -1) {
 									console.log(hash)
-									getFight(hash)
-										.then((fight) => {
-											if (fight === null) {
-												console.log("noFight")
-											} else if (fight["status"] === "waiting_for_players") {
-												needUsersInFight = fight["max_user_number"]
-												secretId = hash
-												if (user["tickets"] === 0) {
-													setPopout(null)
-													setActiveModal("noTickets")
-												} else {
-													setPopout(
-														<Alert
-															actions={[{
-																title: 'Войти',
-																autoclose: true,
-																action: () => {
-																	joinRoom({
-																		"id": user.vk_id,
-																		"photo_200": user.avatar,
-																	}, hash);
-																	setActivePanel("waitingForStart")
-																},
-															}, {
-																title: 'Отмена',
-																autoclose: true,
-																mode: 'cancel'
-															}]}
-															onClose={() => setPopout(null)}
-														>
-															<h2>Войти в комнату?</h2>
-															<p>Ты перешёл по ссылке для присоединения к комнате</p>
-														</Alert>
-													)
-												}
-											} else {
+									hash = hash.slice(7)
+									console.log(hash)
+									if (typeof (hash) !== NaN) {
+										console.log(hash)
+										getFight(hash)
+											.then((fight) => {
 												setPopout(null)
-											}
-										})
-
+												if (fight === null) {
+													console.log("noFight")
+												} else if (fight["status"] === "waiting_for_players") {
+													needUsersInFight = fight["max_user_number"]
+													secretId = hash
+													if (user["tickets"] === 0) {
+														setPopout(null)
+														setActiveModal("noTickets")
+													} else {
+														setPopout(
+															<Alert
+																actions={[{
+																	title: 'Войти',
+																	autoclose: true,
+																	action: () => {
+																		joinRoom({
+																			"id": user.vk_id,
+																			"photo_200": user.avatar,
+																		}, hash);
+																		setActivePanel("waitingForStart")
+																	},
+																}, {
+																	title: 'Отмена',
+																	autoclose: true,
+																	mode: 'cancel'
+																}]}
+																onClose={() => setPopout(null)}
+															>
+																<h2>Войти в комнату?</h2>
+																<p>Ты перешёл по ссылке для присоединения к комнате</p>
+															</Alert>
+														)
+													}
+												} else {
+													setPopout(null)
+												}
+											})
+									} else {
+										setPopout(null)
+									}
 								} else {
 									setPopout(null)
 								}
-							} else {
-								setPopout(null)
 							}
 						}
 					})
@@ -516,6 +540,10 @@ const App = () => {
 						userColor = data[8]
 						usersInFight = data[9]
 						startGameTimer = data[10]
+
+						if (turnTime) {
+							setLocalColor(colorMotion, startGameTimer)
+						}
 						newPanel = "rejoinedGame"
 
 					}
@@ -1238,6 +1266,7 @@ const App = () => {
 				} else if (fight["status"] === "waiting_for_players") {
 					needUsersInFight = fight["max_user_number"]
 					secretId = hash
+					await maintainingEvents("waiting_for_players_immediately", secretId)
 					setTimeout(() => {joinRoom(fetchedUser, hash); goToPage("waitingForStart")}, 300);
 				} else {
 					newActiveModal = "fightStarted"
@@ -1277,14 +1306,31 @@ const App = () => {
 				<p>Не сворачивайте игру. В течение нескольких секунд произойдет автоматическая перезагрузка</p>
 			</Alert>
 		)
+		sendLogs(JSON.stringify(console.logs))
 		setTimeout(async () => {
-			await sendLogs(JSON.stringify(console.logs))
 			doReconnectForRejoin()
 		}, 2000)
 
 		console.log("a")
 		console.log("a")
 
+	}
+
+	function showSecretId (secretId) {
+		setPopout(
+			<Alert
+				actionsLayout="vertical"
+				actions={[{
+					title: 'Закрыть',
+					autoclose: true,
+					mode: 'cancel'
+				}]}
+				onClose={() => setTimeout(() => setPopout(null), 500)}
+			>
+				<h2>{secretId}</h2>
+				<p>секретный ключ боя</p>
+			</Alert>
+		)
 	}
 
 	return (
@@ -1445,7 +1491,7 @@ const App = () => {
 					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} goToMainView={goToMainView} />
 				</View>
 				<View activePanel={"history"} id="history" popout={popout} modal={modal}>
-					<History id='history' fetchedUser={fetchedUser} goToMainView={goToMainView} />
+					<History id='history' showSecretId={showSecretId} fetchedUser={fetchedUser} goToMainView={goToMainView} />
 				</View>
 			</Root>
 		</ConfigProvider>

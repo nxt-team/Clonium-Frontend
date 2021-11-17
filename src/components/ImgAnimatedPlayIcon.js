@@ -56,7 +56,7 @@ const Svg = ({ start, svgSize, end, changed, imgLink, color }) => {
                 stroke={fill}
                 strokeWidth="2"
             />
-            <circle cx="19" cy="19" r="3" fill={fill}/>
+            <circle cx="19" cy="19" r="3" fill={fill} strokeWidth="1" stroke={"white"}/>
         </svg>
     );
 };

@@ -4,10 +4,17 @@ import { useSpring, animated } from '@react-spring/web'
 import useInterval from "@use-it/interval";
 
 let localColorMotion = 'red'
+let startCount = 15
+
+export function setLocalColor (color, startTimer) {
+    localColorMotion = color
+    startCount = startTimer
+    console.log('SET LOCAL COLOR', localColorMotion, startTimer)
+}
 
 export default function Timer({onExpiration, colorMotion}) {
 
-    const [count, setCount] = useState(15);
+    const [count, setCount] = useState(startCount);
 
     // if (localColorMotion !== colorMotion) {
     //     setCount(15)
@@ -27,28 +34,34 @@ export default function Timer({onExpiration, colorMotion}) {
     //     }
     //     , [count])
 
-    if (localColorMotion !== colorMotion) {
-        setCount(15)
-        localColorMotion = colorMotion
-        if (document.getElementById("motionTimer")) {
-            document.getElementById("motionTimer").classList.remove('color_pulse');
-        }
-
-    }
-
-    if (count < 6) {
-        document.getElementById("motionTimer").classList.add('color_pulse');
-    }
-
-
-        useInterval(() => {
+    useEffect(() => {
+        console.log("START COUNT", startCount, localColorMotion, colorMotion)
+        setInterval(() => {
             setCount((currentCount) => currentCount - 1);
             if (count < 1) {
                 onExpiration()
                 document.getElementById("motionTimer").classList.remove('color_pulse');
+                startCount = 15
                 setCount(15)
             }
         }, 1000);
+    }, [])
+
+    if (localColorMotion !== colorMotion) {
+        if (document.getElementById("motionTimer")) {
+            document.getElementById("motionTimer").classList.remove('color_pulse');
+        }
+        startCount = 15
+        setCount(15)
+        localColorMotion = colorMotion
+    } else {
+
+        if (count === 6) {
+            if (document.getElementById("motionTimer")) {
+                document.getElementById("motionTimer").classList.add('color_pulse');
+            }
+        }
+    }
 
     return (
         <div style={{

@@ -153,9 +153,9 @@ const Game = ({
 			onCellClick(data[0], data[1])
 			changeColorMotion(lastColorMotion, true)
 			if (flag) {
-				console.log(lastColorMotion, serverColorMotion, " проверка на ебаное очко")
+				console.log(lastColorMotion, serverColorMotion, " проверка на ео")
 				if (serverColorMotion && lastColorMotion !== serverColorMotion) {
-					console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+					console.log("ERROR ERROR ЕО ", serverColorMotion, lastColorMotion)
 					gameError()
 				}
 			}
@@ -185,6 +185,28 @@ const Game = ({
 				const colorIndex = colors.indexOf(color)
 				colors.splice(colorIndex, 1)
 			}
+
+		})
+
+		socket.on("kick", (color) => {
+			console.log("KICK", color)
+
+			if (color !== lastColorMotion) {
+				gameError()
+			}
+			beatenPlayers.push(lastColorMotion)
+
+			let newMap = map.slice()
+			map.forEach(function(row, rowIndex, array) {
+				row.forEach(function(cell, cellIndex, array) {
+					if (cell['color'] === color) {
+						newMap[rowIndex][cellIndex]['color'] = null
+						newMap[rowIndex][cellIndex]['state'] = null
+					}
+				});
+			});
+			changeColorMotion(lastColorMotion, false)
+			setMap(newMap)
 
 		})
 	}, [])
@@ -368,26 +390,27 @@ const Game = ({
 	}
 
 	function kickUser () {
-		if (!isAnimation) {
-			console.log('нужно кинкнуть ' + colorMotion)
-			if (colorMotion !== userColor) {
-				beatenPlayers.push(colorMotion)
-			}
-			let newMap = map.slice()
-			map.forEach(function(row, rowIndex, array) {
-				row.forEach(function(cell, cellIndex, array) {
-					if (cell['color'] === colorMotion) {
-						newMap[rowIndex][cellIndex]['color'] = null
-						newMap[rowIndex][cellIndex]['state'] = null
-					}
-				});
-			});
-
-			kickUserSend(colorMotion, secretId)
-
-			changeColorMotion(lastColorMotion, false)
-			setMap(newMap)
-		}
+		console.log('нужно кинкнуть ' + colorMotion)
+		// if (!isAnimation) {
+		// 	console.log('нужно кинкнуть ' + colorMotion)
+		// 	if (colorMotion !== userColor) {
+		// 		beatenPlayers.push(colorMotion)
+		// 	}
+		// 	let newMap = map.slice()
+		// 	map.forEach(function(row, rowIndex, array) {
+		// 		row.forEach(function(cell, cellIndex, array) {
+		// 			if (cell['color'] === colorMotion) {
+		// 				newMap[rowIndex][cellIndex]['color'] = null
+		// 				newMap[rowIndex][cellIndex]['state'] = null
+		// 			}
+		// 		});
+		// 	});
+		//
+		// 	kickUserSend(colorMotion, secretId)
+		//
+		// 	changeColorMotion(lastColorMotion, false)
+		// 	setMap(newMap)
+		// }
 	}
 
 	function getMapInfo () {
@@ -404,7 +427,7 @@ const Game = ({
 						{translateColorMotion()}
 					</Title>
 					{turn_time&&
-						<Timer onExpiration={() => kickUser()} colorMotion={colorMotion} />
+						<Timer onExpiration={() => kickUser()} colorMotion={colorMotion} startCount={15} />
 					}
 				</div>
 			)

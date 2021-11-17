@@ -41,7 +41,7 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     stroke={fill}
                     strokeWidth="2"
                 />
-                <circle cx="19" cy="19" r="3" fill={fill}/>
+                <circle cx="19" cy="19" r="3" fill={fill} strokeWidth="1" stroke={"white"} />
             </svg>
         )
     } else if (size === 2) {
@@ -68,8 +68,8 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     stroke={fill}
                     strokeWidth="2"
                 />
-                <circle cx="15" cy="19" r="3" fill={fill} />
-                <circle cx="23" cy="19" r="3" fill={fill} />
+                <circle cx="15" cy="19" r="3" fill={fill} strokeWidth="1" stroke={"white"} />
+                <circle cx="23" cy="19" r="3" fill={fill} strokeWidth="1" stroke={"white"} />
             </svg>
         )
     } else if (size === 3) {
@@ -96,9 +96,9 @@ const ImgPlayIcon = ({ color, size, imgLink }) => {
                     stroke={fill}
                     strokeWidth="2"
                 />
-                <circle cx="19" cy="16" r="3" fill={fill}  />
-                <circle cx="15" cy="22" r="3" fill={fill}  />
-                <circle cx="23" cy="22" r="3" fill={fill}  />
+                <circle cx="19" cy="16" r="3" fill={fill} strokeWidth="1" stroke={"white"} />
+                <circle cx="15" cy="22" r="3" fill={fill} strokeWidth="1" stroke={"white"}  />
+                <circle cx="23" cy="22" r="3" fill={fill} strokeWidth="1" stroke={"white"} />
             </svg>
         )
     }

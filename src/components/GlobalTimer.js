@@ -15,35 +15,30 @@ export default function GlobalTimer({gameTime}) {
 
     }, [])
 
-    setTimeout(() => {
-        const timeNow = new Date()
-        const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 3600
-        setCount(finalSeconds - secondsNow);
-    }, 1000)
+    if (count === 0) {
+        if (document.getElementById("globalTimer")) {
+            document.getElementById("globalTimer").classList.remove('color_pulse');
+        }
+    } else {
+        if (count === 20 && document.getElementById("globalTimer")) {
+            document.getElementById("globalTimer").classList.add('color_pulse');
+        }
+        setTimeout(() => {
+            const timeNow = new Date()
+            const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 3600
+            setCount(finalSeconds - secondsNow);
+        }, 1000)
+    }
+
+
     if (count % 60 < 10) {
         seconds = "0" + count % 60
     } else {
         seconds = count % 60
     }
-    
-    if (count < 10 && document.getElementById("globalTimer")) {
-        document.getElementById("globalTimer").classList.add('color_pulse');
-    }
-
-    if (count < 1) {
-        if (document.getElementById("globalTimer")) {
-            document.getElementById("globalTimer").classList.remove('color_pulse');
-        }
-        return (
-            <Caption level="2" style={{ marginLeft: 6}}>
-                0:00
-            </Caption>
-        )
-    } else {
-        return (
-            <Caption level="2" style={{marginLeft: 6}} id={"globalTimer"}>
-                {Math.floor(count / 60) + ":" + seconds}
-            </Caption>
-        )
-    }
+    return (
+        <Caption level="2" style={{marginLeft: 6}} id={"globalTimer"}>
+            {Math.floor(count / 60) + ":" + seconds}
+        </Caption>
+    )
 }

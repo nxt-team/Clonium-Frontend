@@ -1,33 +1,39 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import AnimatedDoneIcon from "../components/AnimatedDoneIcon";
-import {File, ModalCard, Spinner} from "@vkontakte/vkui";
+import {File, ModalCard, Gallery} from "@vkontakte/vkui";
+import ImgPlayIcon from "../components/ImgPlayIcon";
+import useInterval from "@use-it/interval";
+
 
 export default function ShowImgPlayIconModal({id, closeModal, imgLink}) {
-    console.log(imgLink)
+
+    const [slideIndex, setSlideIndex] = useState(0)
+
+    setTimeout(() => {
+        if (slideIndex < 3) {
+            setSlideIndex(slideIndex + 1)
+        } else {
+            setSlideIndex(0)
+        }
+    }, 1500)
+
     return (
         <ModalCard
             id={id}
             onClose={() => closeModal()}
             icon={
-                <svg
-                    style={{color: "var(--text_primary)"}}
-                    className="cont"
-                    viewBox="0 0 38 38"
-                    fill="none"
-                    width="76"
-                    height="76"
-                    xmlns="http://www.w3.org/2000/svg"
+                <Gallery
+                    slideWidth="90%"
+                    align="center"
+                    style={{ height: 76 }}
+                    slideIndex={slideIndex}
+                    onChange={i => setSlideIndex(i)}
                 >
-                    <defs>
-                        <pattern id="img1" patternUnits="userSpaceOnUse" width="100%" height="100%">
-                            <image className='twombly' xlinkHref={imgLink}
-                                   x="0" y="0"/>
-                        </pattern>
-
-                    </defs>
-                    <circle cx="19" cy="19" r="18" fill="url(#img1)" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="19" cy="19" r="3" fill="currentColor"/>
-                </svg>
+                    <ImgPlayIcon color={"red"} size={1} imgLink={imgLink} />
+                    <ImgPlayIcon color={"blue"} size={2} imgLink={imgLink} />
+                    <ImgPlayIcon color={"yellow"} size={3} imgLink={imgLink} />
+                    <ImgPlayIcon color={"green"} size={3} imgLink={imgLink} />
+                </Gallery>
             }
             header="Твоя фишка"
             caption="Теперь так будут выглядить твои фишки во время игры"

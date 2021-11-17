@@ -3,9 +3,9 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
 import {
-    Avatar,
-    FixedLayout,
-    Group, SimpleCell, Spinner,
+    Avatar, Caption,
+    FixedLayout, Gallery,
+    Group, SimpleCell, Spinner, Text,
 } from "@vkontakte/vkui";
 import useInterval from "@use-it/interval";
 import bridge from "@vkontakte/vk-bridge";
@@ -33,6 +33,8 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
         finalSeconds = timeNow.getSeconds() + timeNow.getMinutes() * 60 + startCount
         getData()
     }, [])
+
+    console.log(Math.floor(count / 2))
 
     setTimeout(() => {
         if (count > 0) {
@@ -109,6 +111,31 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
             <FixedLayout style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
                          vertical="bottom" id="players_container" >
                 <div className={"players_container"} >
+                    <Gallery
+                        align="center"
+                        style={{ height: "100%" }}
+                        slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
+                        onChange={() => console.log("a")}
+                    >
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Серые фишки - мертвые фишки, за них никто не играет
+                        </Caption>
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Чем сильнее обыгранные соперники, тем больше рейтинга получишь ты за бой
+                        </Caption>
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Быстро получить опыт можно выполнив задания достижений
+                        </Caption>
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Вернуть билет можно, поделившись результатами боя
+                        </Caption>
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Твой рейтинг может подняться даже если ты занимаешь не первое место
+                        </Caption>
+                        <Caption level="1" weight="semibold" className={"advice"} >
+                            Для игры с друзьями, создай приватную комнату со своими настройками
+                        </Caption>
+                    </Gallery>
                     <Title level="1" weight="semibold" style={{marginLeft: 16, width: "100vw", marginBottom: 4}}>
                         Игроки
                     </Title>

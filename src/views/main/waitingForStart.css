@@ -18,6 +18,15 @@
     padding-bottom: 16px;
 }
 
+.advice {
+    margin-bottom: 8px;
+    width: calc(100vw - 8px);
+    text-align: center;
+    color: var(--text_secondary);
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 @-webkit-keyframes pulse {
     0% {
         -webkit-box-shadow: 0 0 0 0 var(--icon_outline_secondary);

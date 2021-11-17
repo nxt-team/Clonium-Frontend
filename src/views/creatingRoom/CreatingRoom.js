@@ -182,6 +182,22 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                         <div className="donut__map__card">
                             <div>
                                 <Card
+                                    onClick={() => changeMapSelect(2)}
+                                    size="s"
+                                    style={mapsSelect === 2 ? selected : unselcted}
+                                >
+                                    <div className={"map__card__content"} >
+                                        <Title level="2" weight="regular">
+                                            Сетка 8 на 8
+                                        </Title>
+                                        <GridSize8 />
+                                    </div>
+                                </Card>
+                            </div>
+                        </div>
+                        <div className="donut__map__card">
+                            <div>
+                                <Card
                                     onClick={() => changeMapSelect(3)}
                                     size="s"
                                     style={mapsSelect === 3 ? selected : unselcted}
@@ -227,10 +243,6 @@ const CreatingRoom = ({ id, goToMainView, fetchedUser, updateNeedUsersInFight, u
                                 </Card>
                             </div>
                         </div>
-
-
-
-
                         <div className="donut__map__card">
                             <div>
                                 <Card

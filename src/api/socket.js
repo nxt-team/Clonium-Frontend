@@ -1,5 +1,5 @@
 import {io} from "socket.io-client";
-export const socket = io("https://kpr.pw", {
+export const socket = io("https://pipeweb.ru", {
     transports: ["websocket"],
     autoConnect: false,
     reconnection: false,

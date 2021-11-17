@@ -6,7 +6,8 @@ import {Icon24HelpOutline, Icon28GhostSimleOutline, Icon28TicketOutline} from '@
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import {socket} from "../../api/socket";
 import {reconnectUser} from "../../api/api";
-
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
+const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 
 
 const AlreadyConnected = ({ id}) => {
@@ -19,7 +20,11 @@ const AlreadyConnected = ({ id}) => {
         const reconnectResult = await reconnectUser()
         bridge.send("VKWebAppStorageSet", {"key": "reloading", "value": "1"});
         console.log(reconnectResult);
-        window.location.href = ''
+        if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
+            window.location.reload()
+        } else {
+            window.location.href = ''
+        }
 
     }
 

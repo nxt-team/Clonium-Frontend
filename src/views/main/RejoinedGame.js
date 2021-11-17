@@ -13,7 +13,7 @@ import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
 import GetMap from "../../gameFunctions/GetMap";
-import Timer from "../../components/Timer";
+import Timer, {setLocalColor} from "../../components/Timer";
 import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
@@ -64,7 +64,27 @@ function getColorInfo (color) {
     }
 }
 
-const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, mapName, secretId, fetchedUser, startMap, startColorMotion, startColors, startUserColor, finishData, goToEndFight, fightStart, userBalances, usersInFight, isVibration}) => {
+const RejoinedGame = ({
+                          id,
+                          startupParameters,
+                          gameTime,
+                          turnTime,
+                          gameError,
+                          mapName,
+                          secretId,
+                          fetchedUser,
+                          startMap,
+                          startColorMotion,
+                          startColors,
+                          startUserColor,
+                          finishData,
+                          goToEndFight,
+                          fightStart,
+                          userBalances,
+                          usersInFight,
+                          isVibration,
+                          startGameTimer
+}) => {
     const [map, setMap] = useState(startMap);
     const [colorMotion, setColorMotion] = useState(startColorMotion);
     const [isAnimation, setIsAnimation] = useState(false)
@@ -100,9 +120,9 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
             onCellClick(data[0], data[1])
             changeColorMotion(lastColorMotion, true)
             if (flag) {
-                console.log(lastColorMotion, serverColorMotion, " проверка на ебаное очко")
+                console.log(lastColorMotion, serverColorMotion, " проверка на ео")
                 if (serverColorMotion && lastColorMotion !== serverColorMotion) {
-                    console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+                    console.log("ERROR ERROR ЕО ", serverColorMotion, lastColorMotion)
                     gameError()
                 }
             }
@@ -132,6 +152,28 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
             }
 
         })
+
+        socket.on("kick", (color) => {
+            console.log("KICK", color)
+
+            if (color !== lastColorMotion) {
+                gameError()
+            }
+
+            let newMap = map.slice()
+            map.forEach(function(row, rowIndex, array) {
+                row.forEach(function(cell, cellIndex, array) {
+                    if (cell['color'] === color) {
+                        newMap[rowIndex][cellIndex]['color'] = null
+                        newMap[rowIndex][cellIndex]['state'] = null
+                    }
+                });
+            });
+            changeColorMotion(lastColorMotion, false)
+            setMap(newMap)
+
+        })
+
     }, [])
 
     useEffect(() => {
@@ -141,7 +183,6 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
         serverColorMotion = startColorMotion
         colors = startColors
         userColor = startUserColor
-
         turn_time = turnTime
         if (gameTime === -1) {
             isGlobalTimer = false
@@ -330,26 +371,27 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
     }
 
     function kickUser () {
-        if (!isAnimation) {
-            console.log('нужно кинкнуть ' + colorMotion)
-            if (colorMotion !== userColor) {
-                beatenPlayers.push(colorMotion)
-            }
-            let newMap = map.slice()
-            map.forEach(function(row, rowIndex, array) {
-                row.forEach(function(cell, cellIndex, array) {
-                    if (cell['color'] === colorMotion) {
-                        newMap[rowIndex][cellIndex]['color'] = null
-                        newMap[rowIndex][cellIndex]['state'] = null
-                    }
-                });
-            });
-
-            kickUserSend(colorMotion, secretId)
-
-            changeColorMotion(lastColorMotion, false)
-            setMap(newMap)
-        }
+        console.log('нужно кинкнуть ' + colorMotion)
+        // if (!isAnimation) {
+        //     console.log('нужно кинкнуть ' + colorMotion)
+        //     if (colorMotion !== userColor) {
+        //         beatenPlayers.push(colorMotion)
+        //     }
+        //     let newMap = map.slice()
+        //     map.forEach(function(row, rowIndex, array) {
+        //         row.forEach(function(cell, cellIndex, array) {
+        //             if (cell['color'] === colorMotion) {
+        //                 newMap[rowIndex][cellIndex]['color'] = null
+        //                 newMap[rowIndex][cellIndex]['state'] = null
+        //             }
+        //         });
+        //     });
+        //
+        //     kickUserSend(colorMotion, secretId)
+        //
+        //     changeColorMotion(lastColorMotion, false)
+        //     setMap(newMap)
+        // }
     }
 
     function getMapInfo () {
@@ -366,7 +408,7 @@ const RejoinedGame = ({id, startupParameters, gameTime, turnTime, gameError, map
                         {translateColorMotion()}
                     </Title>
                     {turn_time&&
-                    <Timer onExpiration={() => kickUser()} colorMotion={colorMotion} />
+                    <Timer onExpiration={() => kickUser()} colorMotion={colorMotion}  />
                     }
                 </div>
             )

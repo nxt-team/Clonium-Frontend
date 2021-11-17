@@ -3,23 +3,28 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './achievements.css'
-import {Icon28CancelOutline, Icon28Dice4Outline, Icon28SortHorizontalOutline} from '@vkontakte/icons';
-import { Icon28ArrowRightOutline } from '@vkontakte/icons';
-import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
+import {
+    Icon28CancelOutline,
+    Icon28Dice4Outline,
+    Icon28SortHorizontalOutline,
+    Icon28Dice2Outline,
+    Icon28Dice3Outline,
+    Icon28CancelCircleFillRed,
+    Icon28AchievementCircleFillBlue,
+    Icon28Flash
+} from '@vkontakte/icons';
 import {
     Footer,
     PanelHeaderButton,
     SimpleCell,
     Spinner,
-    PanelHeaderClose
+    Cell, Separator
 } from "@vkontakte/vkui";
-import { Icon28AchievementCircleFillBlue } from '@vkontakte/icons';
-import { Icon28Flash } from '@vkontakte/icons';
 import {getUserHistory} from "../../api/api";
 
 
 
-const History = ({ id, fetchedUser, goToMainView }) => {
+const History = ({ id, fetchedUser, goToMainView, showSecretId }) => {
 
     const [history, setHistory] = useState([])
 
@@ -48,6 +53,7 @@ const History = ({ id, fetchedUser, goToMainView }) => {
         } else {
             let content = []
             history.forEach((item, index, array) => {
+                content.push(<Separator/>)
                 const history_event = item["history_event"].split(':')
                 if (history_event[0] === "Бонус") {
                     content.push(
@@ -71,9 +77,48 @@ const History = ({ id, fetchedUser, goToMainView }) => {
                     )
 
                 } else if (history_event[0].slice(0, 3) === "Бой") {
+                    let icon
+                    if (history_event[0][6] == 4) {
+                        icon = <Icon28Dice4Outline/>
+                    } else if (history_event[0][6] == 3) {
+                        icon = <Icon28Dice3Outline/>
+                    } else {
+                        icon = <Icon28Dice2Outline/>
+                    }
+
+                    let description = []
+                    if (history_event[1]) {
+                        for (const i of history_event[1].split("|")) {
+                            description.push(<span>{i}</span>)
+                            description.push(<br/>)
+                        }
+
+                        description.pop()
+                    } else {
+                        description = ""
+                    }
+
+                    let key
+                    if (history_event[2]) {
+                        key = history_event[2]
+                    } else {
+                        key = "Отсутствует"
+                    }
+
                     content.push(
-                        <SimpleCell disabled={true} before={<Icon28Dice4Outline/>} after={item["history_award"]}
-                                    description={history_event[1]}>{history_event[0]}</SimpleCell>
+                        <SimpleCell
+                            style={{alignItems: "flex-start"}}
+                            before={icon}
+                            onClick={() => showSecretId(key)}
+                            after={
+                                <span style={{marginTop: 10}}>
+                                    {item["history_award"]}
+                                </span>
+                            }
+                            description={description}
+                        >
+                            {history_event[0]}
+                        </SimpleCell>
                     )
                 } else {
                     content.push(

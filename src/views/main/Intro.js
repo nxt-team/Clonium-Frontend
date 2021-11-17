@@ -28,12 +28,23 @@ import GrabRivals from "../../components/IntroComponents/GrabRivals"
 import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import { Icon28AddSquareOutline } from '@vkontakte/icons';
 import { Icon28FavoriteOutline } from '@vkontakte/icons';
+import {maintainingEvents} from "../../api/api";
 
+let used_slides = []
 let fluidClass = "show"
 const Intro = ({ id, panel_go, changeActiveModal, endIntro }) => {
 
     const [slideIndex, setSlideIndex] = useState(0);
     const [galleryContent, setGalleryContent] = useState([])
+
+    useEffect(() => {
+        if (used_slides.indexOf(slideIndex) === -1) {
+            used_slides.push(slideIndex)
+            const events = ["complete_1_slide", "complete_2_slide", "complete_3_slide", "complete_4_slide", "complete_5_slide", "complete_6_slide"]
+            console.log(events[slideIndex])
+            maintainingEvents(events[slideIndex])
+        }
+    }, [slideIndex])
 
     const clickChangeSlideIndex = () => {
         console.log(slideIndex, galleryContent.length)
