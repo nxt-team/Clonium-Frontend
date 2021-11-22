@@ -32,7 +32,7 @@ let userColor = ""
 let colors
 
 let isRecursion = false
-let lastColorMotion
+let lastColorMotion = "red"
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 0
@@ -134,6 +134,7 @@ const Game = ({
 		console.log("CONNECTED COORDS")
 		socket.off("cords")
 		socket.off("leave")
+		socket.off("kick")
 
 		socket.on("cords", (data) => {
 			console.log("cords " + data)
@@ -192,6 +193,7 @@ const Game = ({
 			console.log("KICK", color)
 
 			if (color !== lastColorMotion) {
+				console.log("ОШИБКА", color, lastColorMotion)
 				gameError()
 			}
 			beatenPlayers.push(lastColorMotion)

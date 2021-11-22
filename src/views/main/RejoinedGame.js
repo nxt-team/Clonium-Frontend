@@ -22,7 +22,7 @@ let userColor = ""
 let colors
 
 let isRecursion = false
-let lastColorMotion
+let lastColorMotion = "red"
 let turn_time = true // true - ограничено
 let isGlobalTimer = false
 let game_time = 10
@@ -157,6 +157,7 @@ const RejoinedGame = ({
             console.log("KICK", color)
 
             if (color !== lastColorMotion) {
+                console.log("ОШИБКА", color, lastColorMotion)
                 gameError()
             }
 
@@ -173,10 +174,6 @@ const RejoinedGame = ({
             setMap(newMap)
 
         })
-
-    }, [])
-
-    useEffect(() => {
 
         lastMotionCoords = [-1, -1]
         lastColorMotion = startColorMotion
@@ -429,16 +426,6 @@ const RejoinedGame = ({
         }
     }
 
-    // function doPhrase (text) {
-    //     if (!phrase) {
-    //         // sendPhrase(id)
-    //         console.log(text)
-    //         phraseColor = userColor
-    //         changePopout(<Phrase map={map} color={phraseColor} text={text} />)
-    //         setTimeout(() => changePopout(null), 3000)
-    //     }
-    // }
-
     return (
         <Panel id={id}>
             <PanelHeader
@@ -499,7 +486,9 @@ const RejoinedGame = ({
                 <Button onClick={() => leaveFight(fetchedUser)} mode="tertiary">Сдаться</Button>
             </div>
         </Panel>
-    );
+    )
+
+
 };
 
 export default RejoinedGame;
