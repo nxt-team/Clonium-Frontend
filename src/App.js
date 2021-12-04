@@ -1328,7 +1328,7 @@ const App = () => {
 				onClose={() => setTimeout(() => setPopout(null), 500)}
 			>
 				<h2>{secretId}</h2>
-				<p>секретный ключ боя</p>
+				<p>Скрытый ключ боя</p>
 			</Alert>
 		)
 	}

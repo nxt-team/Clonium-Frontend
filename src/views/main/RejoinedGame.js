@@ -293,9 +293,9 @@ const RejoinedGame = ({
                 }
             })
             setIsAnimation(false)
-            console.log(lastColorMotion, serverColorMotion, " ПРОВЕРКА НА ЕБАНОЕ ОЧКО")
+            console.log(lastColorMotion, serverColorMotion, " ПРОВЕРКА НА EO")
             if (serverColorMotion && lastColorMotion !== serverColorMotion) {
-                console.log("ERROR ERROR ЕБАНОЕ ОЧКО ", serverColorMotion, lastColorMotion)
+                console.log("ERROR ERROR EO ", serverColorMotion, lastColorMotion)
                 gameError()
             }
         }
