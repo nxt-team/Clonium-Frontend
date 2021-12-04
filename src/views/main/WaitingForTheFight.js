@@ -111,31 +111,33 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
             <FixedLayout style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
                          vertical="bottom" id="players_container" >
                 <div className={"players_container"} >
-                    <Gallery
-                        align="center"
-                        style={{ height: "100%" }}
-                        slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
-                        onChange={() => console.log("a")}
-                    >
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Серые фишки - мертвые фишки, за них никто не играет
-                        </Caption>
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Чем сильнее обыгранные соперники, тем больше рейтинга получишь ты за бой
-                        </Caption>
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Быстро получить опыт можно выполнив задания достижений
-                        </Caption>
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Вернуть билет можно, поделившись результатами боя
-                        </Caption>
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Твой рейтинг может подняться даже если ты занимаешь не первое место
-                        </Caption>
-                        <Caption level="1" weight="semibold" className={"advice"} >
-                            Для игры с друзьями, создай приватную комнату со своими настройками
-                        </Caption>
-                    </Gallery>
+                    <div style={{paddingLeft: 4, paddingRight: 4}}>
+                        <Gallery
+                            align="center"
+                            style={{ height: "100%"}}
+                            slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
+                            onChange={() => console.log("a")}
+                        >
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Серые фишки - мертвые фишки, за них никто не играет
+                            </Caption>
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Чем сильнее обыгранные соперники, тем больше рейтинга получишь ты за бой
+                            </Caption>
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Быстро получить опыт можно, выполнив задания достижений
+                            </Caption>
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Поделись результатами боя, чтобы вернуть свой билет
+                            </Caption>
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Рейтинг может увеличиться не зависимо от твоего места
+                            </Caption>
+                            <Caption level="1" weight="semibold" className={"advice"} >
+                                Для игры с друзьями, создай приватную комнату со своими настройками
+                            </Caption>
+                        </Gallery>
+                    </div>
                     <Title level="1" weight="semibold" style={{marginLeft: 16, width: "100vw", marginBottom: 4}}>
                         Игроки
                     </Title>

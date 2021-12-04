@@ -1,7 +1,7 @@
 import React from 'react'
 import bridge from '@vkontakte/vk-bridge';
 import {getThreeTicket, getThreeTickets, maintainingStat} from "../api/api";
-import config from "../../config.json"
+import config from "../constatnts/config.json"
 
 export const refLinkShare = (userId) => {
     bridge.send("VKWebAppShare", {"link": "https://vk.com/" + config["short_name"] + "#invite=" + userId})

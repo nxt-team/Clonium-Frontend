@@ -34,7 +34,7 @@ import SwipeableViews from "react-swipeable-views";
 import {refLinkShare} from "../../sharing/sharing";
 import ExpGlobalLeaderBoardPlace from "../../components/ExpGlobalLeaderBoardPlace";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
-import config from "../../../config.json"
+import config from "../../constatnts/config.json"
 const osName = platform();
 let updateHeight
 

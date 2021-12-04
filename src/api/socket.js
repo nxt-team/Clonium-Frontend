@@ -1,5 +1,5 @@
 import {io} from "socket.io-client";
-import config from "../../config.json"
+import config from "../constatnts/config.json"
 export const socket = io("https://" + config["domain"], {
     transports: ["websocket"],
     autoConnect: false,

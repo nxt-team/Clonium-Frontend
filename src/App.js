@@ -9,7 +9,6 @@ import Game from './views/main/Game';
 import Home from './views/main/Home';
 import './mapsPreview/mapsCells.css'
 import './views/main/home.css'
-import './utils/OpenSansFonts.css'
 import Profile from './views/main/Profile'
 import Top from './views/main/Top'
 import History from './views/main/History'
