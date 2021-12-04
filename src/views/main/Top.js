@@ -34,6 +34,7 @@ import SwipeableViews from "react-swipeable-views";
 import {refLinkShare} from "../../sharing/sharing";
 import ExpGlobalLeaderBoardPlace from "../../components/ExpGlobalLeaderBoardPlace";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
+import config from "../../../config.json"
 const osName = platform();
 let updateHeight
 
@@ -47,7 +48,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
     const [nonPlayingFriends, setNonPlayingFriends] = useState([])
 
     async function getFriendsTopByBridge () {
-        const token = await bridge.send("VKWebAppGetAuthToken", {"app_id": 7848428, "scope": "friends"})
+        const token = await bridge.send("VKWebAppGetAuthToken", {"app_id": config["app_id"], "scope": "friends"})
             .catch(() => setFriendsTop(["client_error"]))
         console.log(token)
         if (token !== undefined) {

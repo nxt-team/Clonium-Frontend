@@ -1,5 +1,6 @@
 import imagenation from "imagenation";
 import React from "react";
+import config from "../../config.json"
 
 export async function init (fetchedUser, hash) {
 
@@ -11,7 +12,7 @@ export async function init (fetchedUser, hash) {
         "hash": hash,
     }
 
-    let response = await fetch('https://pipeweb.ru/api/user/init', {
+    let response = await fetch('https://' + config["domain"] + '/api/user/init', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -53,7 +54,7 @@ export async function init (fetchedUser, hash) {
             "avatar": fetchedUser.photo_200
         }
 
-        response = await fetch('https://pipeweb.ru/api/user/change/avatar', {
+        response = await fetch('https://' + config["domain"] + '/api/user/change/avatar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -69,7 +70,7 @@ export async function init (fetchedUser, hash) {
             "username": fetchedUser.first_name + " " + fetchedUser.last_name
         }
 
-        response = await fetch('https://pipeweb.ru/api/user/change/name', {
+        response = await fetch('https://' + config["domain"] + '/api/user/change/name', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -102,7 +103,7 @@ export async function getUserBalances (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -135,7 +136,7 @@ export async function getAllUserInfo () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -152,7 +153,7 @@ export async function getSubAchievement () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/set/subAchievement', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/set/subAchievement', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -168,7 +169,7 @@ export async function getUserHistory (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/history', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/history', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -185,7 +186,7 @@ export async function reconnectUser () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/disconnect/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/disconnect/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -201,7 +202,7 @@ export async function getUserAchievements (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/achievements', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/achievements', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -218,7 +219,7 @@ export async function changeUserRank (fetchedUser, achievement_id) {
         "achievement_id": +achievement_id
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/change/rank', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/change/rank', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -245,7 +246,7 @@ export async function createFight (fetchedUser, map_id, max_user_number, is_priv
 
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/create', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -261,7 +262,7 @@ export async function getGlobalTop (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/top', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/top', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -278,7 +279,7 @@ export async function getFriendsTop (fetchedUser, friends) {
         "friends": friends
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/friendsTop', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/friendsTop', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -295,7 +296,7 @@ export async function addReferral (fetchedUser, referrer_id) {
         "referral_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/add/referral', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/add/referral', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -311,7 +312,7 @@ export async function isDonut (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -329,7 +330,7 @@ export async function updatePieceAvatar (fetchedUser, piece_avatar) {
         "piece_avatar": piece_avatar
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/update/pieceAvatar', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/update/pieceAvatar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -345,7 +346,7 @@ export async function isPieceAvatar (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -362,7 +363,7 @@ export async function getFights (fetchedUser) {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/get/all', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/get/all', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -379,7 +380,7 @@ export async function getFight (secretId) {
         "secret_id": secretId
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/fight', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/fight', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -397,7 +398,7 @@ export async function rateFight (fetchedUser, grade, comment) {
         "comment": comment
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/send/comment', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/send/comment', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -414,7 +415,7 @@ export async function updateAreNotificationsEnabled  (fetchedUser, enable ) {
         "enable": enable
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/set/notificationsEnable', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/set/notificationsEnable', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -430,7 +431,7 @@ export async function updateIsUserInSuperFight  () {
         "vk_id": window.location.search.replace('?', ''),
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/set/isUserInSuperFight', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/set/isUserInSuperFight', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -447,7 +448,7 @@ export async function activatePromocode  (promocode, fetchedUser) {
         "promocode": promocode,
     }
 
-    const response = await fetch('https://pipeweb.ru/api/promocode/activate', {
+    const response = await fetch('https://' + config["domain"] + '/api/promocode/activate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -463,7 +464,7 @@ export async function getTicket (fetchedUser) {
         "vk_id": window.location.search.replace('?', ''),
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/set/taskComplete', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/set/taskComplete', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -479,7 +480,7 @@ export async function getThreeTickets () {
         "vk_id": window.location.search.replace('?', ''),
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/storySharing', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/storySharing', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -497,7 +498,7 @@ export async function getBeatenPlayers (secret_id, colors) {
         "colors": colors
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/get/beatenPlayers', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/get/beatenPlayers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -514,7 +515,7 @@ export async function getAnyUser (vk_id) {
         "vk_id": vk_id
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/anyUser', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/anyUser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -530,7 +531,7 @@ export async function deleteUser () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/delete/user', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/delete/user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -546,7 +547,7 @@ export async function doChange () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/exchange', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/exchange', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -562,7 +563,7 @@ export async function getDonateLink () {
         "vk_id": window.location.search.replace('?', '')
     }
 
-    const response = await fetch('https://pipeweb.ru/api/user/get/donateLink', {
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/donateLink', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -578,7 +579,7 @@ export async function maintainingStat (stat_name) {
         "stat_name": stat_name
     }
 
-    const response = await fetch('https://pipeweb.ru/api/stats/add/count', {
+    const response = await fetch('https://' + config["domain"] + '/api/stats/add/count', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -595,7 +596,7 @@ export async function sendLogs (logs) {
         "logs": logs
     }
 
-    const response = await fetch('https://pipeweb.ru/api/fights/send/logs', {
+    const response = await fetch('https://' + config["domain"] + '/api/fights/send/logs', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -615,7 +616,7 @@ export async function maintainingEvents (stat_name, info=null) {
         "info": info
     }
 
-    const response = await fetch('https://pipeweb.ru/api/events/add/count', {
+    const response = await fetch('https://' + config["domain"] + '/api/events/add/count', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -668,7 +669,7 @@ export const onChange_originalFile = async (e, setImgLink, changeActiveModal, fe
                                 // fd.append('url', JSON.stringify(linkForUpload["response"]["upload_url"]))
                                 var request = new XMLHttpRequest()
 
-                            request.open('POST', "https://pipeweb.ru/api/uploadPhoto", false);
+                            request.open('POST', "https://" + config["domain"] + "/api/uploadPhoto", false);
                             request.onload = async function () {
                                 if (request.status >= 200 && request.status < 400) {
                                     var data = JSON.parse(request.responseText)

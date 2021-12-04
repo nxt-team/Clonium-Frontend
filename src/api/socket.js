@@ -1,5 +1,6 @@
 import {io} from "socket.io-client";
-export const socket = io("https://pipeweb.ru", {
+import config from "../../config.json"
+export const socket = io("https://" + config["domain"], {
     transports: ["websocket"],
     autoConnect: false,
     reconnection: false,

@@ -1,25 +1,26 @@
 import React from 'react'
 import bridge from '@vkontakte/vk-bridge';
 import {getThreeTicket, getThreeTickets, maintainingStat} from "../api/api";
+import config from "../../config.json"
 
 export const refLinkShare = (userId) => {
-    bridge.send("VKWebAppShare", {"link": "https://vk.com/clonium#invite=" + userId})
+    bridge.send("VKWebAppShare", {"link": "https://vk.com/" + config["short_name"] + "#invite=" + userId})
 }
 
 export const refLinkCopy = (userId) => {
-    bridge.send("VKWebAppCopyText", {"text": "https://vk.com/clonium#invite=" + userId})
+    bridge.send("VKWebAppCopyText", {"text": "https://vk.com/" + config["short_name"] + "#invite=" + userId})
 }
 
 export const fightInviteShare = (fightId) => {
-    bridge.send("VKWebAppShare", {"link": "https://vk.com/clonium#fight=" + fightId})
+    bridge.send("VKWebAppShare", {"link": "https://vk.com/" + config["short_name"] + "#fight=" + fightId})
 }
 
 export const copyFightInvite = (fightId) => {
-    bridge.send("VKWebAppCopyText", {"text": "Присоединяйся в бой \nhttps://vk.com/clonium#fight=" + fightId});
+    bridge.send("VKWebAppCopyText", {"text": "Присоединяйся в бой \nhttps://vk.com/" + config["short_name"] + "#fight=" + fightId});
 }
 
 export const postShare = (userId) => {
-    const message = "Сразимся? " + "\n" + "\n" + "vk.com/clonium#invite=" + userId
+    const message = "Сразимся? " + "\n" + "\n" + "vk.com/" + config["short_name"] + "#invite=" + userId
     bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-199025669_457239075"})
 }
 
@@ -36,7 +37,7 @@ export const fightResultsPostShare = (userId, place, players) => {
     }
     message += "\nи занял " + place + " место 😎"
 
-    message += "\n \nСразимся в клоний? \n " + "vk.com/clonium#invite=" + userId
+    message += "\n \nСразимся в клоний? \n " + "vk.com/" + config["short_name"] + "#invite=" + userId
 
     bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-199025669_457239076"})
 }
@@ -292,7 +293,7 @@ export const fightResultsStoryShare = (screenSpinnerOff, completeSnackBar, close
                     }
                 }
 
-                const inviteUrl = "https://vk.com/clonium#from_story" // #invite=" + userId
+                const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -370,7 +371,7 @@ export function fightResultsNativeStoryShare (
                     }
                 }
 
-                const inviteUrl = "https://vk.com/clonium#from_story" // #invite=" + userId
+                const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -685,7 +686,7 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
                             }
                         }
 
-                        const inviteUrl = "https://vk.com/clonium#from_story"
+                        const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story"
                         const attachment = {
                             text: 'open',
                             type: 'url',

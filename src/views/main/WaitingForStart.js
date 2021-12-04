@@ -15,6 +15,7 @@ import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
 import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
+import config from "../../../config.json"
 
 const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated, userBalances}) => {
 
@@ -44,7 +45,7 @@ const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersIn
     }
 
     function copyFightLink (secretId) {
-        bridge.send("VKWebAppCopyText", {"text": "https://vk.com/app7848428#fight=" + secretId});
+        bridge.send("VKWebAppCopyText", {"text": "https://vk.com/" + config["short_name"] + "#fight=" + secretId});
     }
 
     function getNeedPlayers () {
