@@ -12,6 +12,7 @@ import {
     Icon28AchievementCircleFillBlue,
     Icon28FireOutline, Icon28AddSquareOutline,
 } from '@vkontakte/icons';
+import { Icon28GiftCircleFillYellow } from '@vkontakte/icons';
 import LeaderBoardPlace from '../../components/LeaderBoardPlace'
 import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
 import {
@@ -321,7 +322,6 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
             <Tabs>
                 <TabsItem
                     onClick={() => {
-                        // document.getElementById("topSearch").blur()
                         setSlideIndex(0)
                     }}
                     selected={slideIndex === 0}
@@ -331,8 +331,10 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                 <TabsItem
                     onClick={() => setSlideIndex(1)}
                     selected={slideIndex === 1}
-                    after={globalTop.length &&
-                            <Counter mode="prominent" size={"s"} >{globalTop[1]["position"]}</Counter>
+                    after={
+                        <div className={"top__ImgContainer"}>
+                            <Icon28GiftCircleFillYellow width={20} height={20}  />
+                        </div>
                     }
                 >
                     Опыт
@@ -370,7 +372,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                                 Раздаём призы топу
                             </Title>
                         } // <span className={"top_exp_banner_header"}>Раздаем призы топу</span>
-                        subheader={<span className={"top_exp_banner_subheader"} >Каждую неделю этот топ обнуляется. Лучшие получают стикеры и Clonium Pass.</span>}
+                        subheader={<span className={"top_exp_banner_subheader"} >Каждую неделю этот топ обнуляется. Первые 3 лидера получают стикеры и Clonium Pass.</span>}
                         background={
                             <div className={"top_exp_banner"} />
                         }

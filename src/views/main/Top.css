@@ -214,3 +214,9 @@
 .top_exp_banner_subheader {
     color: #000 !important;
 }
+
+.top__ImgContainer {
+    margin-left: 8px;
+    position: relative;
+    bottom: -4px;
+}
