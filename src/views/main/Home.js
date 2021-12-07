@@ -181,7 +181,7 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                         </RichCell>
                     </SimpleCell>
                 )
-                
+
                 content.push(<Separator wide={true}/>)
             })
 
@@ -238,111 +238,109 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
             <PullToRefresh
                 isFetching={fights.length === 0}
                 onRefresh={async () => {
-                setFights([]);
-                const fights = await getFights(fetchedUser)
-                setFights(fights)
-            }}>
+                    setFights([]);
+                    const fights = await getFights(fetchedUser)
+                    setFights(fights)
+                }}>
 
-            <Div>
-                <div className={"profile_preview_container"} onClick={!isShownStartTooltip && go}
-                     data-to="profile">
-                    <div className={'profile_preview'}>
-                        <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            flexDirection: "column",
-                            justifyContent: "center"
-                        }}>
-                            {/*<Avatar size={64} src={fetchedUser.photo_200}/>*/}
-                            <div className="avatar" style={{margin: "6px 0 6px 0"}}>
-                                <Avatar size={64} src={fetchedUser.photo_200} className="avatar__photo" />
-                                <div className="avatar__indicator" >
-                                    {getIcon()}
+                <Div>
+                    <div className={"profile_preview_container"} onClick={!isShownStartTooltip && go}
+                         data-to="profile">
+                        <div className={'profile_preview'}>
+                            <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                flexDirection: "column",
+                                justifyContent: "center"
+                            }}>
+                                {/*<Avatar size={64} src={fetchedUser.photo_200}/>*/}
+                                <div className="avatar" style={{margin: "6px 0 6px 0"}}>
+                                    <Avatar size={64} src={fetchedUser.photo_200} className="avatar__photo" />
+                                    <div className="avatar__indicator" >
+                                        {getIcon()}
+                                    </div>
+                                </div>
+                                <div
+                                    style={{marginTop: 8, display: "block", width: "calc(100% - 16px)", textAlign: "center", marginLeft: 8, marginRight: 8}}
+                                >
+                                    <Title
+                                        level="1"
+                                        weight="semibold"
+                                        style={{overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", lineHeight: "34px"}}
+                                    >
+                                        <span dangerouslySetInnerHTML={{__html: fetchedUser.first_name + ' ' + fetchedUser.last_name}}/>
+                                    </Title>
                                 </div>
                             </div>
-                            <div
-                                style={{marginTop: 8, display: "block", width: "calc(100% - 16px)", textAlign: "center", marginLeft: 8, marginRight: 8}}
-                            >
-                                <Title
-                                    level="1"
-                                    weight="semibold"
-                                    style={{overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", lineHeight: "34px"}}
-                                >
-                                    <span dangerouslySetInnerHTML={{__html: fetchedUser.first_name + ' ' + fetchedUser.last_name}}/>
-                                </Title>
-                            </div>
+                            <UserStat
+                                exp={userBalances["exp"]}
+                                tickets={userBalances["tickets"]}
+                                warns={userBalances["warnings"]}
+                                rate={userBalances["rate"]}
+                            />
                         </div>
-                        <Tooltip
-                            mode="light"
-                            text="Попробуй проскролить справа налево блоки статистики"
-                            header="Здесь горизонтальный скролл"
-                            isShown={isShownStartTooltip}
-                            onClose={() => {setIsShownStartTooltip(false); resetIsStartTooltip()}}
-                            offsetX={10}
-                            offsetY={0}
-                        >
-                            <div>
-                                <UserStat
-                                    exp={userBalances["exp"]}
-                                    tickets={userBalances["tickets"]}
-                                    warns={userBalances["warnings"]}
-                                    rate={userBalances["rate"]}
-                                />
-                            </div>
-                        </Tooltip>
+                        <div
+                            className={"profile_preview_icon"}>
+                            <Icon24ChevronCompactRight/>
+                        </div>
                     </div>
-                    <div
-                        className={"profile_preview_icon"}>
-                        <Icon24ChevronCompactRight/>
+                </Div>
+
+                <Online online={online} />
+                <MainButtons
+                    goToPage={goToPage}
+                    goToAchievements={goToAchievements}
+                    updateNotifications={updateNotifications}
+                    changeActiveModal={changeActiveModal}
+                    vkDonut={userBalances["vk_donut"]}
+                    areNotificationsEnabled={userBalances["are_notifications_enabled"]}
+                    isUserInSuperFight={false}
+                />
+                <Tooltip
+                    mode="light"
+                    text="Присоединись в комнату, чтобы начать игру"
+                    isShown={isShownStartTooltip}
+                    onClose={() => {setIsShownStartTooltip(false); resetIsStartTooltip()}}
+                    offsetX={10}
+                    offsetY={0}
+                    alignY={"top"}
+                >
+                    <div className={'fullContainer'}>
+                        <Title level="1" weight="semibold" style={{marginLeft: 16}} >
+                            Доступные комнаты
+                        </Title>
+
+                        {renderFights()}
+
+                        <div style={{
+                            marginTop: 12,
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Button
+                                style={{
+                                    alignItems: "center"
+                                }}
+                                mode="secondary"
+                                size='l'
+                                before={<Icon24AddSquareOutline/>}
+                                onClick={() => goToCreatingRoom()}
+                            >
+                                Создать комнату
+                            </Button>
+                        </div>
                     </div>
+                </Tooltip>
+
+
+
+                <div
+                    style={{
+                        marginBottom: 12
+                    }}
+                >
+                    <InfoBanners changeActiveModal={changeActiveModal} startupParameters={startupParameters} />
                 </div>
-            </Div>
-
-            <Online online={online} />
-            <MainButtons
-                goToPage={goToPage}
-                goToAchievements={goToAchievements}
-                updateNotifications={updateNotifications}
-                changeActiveModal={changeActiveModal}
-                vkDonut={userBalances["vk_donut"]}
-                areNotificationsEnabled={userBalances["are_notifications_enabled"]}
-                isUserInSuperFight={false}
-            />
-
-            <div className={'fullContainer'}>
-                <Title level="1" weight="semibold" style={{marginLeft: 16}} >
-                    Доступные комнаты
-                </Title>
-
-                {renderFights()}
-
-                <div style={{
-                    marginTop: 12,
-                    display: 'flex',
-                    justifyContent: 'center'
-                }}>
-                    <Button
-                        style={{
-                            alignItems: "center"
-                        }}
-                        mode="secondary"
-                        size='l'
-                        before={<Icon24AddSquareOutline/>}
-                        onClick={() => goToCreatingRoom()}
-                    >
-                        Создать комнату
-                    </Button>
-                </div>
-            </div>
-
-
-            <div
-                style={{
-                    marginBottom: 12
-                }}
-            >
-                <InfoBanners changeActiveModal={changeActiveModal} startupParameters={startupParameters} />
-            </div>
             </PullToRefresh>
 
 
