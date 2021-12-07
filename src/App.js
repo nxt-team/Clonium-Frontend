@@ -404,7 +404,26 @@ const App = () => {
 			setUserBalances(user)
 			const timeNow = new Date()
 			initTimeInSeconds = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
-			if (user["status"] === "error") {
+			if (user["status"] === "server_error") {
+				isOfflineNeedShowInSnackBar = true
+				setPopout(
+					<Alert
+						actionsLayout="vertical"
+						actions={[{
+							title: 'Закрыть',
+							autoclose: true,
+							mode: 'cancel'
+						}]}
+						onClose={() => bridge.send("VKWebAppClose", {"status": "success"})}
+					>
+						<h2>{user["error"]}</h2>
+						<p>{user["error_description"]}</p>
+						<Link style={{marginTop: 10}} target="_blank" href="https://vk.me/clonium.group">
+							Тех поддержка
+						</Link>
+					</Alert>
+				)
+			} else if (user["status"] === "error") {
 				isOfflineNeedShowInSnackBar = true
 				setPopout(
 					<Alert

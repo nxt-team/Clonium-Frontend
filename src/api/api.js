@@ -20,6 +20,14 @@ export async function init (fetchedUser, hash) {
         body: JSON.stringify(data)
     })
 
+    if (!response.ok) {
+        return {
+            "status": "server_error",
+            "error": "Произошла ошибка",
+            "error_description": "Кажется сервер не отвечает. Обратитесь, пожалуйста, в тех-поддержку."
+        }
+    }
+
     const result = await response.json()
 
     if (result["status"] === "connected" || result["status"] === "banned" || result["status"] === "temporaryBanned" || result["status"] === "error") {
