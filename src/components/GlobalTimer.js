@@ -5,15 +5,20 @@ import useInterval from "@use-it/interval";
 
 let seconds
 let finalSeconds
-export default function GlobalTimer({gameTime}) {
+export default function GlobalTimer({time}) {
 
-    const [count, setCount] = useState(gameTime);
+    const [count, setCount] = useState(time);
+    const [gameTime, setGameTime] = useState(time);
+
+    if (gameTime !== time) {
+        setGameTime(time)
+    }
 
     useEffect(() => {
         const timeNow = new Date()
         finalSeconds = timeNow.getHours() * 3600 + timeNow.getSeconds() + timeNow.getMinutes() * 60 + gameTime
 
-    }, [])
+    }, [gameTime])
 
     if (count === 0) {
         if (document.getElementById("globalTimer")) {

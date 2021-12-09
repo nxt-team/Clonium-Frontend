@@ -293,14 +293,11 @@ const RejoinedGame = ({
                 }
             })
             setIsAnimation(false)
-            console.log(lastColorMotion, serverColorMotion, " ПРОВЕРКА НА EO")
             if (serverColorMotion && lastColorMotion !== serverColorMotion) {
                 console.log("ERROR ERROR EO ", serverColorMotion, lastColorMotion)
                 gameError()
             }
         }
-
-        console.log("FLag: " + flag)
     }
 
     function getCellContent (row, column) {
@@ -469,7 +466,7 @@ const RejoinedGame = ({
                     <Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
                         До конца боя:
                     </Caption>
-                    <GlobalTimer gameTime={game_time}/>
+                    <GlobalTimer time={game_time}/>
 
                 </div>
                 }

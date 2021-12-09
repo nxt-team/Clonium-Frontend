@@ -120,6 +120,7 @@ const Game = ({
 	const [phrase, setPhrase] = useState(null)
 
 	if (finishData.length !== 0 && !isAnimation) {
+		game_time = 0
 		goToEndFight(beatenPlayers)
 		console.log("go to end fight")
 		console.log(beatenPlayers)
@@ -503,7 +504,7 @@ const Game = ({
 						<Caption level="2" style={{color: "var(--text_secondary)"}} weight="regular">
 							До конца боя:
 						</Caption>
-						<GlobalTimer gameTime={game_time} />
+						<GlobalTimer time={game_time} />
 					</div>
 					}
 					</div>
