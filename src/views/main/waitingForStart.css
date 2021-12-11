@@ -20,11 +20,9 @@
 
 .advice {
     margin-bottom: 8px;
-    width: calc(100vw - 8px);
+    width: calc(100vw - 32px);
     text-align: center;
     color: var(--text_secondary);
-    padding-left: 4px;
-    padding-right: 4px;
 }
 
 @-webkit-keyframes pulse {

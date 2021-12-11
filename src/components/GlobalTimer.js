@@ -17,7 +17,8 @@ export default function GlobalTimer({time}) {
     useEffect(() => {
         const timeNow = new Date()
         finalSeconds = timeNow.getHours() * 3600 + timeNow.getSeconds() + timeNow.getMinutes() * 60 + gameTime
-
+        const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 3600
+        setCount(finalSeconds - secondsNow);
     }, [gameTime])
 
     if (count === 0) {

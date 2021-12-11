@@ -228,6 +228,7 @@ const Game = ({
 			} else {
 				isGlobalTimer = true
 				game_time = fight["game_time"]
+
 			}
 			fight.users.forEach((item, i) => {
 				if (item.vk_id === fetchedUser.id) {
@@ -242,6 +243,7 @@ const Game = ({
 			console.log(fight.max_user_number)
 			console.log(userColor, colors)
 			console.log(fight["map"])
+			console.log("GET GAME TIME ", game_time)
 			screenSpinnerOff()
 		}
 		getFightInfo()

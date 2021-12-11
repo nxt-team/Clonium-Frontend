@@ -34,7 +34,6 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
         getData()
     }, [])
 
-    console.log(Math.floor(count / 2))
 
     setTimeout(() => {
         if (count > 0) {
@@ -111,7 +110,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
             <FixedLayout style={{backgroundColor: "var(--background_light)", borderRadius: "20px 20px 0 0"}}
                          vertical="bottom" id="players_container" >
                 <div className={"players_container"} >
-                    <div style={{paddingLeft: 4, paddingRight: 4}}>
+                    <div style={{paddingLeft: 16, paddingRight: 16}}>
                         <Gallery
                             align="center"
                             style={{ height: "100%"}}
