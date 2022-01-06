@@ -607,7 +607,7 @@ const App = () => {
 					}
 				}
 
-				setActiveView("main")
+				setActiveView("endFight")
 				setTimeout(() => setActiveModal(newActiveModal), 300)
 				setPopout(null)
 			}

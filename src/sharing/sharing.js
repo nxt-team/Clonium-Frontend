@@ -252,8 +252,6 @@ export const drawFightResultsStory = (theme, phrase, beatenPlayers, avaUrl) => {
 
         }
     }
-
-
 }
 
 export const fightResultsStoryShare = (screenSpinnerOff, completeSnackBar, closeModal, updateUserBalances) => {

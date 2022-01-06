@@ -1,6 +1,9 @@
 import React from 'react';
 import AnimatedPlayIcon from "../components/animatedPlayIcon";
 import PlayIcon from "../components/playIcon";
+import bridge from "@vkontakte/vk-bridge";
+import {Icon28CancelCircleFillRed} from "@vkontakte/icons";
+import {Snackbar} from "@vkontakte/vkui";
 
 export default function BasicGetCellContent({row, column, map}) {
 
