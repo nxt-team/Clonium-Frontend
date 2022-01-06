@@ -309,6 +309,7 @@ const App = () => {
 							if (secretId.length > 0 && beatenPlayers === "") { // beatenPlayers нужно для того, что бы не крашилось приложение после просмотра рекламы в рейт файт
 								setActivePanel("home")
 								secretId = ""
+								setPopout(null)
 							} else {
 
 								let hash = window.location.hash
