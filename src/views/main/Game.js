@@ -29,7 +29,7 @@ import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
 import PhraseButtons from "../../components/PhraseButtons";
 import Phrase from "../../components/Phrase";
 let userColor = ""
-let colors
+let colors = []
 
 let isRecursion = false
 let lastColorMotion = "red"
@@ -478,7 +478,7 @@ const Game = ({
 				<>
 					{getMapInfo()}
 
-					<GameScore count={count} />
+					<GameScore count={count} colors={colors} />
 					<GetMap onCellClickFromUser={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
 					<div

@@ -19,7 +19,7 @@ import GlobalTimer from "../../components/GlobalTimer";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
 
 let userColor = ""
-let colors
+let colors = []
 
 let isRecursion = false
 let lastColorMotion = "red"
@@ -436,7 +436,7 @@ const RejoinedGame = ({
 
             {getMapInfo()}
 
-            <GameScore count={count} />
+            <GameScore count={count} colors={colors} />
             <GetMap onCellClickFromUser={onCellClickFromUser}  lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
             {/*<PhraseButtons doPhrase={doPhrase} />*/}
