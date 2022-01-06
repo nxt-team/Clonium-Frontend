@@ -25,6 +25,8 @@ import {
     Icon28PincodeOutline, Icon24CupOutline
 } from "@vkontakte/icons";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CustomTooltip from "../components/CustomTooltip/CustomTooltip";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const numericIndicator = {
     height: 20,
@@ -94,6 +96,23 @@ const achievementsList = [
     },
 
 ]
+
+const tickFormatter = (value) => {
+    const date = new Date(value)
+    let month = date.getMonth() + 1
+    if (month < 10) {
+        month = "0" + month
+    }
+    return date.getDate() + "." + month
+}
+
+function scheme () {
+    if (document.body.getAttribute("scheme") === "client_light" || document.body.getAttribute("scheme") === "bright_light") {
+        return "light"
+    } else {
+        return "dark"
+    }
+}
 
 export default function ProfileModalContent({closeModal, changeActiveModal, vk_id}) {
 
@@ -344,6 +363,25 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                             </SimpleCell>
                         </div>
                     </Div>
+                    <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32, marginBottom: 12}}>
+                        График рейтинга
+                    </Title>
+                    <LineChart
+                        width={document.documentElement.clientWidth - 12}
+                        height={300}
+                        data={userData["rating_history"]}
+                        margin={{
+                            top: 12,
+                            bottom: 5,
+                            right: 12
+                        }}
+                    >
+                        <XAxis dataKey="date" tickFormatter={tickFormatter} minTickGap={14} />
+                        <YAxis width={50} type="number" tickFormatter={(value) => Math.floor(value)} domain={['dataMin - 10', 'dataMax + 10']} tickCount={100}/>
+                        <Tooltip content={<CustomTooltip/>} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={scheme() === "dark" ? "#232324" : "#e0e0e0"} />
+                        <Line type="monotone" dataKey="rating" stroke="#8884d8" dot={false} />
+                    </LineChart>
                     <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32}}>
                         Достижения
                     </Title>

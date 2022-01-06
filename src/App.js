@@ -78,6 +78,8 @@ import TicketAnimation from "./components/TicketAnimation";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
 import {setLocalColor} from "./components/Timer";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CustomTooltip from "./components/CustomTooltip/CustomTooltip";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -133,7 +135,8 @@ const App = () => {
 		"warnings": 0,
 		"achievements": [],
 		"donut_end": "",
-		"rate": 0
+		"rate": 0,
+		"rating_history": []
 	})
 	const [ online, setOnline] = useState(1)
 	// const [dynamicRejoinComponent, setDynamicRejoinComponent] = useState(
@@ -571,7 +574,7 @@ const App = () => {
 				})
 			} else {
 
-				let newActiveModal = null
+				let newActiveModal
 
 				let hash = window.location.hash
 				console.log(hash)
@@ -718,6 +721,23 @@ const App = () => {
 		setUserBalances(locBalances)
 	}
 
+	const tickFormatter = (value) => {
+		const date = new Date(value)
+		let month = date.getMonth() + 1
+		if (month < 10) {
+			month = "0" + month
+		}
+		return date.getDate() + "." + month
+	}
+
+	function scheme () {
+		if (document.body.getAttribute("scheme") === "client_light" || document.body.getAttribute("scheme") === "bright_light") {
+			return "light"
+		} else {
+			return "dark"
+		}
+	}
+
 
 	const modal = (
 		<ModalRoot
@@ -796,6 +816,39 @@ const App = () => {
 					updateUserBalances={updateUserBalances}
 					userBalances={userBalances}
 					/>
+			</ModalPage>
+			<ModalPage
+				id={"ratingHistory"}
+				settlingHeight={50}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() =>setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						Статистика рейтинга
+					</ModalPageHeader>
+				}
+			>
+				<LineChart
+					width={document.documentElement.clientWidth}
+					height={300}
+					data={userBalances["rating_history"]}
+					margin={{
+						top: 5,
+						bottom: 5,
+						right: 5
+					}}
+				>
+					<XAxis dataKey="date" tickFormatter={tickFormatter} minTickGap={14} />
+					<YAxis width={50} type="number" domain={['dataMin - 10', 'dataMax + 10']} tickCount={100}/>
+					<Tooltip content={<CustomTooltip/>} />
+					<CartesianGrid strokeDasharray="3 3" stroke={scheme() === "dark" ? "#232324" : "#e0e0e0"} />
+					<Line type="monotone" dataKey="rating" stroke="#8884d8" dot={false} />
+				</LineChart>
 			</ModalPage>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}

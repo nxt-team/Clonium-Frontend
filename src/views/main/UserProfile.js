@@ -21,7 +21,6 @@ import {
 import Icon24Back from "@vkontakte/icons/dist/24/back";
 import UserStat from "../../components/UserStat";
 import {getAnyUser, getUserAchievements} from "../../api/api";
-
 const osName = platform();
 
 const numericIndicator = {

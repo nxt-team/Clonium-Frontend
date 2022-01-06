@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Banner from '@vkontakte/vkui/dist/components/Banner/Banner';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
@@ -52,6 +52,7 @@ const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mob
 const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startupParameters, screenSpinnerOff, screenSpinnerOn, isVibration, switchSsVibration, errorSnackBar }) => {
 
     const [vibration, setVibration] = useState(isVibration);
+
     if (vibration !== isVibration) {
         switchSsVibration()
         if (!vibration) {
@@ -186,34 +187,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                                 height: 56,
                                 padding: 4,
                                 flexDirection: "row"}} >
-                                <Icon24CupOutline width={32} height={32} style={{color: '#ffc107'}} />
-                                <div
-                                    style={{ justifyContent: 'center',
-                                        display: "flex",
-                                        marginLeft: 6,
-                                        flexDirection: "column"}}
-                                >
-                                    <Caption level="1" weight="regular">{userBalances["rate"]}</Caption>
-                                    <Caption style={{color: "var(--text_secondary)"}} level="3"
-                                             weight="regular">{rateCaption(userBalances["rate"])}</Caption>
-                                </div>
-
-
-                            </div>
-                        </motion.div>
-                    </Card>
-                    <Card size="s"  >
-                        <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
-                            <div style={{ justifyContent: 'center',
-                                alignItems: "center",
-                                display: "flex",
-                                width: 144,
-                                height: 56,
-                                padding: 4,
-                                flexDirection: "row"}} >
                                 <Icon36GameOutline style={{color: 'var(--accent)'}} />
                                 <div
                                     style={{ justifyContent: 'center',
@@ -293,7 +266,24 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 Балансы
             </Title>
 
+
             <CardScroll style={{margin: "12px 0"}}>
+                <Card size="m" style={{borderRadius: 16, width: 180}}>
+                    <div className={"balances_main_div"}>
+                        <div className="InfoBanner__Icon__Before__Orange" style={{marginBottom: 12}} >
+                            <Icon24CupOutline className="InfoBanner__Icon__Orange" width={32} height={32}/>
+                        </div>
+                        <Title level="2" weight="regular">
+                            {userBalances["rate"] + " " + rateCaption(userBalances["rate"])}
+                        </Title>
+                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
+                            Показатель твоего мастерства
+                        </Text>
+                        <div className={"balances_button_div"}>
+                            <Button style={{width: "100%"}} mode="primary" onClick={() => changeActiveModal("ratingHistory")}>Открыть график</Button>
+                        </div>
+                    </div>
+                </Card>
                 <Card size="m" style={{borderRadius: 16, width: 180}}>
                     <div className={"balances_main_div"}>
                         <div className="InfoBanner__Icon__Before__Blue" style={{marginBottom: 12}}>
@@ -320,22 +310,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                         </Title>
                         <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
                             Дается за <br/> хорошую игру
-                        </Text>
-                        <div className={"balances_button_div"}>
-                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
-                        </div>
-                    </div>
-                </Card>
-                <Card size="m" style={{borderRadius: 16, width: 180}}>
-                    <div className={"balances_main_div"}>
-                        <div className="InfoBanner__Icon__Before__Red" style={{marginBottom: 12}} >
-                            <Icon24ErrorCircleOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
-                        </div>
-                        <Title level="2" weight="regular">
-                            {getWarnings(userBalances["warnings"])}
-                        </Title>
-                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
-                            Дается за неактив в игре. 3 преда = бан
                         </Text>
                         <div className={"balances_button_div"}>
                             <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>

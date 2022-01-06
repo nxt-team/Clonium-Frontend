@@ -102,7 +102,8 @@ export async function init (fetchedUser, hash) {
         "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
-        "rate": Math.round(result[0]["rating"])
+        "rate": Math.round(result[0]["rating"]),
+        "rating_history": result[0]["rating_history"]
     }
 }
 
