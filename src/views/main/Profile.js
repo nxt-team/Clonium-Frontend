@@ -326,22 +326,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                         </div>
                     </div>
                 </Card>
-                <Card size="m" style={{borderRadius: 16, width: 180}}>
-                    <div className={"balances_main_div"}>
-                        <div className="InfoBanner__Icon__Before__Red" style={{marginBottom: 12}} >
-                            <Icon24ErrorCircleOutline className="InfoBanner__Icon__Red" width={32} height={32}/>
-                        </div>
-                        <Title level="2" weight="regular">
-                            {getWarnings(userBalances["warnings"])}
-                        </Title>
-                        <Text weight="regular" style={{ marginBottom: 12, color: "var(--text_secondary)" }}>
-                            Дается за неактив в игре. 3 преда = бан
-                        </Text>
-                        <div className={"balances_button_div"}>
-                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
-                        </div>
-                    </div>
-                </Card>
             </CardScroll>
             {/*{userBalances["vk_donut"]*/}
             {/*    ?*/}

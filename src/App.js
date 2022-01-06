@@ -130,7 +130,6 @@ const App = () => {
 		"are_notifications_enabled": false,
 		"isUserInSuperFight": false,
 		"referrals": 0,
-		"warnings": 0,
 		"achievements": [],
 		"donut_end": "",
 		"rate": 0
