@@ -136,7 +136,7 @@ export default function PromocodeActivationModal({id, closeModal, fetchedUser, e
                 <div style={{textAlign: "center"}}>
                     <Text weight="regular" style={{ marginBottom: 16, color: "var(--text_secondary)" }}>
                         Промокод будет активирован за просмотр рекламы.
-                        Промокоды регулярно появляются на стене нашего <Link target="_blank" href="https://vk.com/clonium.group" >сообщества</Link>.
+                        Промокоды регулярно появляются на стене нашего <Link rel="noreferrer" target="_blank" href="https://vk.com/clonium.group" >сообщества</Link>.
                     </Text>
                 </div>
                 <Input

@@ -1,7 +1,6 @@
 import React from 'react';
 import './PhraseButtons.css';
 import {CardScroll, Card, Group} from "@vkontakte/vkui";
-import { motion } from "framer-motion"
 
 export default function PhraseButtons({doPhrase}) {
     return (
@@ -11,47 +10,35 @@ export default function PhraseButtons({doPhrase}) {
         >
             <CardScroll >
                 <Card onClick={() => doPhrase("Ух ты!")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Ух ты!
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Ух ты!
+                    </div>
                 </Card>
 
                 <Card onClick={() => doPhrase("Ой")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Ой
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Ой
+                    </div>
                 </Card>
                 <Card onClick={() => doPhrase("Удачи...")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Удачи...
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Удачи...
+                    </div>
                 </Card>
                 <Card onClick={() => doPhrase("Не уходи!")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Не уходи!
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Не уходи!
+                    </div>
                 </Card>
                 <Card onClick={() => doPhrase("Ладно")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Ладно
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Ладно
+                    </div>
                 </Card>
                 <Card onClick={() => doPhrase("Помогите")} >
-                    <motion.div whileTap={{scale: 0.7}} >
-                        <div className={"phrase_container"}>
-                            Помогите
-                        </div>
-                    </motion.div>
+                    <div className={"phrase_container"}>
+                        Помогите
+                    </div>
                 </Card>
             </CardScroll>
         </Group>

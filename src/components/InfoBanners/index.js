@@ -13,7 +13,6 @@ import {
     Icon28ArrowDownOutline,
     Icon56DonateOutline
 } from '@vkontakte/icons';
-import { motion } from "framer-motion"
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 
 export default function InfoBanners(props) {
@@ -27,7 +26,7 @@ export default function InfoBanners(props) {
     return (
         <CardScroll>
             <Card  >
-                <Link target="_blank"
+                <Link target="_blank" rel="noreferrer"
                       href="https://vk.me/join/AJQ1d0WO6BzyVMdzHKr5f5pu"
                 >
                     <div className="InfoBanner" >
@@ -42,7 +41,7 @@ export default function InfoBanners(props) {
                 </Link>
             </Card>
             <Card  >
-                <Link target="_blank" href="https://vk.com/clonium.group" >
+                <Link target="_blank" rel="noreferrer" href="https://vk.com/clonium.group" >
                 <div className="InfoBanner" >
                     <div className="InfoBanner__Icon__Before__Blue" >
                         <Icon28Users3Outline className="InfoBanner__Icon__Blue" width={32} height={32}/>
@@ -55,7 +54,7 @@ export default function InfoBanners(props) {
                 </Link>
             </Card>
             <Card  >
-                <Link target="_blank" href="https://vk.com/@pipeweb-clonium" >
+                <Link target="_blank" rel="noreferrer" href="https://vk.com/@pipeweb-clonium" >
                     <div className="InfoBanner"  >
                         <div className="InfoBanner__Icon__Before__Green" >
                             <Icon28InfoOutline className="InfoBanner__Icon__Green" width={32} height={32}/>

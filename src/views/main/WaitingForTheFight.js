@@ -3,15 +3,14 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
 import {
-    Avatar, Caption,
-    FixedLayout, Gallery,
-    Group, SimpleCell, Spinner, Text,
+    Caption,
+    FixedLayout,
+    Gallery,
+    Group,
+    Spinner
 } from "@vkontakte/vkui";
-import useInterval from "@use-it/interval";
 import bridge from "@vkontakte/vk-bridge";
-import LeaderBoardPlace from "../../components/LeaderBoardPlace";
-import {Icon201CircleFillGold} from "@vkontakte/icons";
-import {getAnyUser, getFight} from "../../api/api";
+import {getFight} from "../../api/api";
 import PlayerPreview from "../../components/PlayerPreview";
 const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 

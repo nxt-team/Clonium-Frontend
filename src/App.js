@@ -23,7 +23,6 @@ import NoTickets from './views/main/NoTickets'
 import WaitingForStart from './views/main/WaitingForStart'
 import Customization from './views/main/Customization'
 import CreatingRoom from './views/creatingRoom/CreatingRoom'
-import RateFight from './views/endFight/RateFight'
 import Offline from './views/offline/offline'
 import Messenger from "./components/Messenger";
 import FightResults from "./views/endFight/FightResults"
@@ -40,7 +39,7 @@ import {
 	IOS,
 	Panel,
 	Snackbar,
-	Avatar, Alert, Link
+	Avatar, Alert, Link, FixedLayout, Text
 } from "@vkontakte/vkui"
 import Intro from "./views/main/Intro";
 import AnimatedErrorIcon from "./components/AnimateErrorIcon";
@@ -50,10 +49,8 @@ import SuperFightModalContent from "./modals/SuperFightModalContent";
 import AboutVkDonutModalContent from "./modals/AboutVkDonutModalContent";
 import GrabRivalsModal from "./modals/GrabRivalsModal";
 import AchievementModal from "./modals/AchievmentModal";
-import UserProfile from "./views/main/UserProfile";
 import {
 	addReferral, getAllUserInfo,
-	getBeatenPlayers,
 	getFight, getSubAchievement,
 	getTicket,
 	getUserBalances,
@@ -63,17 +60,15 @@ import {
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {doDisconnect, joinRoom, leaveFight, rejoinRoom, socket} from "./api/socket";
+import {joinRoom, leaveFight, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
-import ClearCache from "./views/main/ClearCache";
 import ProfileModalContent from "./modals/ProfileModalContent";
 import {postShare, refLinkCopy} from "./sharing/sharing";
 import AlreadyConnected from "./views/alreadyConnected/alreadyConnected";
 import AnimatedDoneIcon from "./components/AnimatedDoneIcon";
 import Banned from "./views/banned/Banned";
-import TemporaryBanned from "./views/temporaryBanned/TemporaryBanned";
 import TicketAnimation from "./components/TicketAnimation";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
@@ -136,32 +131,6 @@ const App = () => {
 		"rate": 0
 	})
 	const [ online, setOnline] = useState(1)
-	// const [dynamicRejoinComponent, setDynamicRejoinComponent] = useState(
-	// 	<RejoinedGame
-	// 		id={'rejoinedGame'}
-	// 		isVibration={isVibration}
-	// 		changeActiveModal={changeActiveModal}
-	// 		fetchedUser={fetchedUser}
-	// 		secretId={secretId}
-	// 		startupParameters={startupParameters}
-	// 		goToEndFight={goToEndFight}
-	// 		mapName={mapName}
-	// 		goToMainViewHome={goToMainViewHome}
-	// 		startMap={map}
-	// 		startColorMotion={colorMotion}
-	// 		startColors={colors}
-	// 		startUserColor={userColor}
-	// 		finishData={finishData}
-	// 		gameTime={gameTime}
-	// 		turnTime={turnTime}
-	// 		fightStart={fightStart}
-	// 		userBalances={userBalances}
-	// 		usersInFight={usersInFight}
-	// 		changePopout={(newPopout) => setPopout(newPopout) }
-	// 		startGameTimer={startGameTimer}
-	// 		gameError={gameError}
-	// 	/>
-	// )
 
 	function updateStatusPanel (newStatus) {
 		const status = newStatus.split('-')
@@ -418,7 +387,7 @@ const App = () => {
 					>
 						<h2>{user["error"]}</h2>
 						<p>{user["error_description"]}</p>
-						<Link style={{marginTop: 10}} target="_blank" href="https://vk.me/clonium.group">
+						<Link style={{marginTop: 10}} rel="noreferrer" target="_blank" href="https://vk.me/clonium.group">
 							Тех поддержка
 						</Link>
 					</Alert>
@@ -836,7 +805,7 @@ const App = () => {
 				header="Приглашение в беседу"
 				caption="Ты оформил подписку, а значит тебе доступна закрытая беседа для крутых игроков. Вступай!"
 			>
-				<Button style={{marginTop: 32}} size="xl" target="_blank" href="https://vk.me/join/K33Fz/cHb0gHofB0QJrzB0eiKKAxPRnuiDI=" >Присоединиться</Button>
+				<Button style={{marginTop: 32}} size="xl" rel="noreferrer" target="_blank" href="https://vk.me/join/K33Fz/cHb0gHofB0QJrzB0eiKKAxPRnuiDI=" >Присоединиться</Button>
 			</ModalCard>
 			<ModalCard
 				id={"ticketFromAd"}
@@ -1358,7 +1327,18 @@ const App = () => {
 			<Root activeView={activeView} >
 				<View activePanel={"loading"} id="loading" popout={popout}>
 					<Panel id={"loading"}>
-						{/*<canvas id='example' style={{"width": 1080 / 2, "height": 1920 / 2}} />*/}
+						<FixedLayout vertical="bottom" >
+							<div
+								style={{
+									marginBottom: 16,
+									display: "flex",
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
+								<Text>Загрузка...</Text>
+							</div>
+						</FixedLayout>
 					</Panel>
 				</View>
 				<View id='main' history={history} onSwipeBack={goBack} activePanel={activePanel} popout={popout} modal={modal}>
@@ -1455,7 +1435,6 @@ const App = () => {
 					<Top goToPage={goToPage} id='top' changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} updateUserProfileVkId={(newVkId) => userProfileVkId = newVkId} />
 					<NoTickets id='noTickets' go={go} changeActiveModal={changeActiveModal} />
 					<Customization id='customization' go={go} changeActiveModal={changeActiveModal} fetchedUser={fetchedUser} imgLink={imgLink} />
-					<UserProfile id='userProfile' vk_id={userProfileVkId} changeActiveModal={changeActiveModal} />
 				</View>
 				<View activePanel={"creatingRoom"} id="creatingRoom" modal={modal}>
 					<CreatingRoom
@@ -1471,7 +1450,6 @@ const App = () => {
 					/>
 				</View>
 				<View activePanel={'fightResults'} id="endFight" popout={popout} modal={modal}>
-					<RateFight id={'rateFight'} goIsolated={goIsolated2} secretId={secretId} screenSpinnerOff={screenSpinnerOff} screenSpinnerOn={screenSpinnerOn} fetchedUser={fetchedUser} />
 					<FightResults
 						id={'fightResults'}
 						secretId={secretId}
@@ -1493,17 +1471,11 @@ const App = () => {
 				<View activePanel={"offline"} id="offline" >
 					<Offline id={'offline'} screenSpinnerOff={screenSpinnerOff} changePopou={(newPopout) => setPopout(newPopout)} isLoadingInitData={isLoadingInitData} popout={popout} goToMainView={goToMainView} goToEndFightView={goToEndFightView} activePanel={activePanel}/>
 				</View>
-				<View activePanel={"clearCache"} id="clearCache" >
-					<ClearCache id='clearCache'/>
-				</View>
 				<View activePanel={"alreadyConnected"} id="alreadyConnected" popout={popout}>
 					<AlreadyConnected id='alreadyConnected'/>
 				</View>
 				<View activePanel={"banned"} id="banned" popout={popout}>
 					<Banned id='banned'/>
-				</View>
-				<View activePanel={"temporaryBanned"} id="temporaryBanned" popout={popout}>
-					<TemporaryBanned id='temporaryBanned' oursForUnban={temporaryBannedOurs}/>
 				</View>
 				<View activePanel={"achievements"} id="achievements" popout={popout} modal={modal}>
 					<Achievements id='achievements' fetchedUser={fetchedUser} openAchievementModal={openAchievementModal} goToMainView={goToMainView} />

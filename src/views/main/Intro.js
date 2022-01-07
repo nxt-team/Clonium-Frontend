@@ -4,20 +4,12 @@ import Text from '@vkontakte/vkui/dist/components/Typography/Text/Text';
 import './intro.css'
 import { Icon28TargetOutline } from '@vkontakte/icons';
 import {
-    Avatar,
-    Div,
     FixedLayout,
-    Group,
     Gallery,
-    PanelHeaderButton,
-    platform,
     Progress,
-    InfoRow,
-    Header,
     SimpleCell, Placeholder
 } from "@vkontakte/vkui";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import { Icon28GhostOutline } from '@vkontakte/icons';
 import { Icon28GameOutline } from '@vkontakte/icons';
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
 import fluid from "../../img/fluid 10.png"
@@ -25,7 +17,6 @@ import wavingHand from "../../img/waving-hand.png"
 import GameMechanics from "../../components/IntroComponents/GameMechanics"
 import ExplosionMechanics from "../../components/IntroComponents/ExplosionMechanics";
 import GrabRivals from "../../components/IntroComponents/GrabRivals"
-import Icon24StoryOutline from "@vkontakte/icons/dist/24/story_outline";
 import { Icon28AddSquareOutline } from '@vkontakte/icons';
 import { Icon28FavoriteOutline } from '@vkontakte/icons';
 import {maintainingEvents} from "../../api/api";

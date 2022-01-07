@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
-import {Icon24HelpOutline, Icon28GhostSimleOutline, Icon28TicketOutline} from '@vkontakte/icons';
+import {Icon28GhostSimleOutline, Icon28TicketOutline} from '@vkontakte/icons';
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
-import {socket} from "../../api/socket";
 import {reconnectUser} from "../../api/api";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]

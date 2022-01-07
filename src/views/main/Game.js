@@ -1,12 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import bridge from '@vkontakte/vk-bridge';
-import { Icon28ErrorOutline } from '@vkontakte/icons';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
+import React, { useState, useEffect } from 'react';
 import './game.css'
-import {IOS, platform, Caption, Separator, SimpleCell, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
+import {PanelHeader, Button, Caption, Title, Panel, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
@@ -22,12 +16,9 @@ import SquareSize8Map from "../../maps/SquareSize8/map.json";
 import CrossSize9 from "../../maps/CrossSize9/map.json";
 import WhirlSize10 from "../../maps/WhirlSize10/map.json";
 import {getFight} from "../../api/api";
-import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
+import {clickMap, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
-import ImgPlayIcon from "../../components/ImgPlayIcon";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
-import PhraseButtons from "../../components/PhraseButtons";
-import Phrase from "../../components/Phrase";
 let userColor = ""
 let colors
 
