@@ -3,20 +3,17 @@ import {
     PanelHeader,
     Title,
     Panel,
-    WriteBar,
     Div,
-    Slider,
-    WriteBarIcon,
     Button,
-    Text, Progress, FixedLayout, Spinner, SimpleCell,
+    Text,
+    Spinner,
+    SimpleCell,
 } from "@vkontakte/vkui";
 import './FightResults.css'
-import {Icon28FavoriteOutline, Icon28PaletteOutline} from '@vkontakte/icons';
+import {Icon28FavoriteOutline} from '@vkontakte/icons';
 import { Icon24CupOutline } from '@vkontakte/icons';
 import { Icon28PollSquareOutline } from '@vkontakte/icons';
-import {fightResultsNativeStoryShare, fightResultsPostShare} from "../../sharing/sharing";
-import {getBeatenPlayers} from "../../api/api";
-import { Icon28StoryOutline } from '@vkontakte/icons';
+import {fightResultsNativeStoryShare} from "../../sharing/sharing";
 import { Icon28InfoCircleOutline } from '@vkontakte/icons';
 
 let userBalances

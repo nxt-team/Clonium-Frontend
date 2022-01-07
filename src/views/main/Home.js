@@ -12,7 +12,10 @@ import {
     SimpleCell,
     RichCell,
     UsersStack,
-    PanelHeaderButton, Spinner, Group, HorizontalScroll, CardScroll, Card, Tooltip
+    PanelHeaderButton,
+    Spinner,
+    PullToRefresh,
+    Tooltip
 } from '@vkontakte/vkui';
 
 import {
@@ -28,17 +31,13 @@ import {
 import './home.css';
 import './game.css'
 import './home.css';
-import { motion } from "framer-motion"
 
 import MainButtons from "../../components/MainButtons";
 import InfoBanners from "../../components/InfoBanners"
 import UserStat from "../../components/UserStat";
-import bridge from "@vkontakte/vk-bridge";
-import {getFights, getUserBalances, init} from "../../api/api";
-import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
+import {getFights} from "../../api/api";
 import {joinRoom} from "../../api/socket";
 import Online from "../../components/online";
-import {PullToRefresh} from "@gmelum/vkui";
 
 const numericIndicator = {
     borderRadius: '50%',

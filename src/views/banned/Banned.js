@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
-import {Icon24HelpOutline, Icon28GhostSimleOutline, Icon28TicketOutline} from '@vkontakte/icons';
+import {Icon28GhostSimleOutline} from '@vkontakte/icons';
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 
 
@@ -33,7 +33,7 @@ const Banned = ({ id}) => {
                     Ты был заблокирован.
                 </Title>
                 <div style={{display: "flex"}}>
-                    <Button size="l" target="_blank" href="https://vk.me/clonium.group" >Тех. поддержка</Button>
+                    <Button size="l" rel="noreferrer" target="_blank" href="https://vk.me/clonium.group" >Тех. поддержка</Button>
                 </div>
             </div>
         </Panel>

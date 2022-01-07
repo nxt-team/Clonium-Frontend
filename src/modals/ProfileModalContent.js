@@ -224,7 +224,7 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                     <Div
                         style={{paddingBottom: 0}}
                     >
-                        <Link target="_blank" href={"https://vk.com/id" + vk_id}>
+                        <Link rel="noreferrer" target="_blank" href={"https://vk.com/id" + vk_id}>
                             <RichCell
                                 style={{backgroundColor: "var(--content_tint_background)", borderRadius: 12}}
                                 multiline
