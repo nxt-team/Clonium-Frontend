@@ -73,6 +73,7 @@ import TicketAnimation from "./components/TicketAnimation";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
 import {setLocalColor} from "./components/Timer";
+import {config, isOK, link, startupParams} from "./constatnts/config";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -348,6 +349,7 @@ const App = () => {
 		});
 
 		async function fetchData() {
+			console.log(config)
 			isLoadingInitData = true
 			if (mobile_platforms.indexOf(startupParameters.get('vk_platform')) !== -1) {
 				const storageGetData = await bridge.send("VKWebAppStorageGet", {"keys": ["reloading", "theme", "no_vibration"]})

@@ -1,6 +1,6 @@
 import imagenation from "imagenation";
 import React from "react";
-import config from "../constatnts/config.json"
+import {config} from "../constatnts/config.js"
 
 export async function init (fetchedUser, hash) {
 

@@ -37,7 +37,7 @@ import SwipeableViews from "react-swipeable-views";
 import {refLinkShare} from "../../sharing/sharing";
 import ExpGlobalLeaderBoardPlace from "../../components/ExpGlobalLeaderBoardPlace";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
-import config from "../../constatnts/config.json"
+import {config, isOK} from "../../constatnts/config.js"
 const osName = platform();
 let updateHeight
 
@@ -55,33 +55,59 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
             .catch(() => setFriendsTop(["client_error"]))
         console.log(token)
         if (token !== undefined) {
-            const friends = await bridge.send("VKWebAppCallAPIMethod", {
-                "method": "friends.get", "request_id": "1", "params":
-                    {
-                        "user_id": fetchedUser.id,
-                        "order": "hints",
-                        // "fields": "photo_200_orig",
-                        "v": "5.131",
-                        "access_token": token["access_token"]
-                    }
-            });
-            console.log(friends["response"]["items"])
-            const friendsTop = await getFriendsTop(fetchedUser, friends["response"]["items"])
-            setFriendsTop(friendsTop)
-            let nonPlaying = await bridge.send("VKWebAppCallAPIMethod", {
-                "method": "friends.search", "request_id": "1", "params":
-                    {
-                        "user_id": fetchedUser.id,
-                        "fields": "photo_200,sex",
-                        "q": "",
-                        "v": "5.131",
-                        "count": 10,
-                        "access_token": token["access_token"]
-                    }
-            });
-            const friendsInGame = []
-            friendsTop[0].forEach((item) => friendsInGame.push(item["vk_id"]))
-            nonPlaying = nonPlaying["response"]["items"].filter(item => friendsInGame.indexOf(item["id"]) === -1)
+            let nonPlaying
+            if (isOK) {
+                const friends = await bridge.send("OKWebAppCallAPIMethod", {
+                    "method": "friends.get", "request_id": "1", "params":
+                        {
+                            "user_id": fetchedUser.id,
+                            "access_token": token["access_token"],
+                            "sort_type": "PRESENT"
+                        }
+                });
+                console.log(friends["response"])
+                const friendsTop = await getFriendsTop(fetchedUser, friends["response"])
+                setFriendsTop(friendsTop)
+                nonPlaying = await bridge.send("OKWebAppCallAPIMethod", {
+                    "method": "users.getInfo", "request_id": "1", "params":
+                        {
+                            "uids": friends["response"],
+                            "access_token": token["access_token"],
+                            "fields": "FIRST_NAME, PIC128X128, LAST_NAME"
+                        }
+                });
+                const friendsInGame = []
+                friendsTop[0].forEach((item) => friendsInGame.push(item["id"]))
+                nonPlaying = nonPlaying["response"].filter(item => friendsInGame.indexOf(item["id"]) === -1)
+            } else {
+                const friends = await bridge.send("OKWebAppCallAPIMethod", {
+                    "method": "friends.get", "request_id": "1", "params":
+                        {
+                            "user_id": fetchedUser.id,
+                            "order": "hints",
+                            // "fields": "photo_200_orig",
+                            "v": "5.131",
+                            "access_token": token["access_token"]
+                        }
+                });
+                console.log(friends["response"]["items"])
+                const friendsTop = await getFriendsTop(fetchedUser, friends["response"]["items"])
+                setFriendsTop(friendsTop)
+                nonPlaying = await bridge.send("VKWebAppCallAPIMethod", {
+                    "method": "friends.search", "request_id": "1", "params":
+                        {
+                            "user_id": fetchedUser.id,
+                            "fields": "photo_200,sex",
+                            "q": "",
+                            "v": "5.131",
+                            "count": 10,
+                            "access_token": token["access_token"]
+                        }
+                });
+                const friendsInGame = []
+                friendsTop[0].forEach((item) => friendsInGame.push(item["vk_id"]))
+                nonPlaying = nonPlaying["response"]["items"].filter(item => friendsInGame.indexOf(item["id"]) === -1)
+            }
             nonPlaying.splice(5)
             setNonPlayingFriends(nonPlaying)
             updateHeight.updateHeight()
@@ -218,7 +244,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                 nonPlayingFriendsContent.push(
                     <SimpleCell
                         style={{cursor: "pointer"}}
-                        before={<Avatar size={40} src={item["photo_200"]} />}
+                        before={<Avatar size={40} src={item["pic128x128"]} />}
                         after={<Icon28AddSquareOutline />}
                         onClick={() => refLinkShare(fetchedUser.id)}
                     >

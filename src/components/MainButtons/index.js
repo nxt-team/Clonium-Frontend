@@ -16,7 +16,7 @@ export default function MainButtons(props) {
     } = props;
 
     function notificationsOn () {
-        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 206549924, "key": "dBuBKe1kFcdemzB"})
+        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 68757037252661, "key": "dBuBKe1kFcdemzB"})
             .then(
                 () => updateNotifications()
             )

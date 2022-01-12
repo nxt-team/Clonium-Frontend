@@ -15,7 +15,7 @@ import UsersStack from "@vkontakte/vkui/dist/components/UsersStack/UsersStack";
 import {leaveFight, socket} from "../../api/socket";
 import {fightInviteShare} from "../../sharing/sharing";
 import bridge from "@vkontakte/vk-bridge";
-import config from "../../constatnts/config.json"
+import {config} from "../../constatnts/config.js"
 
 const WaitingForStart = ({ id, resetSecretId, secretId, fetchedUser, needUsersInFight, updateNotifications, are_notifications_enabled, goIsolated, userBalances}) => {
 

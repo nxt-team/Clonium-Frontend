@@ -1,18 +1,18 @@
 import React from 'react'
 import bridge from '@vkontakte/vk-bridge';
 import {getThreeTicket, getThreeTickets, maintainingStat} from "../api/api";
-import config from "../constatnts/config.json"
+import {config, link} from "../constatnts/config.js"
 
 export const refLinkShare = (userId) => {
-    bridge.send("VKWebAppShare", {"link": "https://vk.com/" + config["short_name"] + "#invite=" + userId})
+    bridge.send("VKWebAppShare", {"link": link + "#invite=" + userId})
 }
 
 export const refLinkCopy = (userId) => {
-    bridge.send("VKWebAppCopyText", {"text": "https://vk.com/" + config["short_name"] + "#invite=" + userId})
+    bridge.send("VKWebAppCopyText", {"text": link + "#invite=" + userId})
 }
 
 export const fightInviteShare = (fightId) => {
-    bridge.send("VKWebAppShare", {"link": "https://vk.com/" + config["short_name"] + "#fight=" + fightId})
+    bridge.send("VKWebAppShare", {"link": link + "#fight=" + fightId})
 }
 
 export const copyFightInvite = (fightId) => {
@@ -20,8 +20,8 @@ export const copyFightInvite = (fightId) => {
 }
 
 export const postShare = (userId) => {
-    const message = "Сразимся? " + "\n" + "\n" + "vk.com/" + config["short_name"] + "#invite=" + userId
-    bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-199025669_457239075"})
+    const message = "Сразимся? " + "\n" + "\n" + link + "#invite=" + userId
+    bridge.send("VKWebAppShowWallPostBox", {"message": message, "attachments": "photo-68757037252661_930079491637"})
 }
 
 export const fightResultsPostShare = (userId, place, players) => {
@@ -293,7 +293,7 @@ export const fightResultsStoryShare = (screenSpinnerOff, completeSnackBar, close
                     }
                 }
 
-                const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story" // #invite=" + userId
+                const inviteUrl = link + config["short_name"] + "#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -371,7 +371,7 @@ export function fightResultsNativeStoryShare (
                     }
                 }
 
-                const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story" // #invite=" + userId
+                const inviteUrl = link + config["short_name"] + "#from_story" // #invite=" + userId
                 const attachment = {
                     text: 'open',
                     type: 'url',
@@ -686,7 +686,7 @@ export const showOffsStoryShare = (userId, userName, avaUrl, userRank, fights, w
                             }
                         }
 
-                        const inviteUrl = "https://vk.com/" + config["short_name"] + "#from_story"
+                        const inviteUrl = link + config["short_name"] + "#from_story"
                         const attachment = {
                             text: 'open',
                             type: 'url',
