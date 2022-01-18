@@ -278,7 +278,6 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                             <UserStat
                                 exp={userBalances["exp"]}
                                 tickets={userBalances["tickets"]}
-                                warns={userBalances["warnings"]}
                                 rate={userBalances["rate"]}
                             />
                         </div>

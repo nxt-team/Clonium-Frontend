@@ -47,7 +47,6 @@ export async function init (fetchedUser, hash) {
             "are_notifications_enabled": false,
             "isUserInSuperFight": false,
             "referrals": 0,
-            "warnings": 0,
             "achievements": [],
             "donut_end": "",
             "rate": 1500
@@ -99,7 +98,6 @@ export async function init (fetchedUser, hash) {
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
-        "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
         "rate": Math.round(result[0]["rating"])
@@ -132,7 +130,6 @@ export async function getUserBalances (fetchedUser) {
         "are_notifications_enabled": result[0]["are_notifications_enabled"],
         "isUserInSuperFight": result[0]["isUserInSuperFight"],
         "referrals": result[0]["referrals"].length,
-        "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
         "rate": Math.round(result[0]["rating"])

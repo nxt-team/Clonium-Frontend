@@ -109,21 +109,6 @@ export default function UserStat({exp, tickets, warns, rate}) {
                             {rateCaption()}
                         </Caption>
                     </div>
-
-
-                </div>
-            </Card>
-            <Card style={{backgroundColor: "var(--background_content)", padding: "0 20px"}}>
-                <div className={"UserStat_container"} >
-                    <Icon32ErrorCircleOutline width={28} height={28} />
-                    <div className={'UserStat_text_box'} >
-                        <Caption level="1" weight="regular">{warns}</Caption>
-                        <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular">
-                            {warnsCaption()}
-                        </Caption>
-                    </div>
-
-
                 </div>
             </Card>
         </CardScroll>
