@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import MessageList from '../MessageList';
-import {ScrollOverflow} from "@gmelum/vkui";
 import './Messenger.css';
 import {WriteBar, WriteBarIcon} from "@vkontakte/vkui";
 

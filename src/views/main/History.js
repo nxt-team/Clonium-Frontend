@@ -18,7 +18,7 @@ import {
     PanelHeaderButton,
     SimpleCell,
     Spinner,
-    Cell, Separator
+    Separator
 } from "@vkontakte/vkui";
 import {getUserHistory} from "../../api/api";
 

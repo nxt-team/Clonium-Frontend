@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Banner from '@vkontakte/vkui/dist/components/Banner/Banner';
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
@@ -12,7 +11,7 @@ import './game.css'
 import Icon28ShareOutline from '@vkontakte/icons/dist/28/share_outline';
 import './home.css';
 import './other.scss'
-import {Icon28InfoOutline, Icon28PincodeOutline, Icon28Users3Outline} from '@vkontakte/icons';
+import {Icon28PincodeOutline} from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 import { Icon56DonateOutline } from '@vkontakte/icons';
 import { Icon24ErrorCircleOutline } from '@vkontakte/icons';
@@ -24,9 +23,7 @@ import Icon28ArrowDownOutline from '@vkontakte/icons/dist/28/arrow_down_outline'
 import Icon28ArrowUpOutline from '@vkontakte/icons/dist/28/arrow_up_outline';
 import Icon24StoryOutline from '@vkontakte/icons/dist/24/story_outline';
 import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
-import { motion } from "framer-motion"
 import './Profile.css'
-import { Icon28RadiowavesLeftAndRightOutline } from '@vkontakte/icons';
 import {
     Card,
     CardScroll,
@@ -36,10 +33,10 @@ import {
     platform,
     SimpleCell,
     ANDROID,
-    Link, Switch
+    Switch
 } from "@vkontakte/vkui";
 import Avatar from "@vkontakte/vkui/dist/components/Avatar/Avatar";
-import {loadFonts, postShare, showOffsStoryShare} from "../../sharing/sharing";
+import {postShare, showOffsStoryShare} from "../../sharing/sharing";
 import Text from "@vkontakte/vkui/dist/components/Typography/Text/Text";
 import { Icon28SmartphoneStarsOutline, Icon24CupOutline, Icon28TicketOutline, Icon36GameOutline } from '@vkontakte/icons';
 import InfoBanners from "../../components/InfoBanners";
@@ -175,10 +172,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 >
                 <CardScroll style={{marginBottom: 6}}>
                     <Card size="s"  >
-                        <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
                             <div style={{ justifyContent: 'center',
                                 alignItems: "center",
                                 display: "flex",
@@ -200,13 +193,8 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
 
                             </div>
-                        </motion.div>
                     </Card>
                     <Card size="s"  >
-                        <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
                             <div style={{ justifyContent: 'center',
                                 alignItems: "center",
                                 display: "flex",
@@ -228,13 +216,8 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
 
                             </div>
-                        </motion.div>
                     </Card>
                     <Card size="s"  >
-                        <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
                             <div style={{  justifyContent: 'center',
                                 alignItems: "center",
                                 display: "flex",
@@ -256,13 +239,8 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
 
                             </div>
-                        </motion.div>
                     </Card>
                     <Card size="s"  >
-                        <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
                             <div style={{ justifyContent: 'center',
                                 alignItems: "center",
                                 display: "flex",
@@ -284,7 +262,6 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
 
 
                             </div>
-                        </motion.div>
                     </Card>
                 </CardScroll>
             </Group>
@@ -322,7 +299,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                             Дается за <br/> хорошую игру
                         </Text>
                         <div className={"balances_button_div"}>
-                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
+                            <Button style={{width: "100%"}} rel="noreferrer" mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
                         </div>
                     </div>
                 </Card>
@@ -338,7 +315,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                             Дается за неактив в игре. 3 преда = бан
                         </Text>
                         <div className={"balances_button_div"}>
-                            <Button style={{width: "100%"}} mode="primary" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
+                            <Button style={{width: "100%"}} mode="primary" rel="noreferrer" target="_blank" href="https://vk.com/@pipeweb-clonium" >Подробнее</Button>
                         </div>
                     </div>
                 </Card>
@@ -378,7 +355,7 @@ const Profile = ({ id, go, fetchedUser, changeActiveModal, userBalances, startup
                 <div className={'fullContainer'} >
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28ServicesOutline/>} expandable onClick={() => bridge.send("VKWebAppAddToFavorites")}  >Добавь сервис в избранные</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28ShareOutline/>} onClick={() => postShare(fetchedUser.id)} expandable >Рассказать друзьям</SimpleCell>
-                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28EditOutline/>} target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
+                    <SimpleCell style={{cursor: "pointer"}} before={<Icon28EditOutline/>} rel="noreferrer" target="_blank" href="https://vk.com/topic-199025669_47671567" expandable >Обратная связь</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28PincodeOutline/>} onClick={() => changeActiveModal("promocodeActivation")} expandable >Активировать промокод</SimpleCell>
                     <SimpleCell style={{cursor: "pointer"}} before={<Icon28PaletteOutline/>} onClick={go} data-to="customization" expandable >Аватарка фишки</SimpleCell>
                     {osName === ANDROID &&
