@@ -21,21 +21,9 @@ socket.on("connect", () => {
     })
 });
 
-socket.on("disconnect", (reason) => {
-    console.log("SOCKET disconnected", reason)
-    if (reason === "ping timeout" || reason === "transport close") {
-        console.log("socket reconnected")
-        socket.connect()
-    }
-})
-
 socket.on("connect_error", (error) => {
     console.log("SOCKET connect_error", error)
 
-});
-socket.on("connect_timeout", () => {
-    console.log("SOCKET connect_timeout")
-    doReconnect()
 });
 
 export const doReconnect = () => !socket.connected && socket.connect()

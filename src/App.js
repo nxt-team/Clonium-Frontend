@@ -60,7 +60,7 @@ import {
 import UploadingPhotoModal from "./modals/UploadingPhotoModal";
 import ShowImgPlayIconModal from "./modals/ShowImgPlayIconModal";
 import WaitingForTheFight from "./views/main/WaitingForTheFight";
-import {joinRoom, leaveFight, socket} from "./api/socket";
+import {doDisconnect, doReconnect, joinRoom, leaveFight, rejoinRoom, socket} from "./api/socket";
 import RejoinedGame from "./views/main/RejoinedGame";
 import PromocodeActivationModal from "./modals/PromocodeActivationModal";
 import { Icon28CancelCircleFillRed } from '@vkontakte/icons';
@@ -590,7 +590,7 @@ const App = () => {
 			goBack()
 		});
 
-		window.addEventListener('offline', () => {
+		function onDisconnect () {
 			const timeNow = new Date()
 			const timeInSecondsNow = timeNow.getSeconds() * 1000 + timeNow.getMinutes() * 60000 + timeNow.getMilliseconds()
 			console.log(timeInSecondsNow - initTimeInSeconds)
@@ -601,8 +601,15 @@ const App = () => {
 			} else {
 				goToOffline()
 			}
-
+		}
+		socket.on("disconnect", (reason) => {
+			console.log("SOCKET disconnected", reason)
+			onDisconnect()
 		})
+		socket.on("connect_timeout", () => {
+			console.log("connect_timeout")
+			onDisconnect()
+		});
 	}, []);
 
 	const go = e => {
