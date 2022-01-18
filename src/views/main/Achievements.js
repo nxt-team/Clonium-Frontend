@@ -16,7 +16,7 @@ import {
     Title,
     Panel,
     PanelHeader,
-    Button, PanelHeaderClose
+    Button,
 } from "@vkontakte/vkui";
 import {getUserAchievements} from "../../api/api";
 

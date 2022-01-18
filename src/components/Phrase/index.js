@@ -1,7 +1,5 @@
 import React from 'react';
 import './Phrase.css';
-import {CardScroll, Card, Group} from "@vkontakte/vkui";
-import { motion } from "framer-motion"
 
 export default function Phrase({text, map, phraseColor}) {
     if (text) {
@@ -18,14 +16,9 @@ export default function Phrase({text, map, phraseColor}) {
 
         return (
             <div className={"phrase_message_container"}>
-                <motion.div
-                    animate={{ scale: [1.5, 1, 1, 1], rotate: [ -10, 10, -10, 0] }}
-                    transition={{ duration: 0.7, times: [0.1, 0.2, 0.5, 0.7] }}
-                >
-                    <div className={"phrase_message"}>
-                        {text}
-                    </div>
-                </motion.div>
+                <div className={"phrase_message"}>
+                    {text}
+                </div>
             </div>
         )
     } else {

@@ -2,22 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import {
-    Avatar,
-    Div,
-    Group,
     IOS,
     FormLayoutGroup,
     platform,
     Radio,
     FormLayout,
-    TabsItem,
-    Button,
-    Spinner, SimpleCell, Placeholder
+    Spinner,
+    SimpleCell,
+    Placeholder
 } from "@vkontakte/vkui";
 import PanelHeaderButton from "@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton";
 import Icon28ChevronBack from "@vkontakte/icons/dist/28/chevron_back";
 import Icon24Back from "@vkontakte/icons/dist/24/back";
-import {getGlobalTop, isDonut, isPieceAvatar, updatePieceAvatar} from "../../api/api";
+import {isDonut, isPieceAvatar, updatePieceAvatar} from "../../api/api";
 import {Icon28CancelCircleFillRed, Icon32ErrorCircleOutline} from "@vkontakte/icons";
 import { Icon56LockOutline } from '@vkontakte/icons';
 const osName = platform();
