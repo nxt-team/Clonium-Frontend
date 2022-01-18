@@ -226,3 +226,13 @@
 .Tabs {
   cursor: pointer;
 }
+
+.refreshButton {
+  padding: 4px;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.refreshButton:active {
+  opacity: .6;
+}
