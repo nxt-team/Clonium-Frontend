@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {Title} from "@vkontakte/vkui";
-import { useSpring, animated } from '@react-spring/web'
-import useInterval from "@use-it/interval";
 
 let localColorMotion = 'red'
 let startCount = 15

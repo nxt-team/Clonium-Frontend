@@ -1,87 +1,68 @@
 import React from 'react';
 import './gameScore.css';
+import {Progress} from "@vkontakte/vkui";
 
-export default function GameScore({count}) {
+const colorsPalette = {
+    red: "#FF79CB",
+    blue: "#00D8FF",
+    green: "#2EE367",
+    yellow: "#FFB327"
+}
+
+export default function GameScore({count, colors}) {
+
+
+    if (colors.length !== 2) {
+        let content = []
+
+        for (let i = 0; i < colors.length; i++) {
+            content.push(
+                <>
+                    <svg
+                        style={{ flexGrow: 1 }}
+                        width="22"
+                        height="22"
+                        viewBox="0 0 38 38"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <circle
+                            cx="19"
+                            cy="19"
+                            r="18"
+                            fill={colorsPalette[colors[i]]}
+                            stroke="currentColor"
+                            strokeWidth="2"
+                        />
+                        <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
+                    </svg>
+                    <div style={{ flexGrow: i === colors.length ? 1 : 0.5 }} >{count(colors[i])}</div>
+                </>
+            )
+        }
+
+        return (
+            <div className={'gameScore_container'} >
+                {content}
+            </div>
+        )
+    }
+
+
+    const value = count(colors[0]) / (count(colors[0]) + count(colors[1])) * 100
+
     return (
-        <div
-            className={'gameScore_container'}
-        >
-            <svg
-                style={{ flexGrow: 1 }}
-                width="22"
-                height="22"
-                viewBox="0 0 38 38"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle
-                    cx="19"
-                    cy="19"
-                    r="18"
-                    fill="#FF79CB"
-                    stroke="currentColor"
-                    stroke-width="2"
-                />
-                <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
-            </svg>
-            <div style={{ flexGrow: 1 }} >{count('red')}</div>
-            <svg
-                style={{ flexGrow: 1 }}
-                width="22"
-                height="22"
-                viewBox="0 0 38 38"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle
-                    cx="19"
-                    cy="19"
-                    r="18"
-                    fill="#00D8FF"
-                    stroke="currentColor"
-                    stroke-width="2"
-                />
-                <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
-            </svg>
-            <div style={{ flexGrow: 1 }}>{count('blue')}</div>
-            <svg
-                style={{ flexGrow: 1 }}
-                width="22"
-                height="22"
-                viewBox="0 0 38 38"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle
-                    cx="19"
-                    cy="19"
-                    r="18"
-                    fill="#2EE367"
-                    stroke="currentColor"
-                    stroke-width="2"
-                />
-                <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
-            </svg>
-            <div style={{ flexGrow: 1 }}>{count('green')}</div>
-            <svg
-                style={{ flexGrow: 1 }}
-                width="22"
-                height="22"
-                viewBox="0 0 38 38"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <circle
-                    cx="19"
-                    cy="19"
-                    r="18"
-                    fill="#FFB327"
-                    stroke="currentColor"
-                    stroke-width="2"
-                />
-                <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
-            </svg>
-            <div style={{ flexGrow: 0.5 }}>{count('yellow')}</div>
+        <div className={'gameScore_container'} style={{display: "block", padding: "12px 8px"}} >
+            <Progress value={value} id={"fight_progress"} className={colors[0] + "_progress"} style={{backgroundColor: colorsPalette[colors[1]]}}/>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
+                <div>
+                    {count(colors[0])}
+                </div>
+                <div>
+                    {count(colors[1])}
+                </div>
+            </div>
         </div>
     )
+
 }

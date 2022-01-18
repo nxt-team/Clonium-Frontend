@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import bridge from '@vkontakte/vk-bridge';
-import { Icon28ErrorOutline } from '@vkontakte/icons';
+import React, { useState, useEffect } from 'react';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
@@ -13,13 +11,13 @@ import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
 import GetMap from "../../gameFunctions/GetMap";
-import Timer, {setLocalColor} from "../../components/Timer";
-import {clickMap, kickUserSend, leaveFight, socket} from "../../api/socket";
+import Timer from "../../components/Timer";
+import {clickMap, leaveFight, socket} from "../../api/socket";
 import GlobalTimer from "../../components/GlobalTimer";
 import BasicGetImgCellContent from "../../gameFunctions/BasicGetImgCellContent";
 
 let userColor = ""
-let colors
+let colors = []
 
 let isRecursion = false
 let lastColorMotion = "red"
@@ -436,7 +434,7 @@ const RejoinedGame = ({
 
             {getMapInfo()}
 
-            <GameScore count={count} />
+            <GameScore count={count} colors={colors} />
             <GetMap onCellClickFromUser={onCellClickFromUser}  lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
 
             {/*<PhraseButtons doPhrase={doPhrase} />*/}

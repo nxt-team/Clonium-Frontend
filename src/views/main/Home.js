@@ -12,7 +12,10 @@ import {
     SimpleCell,
     RichCell,
     UsersStack,
-    PanelHeaderButton, Spinner, Group, HorizontalScroll, CardScroll, Card, Tooltip
+    PanelHeaderButton,
+    Spinner,
+    PullToRefresh,
+    Tooltip
 } from '@vkontakte/vkui';
 
 import {
@@ -22,23 +25,21 @@ import {
     Icon28RadiowavesAroundOutline,
     Icon28ChevronRightCircleOutline,
     Icon28HistoryForwardOutline,
-    Icon24ChevronCompactRight, Icon28DonateCircleFillYellow,
+    Icon24ChevronCompactRight,
+    Icon28DonateCircleFillYellow,
+    Icon24Switch
 } from '@vkontakte/icons';
 
 import './home.css';
 import './game.css'
 import './home.css';
-import { motion } from "framer-motion"
 
 import MainButtons from "../../components/MainButtons";
 import InfoBanners from "../../components/InfoBanners"
 import UserStat from "../../components/UserStat";
-import bridge from "@vkontakte/vk-bridge";
-import {getFights, getUserBalances, init} from "../../api/api";
-import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
+import {getFights} from "../../api/api";
 import {joinRoom} from "../../api/socket";
 import Online from "../../components/online";
-import {PullToRefresh} from "@gmelum/vkui";
 
 const numericIndicator = {
     borderRadius: '50%',
@@ -47,6 +48,8 @@ const numericIndicator = {
     fontSize: 13,
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
+
+const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 
 const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, goToCreatingRoom, fetchedUser, userBalances, online, updateNeedUsersInFight, updateSecretId, updateNotifications, startupParameters, goIsolated, goToAchievements, goToHistory, goToPage}) => {
 
@@ -305,9 +308,22 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                     alignY={"top"}
                 >
                     <div className={'fullContainer'}>
-                        <Title level="1" weight="semibold" style={{marginLeft: 16}} >
-                            Доступные комнаты
-                        </Title>
+                        <div style={{display: "flex", justifyContent: "space-between"}} >
+                            <Title level="1" weight="semibold" style={{marginLeft: 16}} >
+                                Доступные комнаты
+                            </Title>
+
+                            {startupParameters.get('vk_platform') === "desktop_web" &&
+                                <div className={"refreshButton"} onClick={async () => {
+                                    setFights([]);
+                                    const fights = await getFights(fetchedUser)
+                                    setFights(fights)
+                                }}>
+                                    <Icon24Switch width={20} height={20} />
+                                </div>
+                            }
+
+                        </div>
 
                         {renderFights()}
 

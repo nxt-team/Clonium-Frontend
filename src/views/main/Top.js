@@ -10,7 +10,7 @@ import {
     Icon32SearchOutline,
     Icon56UsersOutline,
     Icon28AchievementCircleFillBlue,
-    Icon28FireOutline, Icon28AddSquareOutline,
+    Icon28AddSquareOutline,
 } from '@vkontakte/icons';
 import { Icon28GiftCircleFillYellow } from '@vkontakte/icons';
 import LeaderBoardPlace from '../../components/LeaderBoardPlace'
@@ -18,7 +18,6 @@ import GlobalLeaderBoardPlace from "../../components/GlobalLeaderBoardPlace";
 import {
     Avatar,
     Search,
-    Gallery,
     Group,
     IOS,
     Placeholder,
@@ -27,7 +26,10 @@ import {
     SimpleCell,
     Tabs,
     Header,
-    TabsItem, FixedLayout, Banner, Spinner, Counter
+    TabsItem,
+    FixedLayout,
+    Banner,
+    Spinner
 } from "@vkontakte/vkui";
 import {getFriendsTop, getGlobalTop} from "../../api/api";
 import bridge from '@vkontakte/vk-bridge';
@@ -378,7 +380,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         }
                         actions={
                             <React.Fragment >
-                                <Button style={{backgroundColor: '#fff', color: '#000'}} href="https://vk.com/@pipeweb-topy-klonii" target="_blank" >Подробнее</Button>
+                                <Button style={{backgroundColor: '#fff', color: '#000'}} href="https://vk.com/@pipeweb-topy-klonii" rel="noreferrer" target="_blank" >Подробнее</Button>
                             </React.Fragment>
                         }
                     />

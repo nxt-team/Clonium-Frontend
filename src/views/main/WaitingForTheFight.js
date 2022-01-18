@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title';
 import './waitingForStart.css'
 import {
-    Avatar, Caption,
-    FixedLayout, Gallery,
-    Group, SimpleCell, Spinner, Text,
+    Caption,
+    FixedLayout,
+    Gallery,
+    Group,
+    Spinner,
+    Title,
+    Panel
 } from "@vkontakte/vkui";
-import useInterval from "@use-it/interval";
 import bridge from "@vkontakte/vk-bridge";
-import LeaderBoardPlace from "../../components/LeaderBoardPlace";
-import {Icon201CircleFillGold} from "@vkontakte/icons";
-import {getAnyUser, getFight} from "../../api/api";
+import {getFight} from "../../api/api";
 import PlayerPreview from "../../components/PlayerPreview";
 const mobile_platforms = ["mobile_android", "mobile_ipad", "mobile_iphone", "mobile_iphone_messenger"]
 
@@ -29,8 +28,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
 
     useEffect(() => {
         const timeNow = new Date()
-        finalSeconds = 0
-        finalSeconds = timeNow.getSeconds() + timeNow.getMinutes() * 60 + startCount
+        finalSeconds = Math.floor(timeNow / 1000) * 1000 + startCount * 1000
         getData()
     }, [])
 
@@ -38,14 +36,14 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
     setTimeout(() => {
         if (count > 0) {
             const timeNow = new Date()
-            const secondsNow = timeNow.getSeconds() + timeNow.getMinutes() * 60
+            const secondsNow = Math.floor(timeNow / 1000) * 1000
             if (count < 6) {
                 const user_platform = startupParameters.get('vk_platform')
                 if (mobile_platforms.indexOf(user_platform) !== -1 && isVibration) {
                     bridge.send("VKWebAppTapticImpactOccurred", {"style": "medium"});
                 }
             }
-            setCount(finalSeconds - secondsNow);
+            setCount((finalSeconds - secondsNow) / 1000);
         }
     }, 1000);
 
@@ -115,7 +113,6 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
                             align="center"
                             style={{ height: "100%"}}
                             slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
-                            onChange={() => console.log("a")}
                         >
                             <Caption level="1" weight="semibold" className={"advice"} >
                                 Серые фишки - мертвые фишки, за них никто не играет
@@ -148,7 +145,6 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
         </Panel>
     )
 };
-
 
 
 export default WaitingForTheFight;
