@@ -29,7 +29,7 @@ let doneCalled = false
 let isAnimation = false
 
 const GradRivals = ({done, changeActiveModal}) => {
-    const [context, setContext] = useState(<Title style={{marginTop: 12}} level="3" weight="regular">Захвати фишки соперников.<br/> Твой цвет - голубой</Title>)
+    const [context, setContext] = useState(<Title style={{marginTop: 12}} level="3" weight="regular">Захвати фишки соперников.<br/> Твой цвет - синий.</Title>)
     const [changeContextCall, setChangeContextCall] = useState(0)
 
     const changeContext = () => {
