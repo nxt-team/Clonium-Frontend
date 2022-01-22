@@ -113,6 +113,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
                             align="center"
                             style={{ height: "100%"}}
                             slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
+                            onChange={(slideIndex) => slideIndex + 1}
                         >
                             <Caption level="1" weight="semibold" className={"advice"} >
                                 Серые фишки - мертвые фишки, за них никто не играет
@@ -127,7 +128,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
                                 Поделись результатами боя, чтобы вернуть свой билет
                             </Caption>
                             <Caption level="1" weight="semibold" className={"advice"} >
-                                Рейтинг может увеличиться не зависимо от твоего места
+                                Рейтинг может увеличиться независимо от твоего места
                             </Caption>
                             <Caption level="1" weight="semibold" className={"advice"} >
                                 Для игры с друзьями, создай приватную комнату со своими настройками

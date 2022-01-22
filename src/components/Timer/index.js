@@ -35,7 +35,7 @@ export default function Timer({onExpiration, colorMotion}) {
     useEffect(() => {
         console.log("START COUNT", startCount, localColorMotion, colorMotion)
         setInterval(() => {
-            setCount((currentCount) => currentCount - 1);
+            setCount((currentCount) => currentCount > 0 ? currentCount - 1 : currentCount);
             if (count < 1) {
                 onExpiration()
                 document.getElementById("motionTimer").classList.remove('color_pulse');

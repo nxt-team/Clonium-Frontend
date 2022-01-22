@@ -26,6 +26,10 @@ socket.on("connect_error", (error) => {
 
 });
 
+socket.on("disconnect", (reason) => {
+    console.log("SOCKET disconnected", reason)
+})
+
 export const doReconnect = () => !socket.connected && socket.connect()
 export const doDisconnect = () => socket.disconnect()
 

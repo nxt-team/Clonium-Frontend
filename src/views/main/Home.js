@@ -300,7 +300,7 @@ const Home = ({id, go, isStartTooltip, resetIsStartTooltip, changeActiveModal, g
                 />
                 <Tooltip
                     mode="light"
-                    text="Присоединись в комнату, чтобы начать игру"
+                    text="Войди в комнату, чтобы начать игру"
                     isShown={isShownStartTooltip}
                     onClose={() => {setIsShownStartTooltip(false); resetIsStartTooltip()}}
                     offsetX={10}
