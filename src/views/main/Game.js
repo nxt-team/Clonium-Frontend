@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './game.css'
-import {PanelHeader, Button, Caption, Title, Panel, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
+import {PanelHeader, Button, Caption, Title, Panel, WriteBar, WriteBarIcon, Tooltip} from "@vkontakte/vkui";
 import BasicGetCellContent from "../../gameFunctions/BasicGetCellContent";
 import basicOnCellClick from "../../gameFunctions/BasicOnCellClick";
 import GameScore from "../../components/GameScore";
@@ -36,7 +36,7 @@ let pieceAvatarsConfig = {
 	"green": "",
 	"yellow": ""
 }
-let phraseColor
+let isTooltip = false
 
 function getStartJson(mapName) {
 	if (mapName === "GridSize8") {
@@ -235,6 +235,9 @@ const Game = ({
 			console.log(userColor, colors)
 			console.log(fight["map"])
 			console.log("GET GAME TIME ", game_time)
+			if (userBalances["fights"] === 0) {
+				isTooltip = true
+			}
 			screenSpinnerOff()
 		}
 		getFightInfo()
@@ -468,6 +471,19 @@ const Game = ({
 			{map.length &&
 				<>
 					{getMapInfo()}
+
+					<Tooltip
+						mode="light"
+						text="Игроки ходят по очереди. Следи за таймером!"
+						isShown={isTooltip}
+						onClose={() => {isTooltip = false; setMap(map.slice())}}
+						offsetX={-24}
+						offsetY={0}
+						alignX={"left"}
+						alignY={"bottom"}
+					>
+						<div style={{marginLeft: "45%"}}/>
+					</Tooltip>
 
 					<GameScore count={count} colors={colors} />
 					<GetMap onCellClickFromUser={onCellClickFromUser} lastMotionCoords={lastMotionCoords} getCellContent={getCellContent} map={map} colorMotion={colorMotion} mapName={mapName}/>
