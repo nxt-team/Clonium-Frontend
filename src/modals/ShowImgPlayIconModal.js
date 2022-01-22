@@ -36,7 +36,7 @@ export default function ShowImgPlayIconModal({id, closeModal, imgLink}) {
                 </Gallery>
             }
             header="Твоя фишка"
-            caption="Теперь так будут выглядить твои фишки во время игры"
+            caption="Теперь так будут выглядеть твои фишки во время игры"
             actions={[{
                 title: 'Хорошо',
                 mode: 'primary',

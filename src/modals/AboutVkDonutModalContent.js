@@ -86,7 +86,7 @@ export default function AboutVkDonutModalContent({closeModal, completeSnackBar, 
                             <Text weight="regular" style={{ marginBottom: 16 }}>
                                 • Выбор аватарки для фишки<br/>
                                 • Подсветка ходов соперников<br/>
-                                • Карта "Проход" и карта "Крест"<br/>
+                                • Карта "Проход", "Крест" и "Вихрь"<br/>
                                 • Кастомный выбор времени игры от 5 мин до 45 мин<br/>
                                 • Бесконечное кол-во билетов<br/>
                                 • Доступ к закрытой беседе<br/>

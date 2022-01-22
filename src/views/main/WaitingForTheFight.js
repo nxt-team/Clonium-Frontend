@@ -127,7 +127,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
                                 Поделись результатами боя, чтобы вернуть свой билет
                             </Caption>
                             <Caption level="1" weight="semibold" className={"advice"} >
-                                Рейтинг может увеличиться не зависимо от твоего места
+                                Рейтинг может увеличиться независимо от твоего места
                             </Caption>
                             <Caption level="1" weight="semibold" className={"advice"} >
                                 Для игры с друзьями, создай приватную комнату со своими настройками

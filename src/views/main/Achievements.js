@@ -111,7 +111,7 @@ const Achievements = ({ id, fetchedUser, openAchievementModal, goToMainView }) =
                     header="У тебя пока нет достижений"
                     action={<Button size="l" onClick={() => goToMainView()} >На главную</Button>}
                 >
-                    Здесь появятся твои достижения. Скорее отправляйся зарабатывать их
+                    Здесь появятся твои достижения. Скорее отправляйся зарабатывать их.
                 </Placeholder>
             )
         } else {

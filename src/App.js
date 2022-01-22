@@ -601,10 +601,7 @@ const App = () => {
 				goToOffline()
 			}
 		}
-		socket.on("disconnect", (reason) => {
-			console.log("SOCKET disconnected", reason)
-			onDisconnect()
-		})
+		window.addEventListener('offline', () => {onDisconnect()})
 		socket.on("connect_timeout", () => {
 			console.log("connect_timeout")
 			onDisconnect()

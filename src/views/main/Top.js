@@ -149,7 +149,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                         icon={<Icon32SearchOutline width={56} height={56} />}
                         header="Ничего не найдено"
                     >
-                        Возможно, игрок не входит в топ 100 или не зарегестрирован в приложении
+                        Возможно, игрок не входит в топ 100 или не зарегистрирован в приложении
                     </Placeholder>
                 )
             }

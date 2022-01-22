@@ -75,7 +75,7 @@ export default function InfoBanners(props) {
                         </div>
                     <div className="InfoBanner__TextContainer" >
                         <Text weight="regular" >Clonium Pass</Text>
-                        <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >специальные <br/> возможнсоти</Caption>
+                        <Caption style={{color: "var(--text_secondary)"}} level="3" weight="regular" >специальные <br/> возможности</Caption>
                         </div>
                     </div>
                 </Card>
