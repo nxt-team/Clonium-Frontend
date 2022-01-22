@@ -113,6 +113,7 @@ const WaitingForTheFight = ({ id, startCount, secretId, isVibration}) => {
                             align="center"
                             style={{ height: "100%"}}
                             slideIndex={Math.abs(Math.floor(count / 4) - 6) % 5}
+                            onChange={(slideIndex) => slideIndex + 1}
                         >
                             <Caption level="1" weight="semibold" className={"advice"} >
                                 Серые фишки - мертвые фишки, за них никто не играет
