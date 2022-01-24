@@ -73,6 +73,10 @@ import TicketAnimation from "./components/TicketAnimation";
 import Button from "@vkontakte/vkui/dist/components/Button/Button";
 import FightResultsStoryModal from "./modals/FightResultsStorySharingModalContent";
 import {setLocalColor} from "./components/Timer";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CustomTooltip from "./components/CustomTooltip/CustomTooltip";
+import RateChart from "./components/RateChart";
+import RateChartModalContent from "./modals/RateChartModalContent";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -127,7 +131,8 @@ const App = () => {
 		"referrals": 0,
 		"achievements": [],
 		"donut_end": "",
-		"rate": 0
+		"rate": 0,
+		"rating_history": []
 	})
 	const [ online, setOnline] = useState(1)
 
@@ -540,7 +545,7 @@ const App = () => {
 				})
 			} else {
 
-				let newActiveModal = null
+				let newActiveModal
 
 				let hash = window.location.hash
 				console.log(hash)
@@ -769,6 +774,24 @@ const App = () => {
 					updateUserBalances={updateUserBalances}
 					userBalances={userBalances}
 					/>
+			</ModalPage>
+			<ModalPage
+				id={"ratingHistory"}
+				settlingHeight={50}
+				onClose={() => setActiveModal(null)}
+				header={
+					<ModalPageHeader
+						right={
+							<PanelHeaderButton onClick={() =>setActiveModal(null)}>
+								<Icon24Dismiss />
+							</PanelHeaderButton>
+						}
+					>
+						График рейтинга
+					</ModalPageHeader>
+				}
+			>
+				<RateChartModalContent/>
 			</ModalPage>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}

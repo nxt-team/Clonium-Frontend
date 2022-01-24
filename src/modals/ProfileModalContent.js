@@ -25,6 +25,9 @@ import {
     Icon28PincodeOutline, Icon24CupOutline
 } from "@vkontakte/icons";
 import Title from "@vkontakte/vkui/dist/components/Typography/Title/Title";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CustomTooltip from "../components/CustomTooltip/CustomTooltip";
+import RateChart from "../components/RateChart";
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
 const numericIndicator = {
     height: 20,
@@ -344,6 +347,10 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                             </SimpleCell>
                         </div>
                     </Div>
+                    <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32, marginBottom: 12}}>
+                        График рейтинга
+                    </Title>
+                    <RateChart rating_history={userData["rating_history"]}/>
                     <Title level="1" weight="semibold" style={{marginLeft: 16, marginTop: 32}}>
                         Достижения
                     </Title>

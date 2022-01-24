@@ -169,12 +169,29 @@ export async function getSubAchievement () {
     return await response.json()
 }
 
-export async function getUserHistory (fetchedUser) {
+export async function getUserHistory () {
     const data = {
         "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://' + config["domain"] + '/api/user/get/history', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
+
+}
+
+export async function getUserRateHistory () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/ratingHistory', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
