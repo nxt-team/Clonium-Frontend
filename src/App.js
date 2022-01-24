@@ -596,7 +596,7 @@ const App = () => {
 			if (timeInSecondsNow - initTimeInSeconds < 1000) {
 				setTimeout(() => goToOffline(), 500)
 			} else if (isOfflineNeedShowInSnackBar) {
-				errorSnackBar("Интернет соединение потеряно")
+				errorSnackBar("Интернет-соединение потеряно")
 			} else {
 				goToOffline()
 			}
@@ -1229,7 +1229,7 @@ const App = () => {
 
 	async function endIntro () {
 		if (!window.navigator.onLine) {
-			errorSnackBar("Интернет соединение потеряно")
+			errorSnackBar("Интернет-соединение потеряно")
 			return
 		}
 
