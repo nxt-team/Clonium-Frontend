@@ -102,8 +102,7 @@ export async function init (fetchedUser, hash) {
         "warnings": result[0]["warnings"],
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
-        "rate": Math.round(result[0]["rating"]),
-        "rating_history": result[0]["rating_history"]
+        "rate": Math.round(result[0]["rating"])
     }
 }
 
@@ -173,12 +172,29 @@ export async function getSubAchievement () {
     return await response.json()
 }
 
-export async function getUserHistory (fetchedUser) {
+export async function getUserHistory () {
     const data = {
         "vk_id": window.location.search.replace('?', '')
     }
 
     const response = await fetch('https://' + config["domain"] + '/api/user/get/history', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    })
+
+    return  await response.json()
+
+}
+
+export async function getUserRateHistory () {
+    const data = {
+        "vk_id": window.location.search.replace('?', '')
+    }
+
+    const response = await fetch('https://' + config["domain"] + '/api/user/get/ratingHistory', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'

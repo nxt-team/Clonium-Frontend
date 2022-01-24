@@ -80,6 +80,8 @@ import FightResultsStoryModal from "./modals/FightResultsStorySharingModalConten
 import {setLocalColor} from "./components/Timer";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import CustomTooltip from "./components/CustomTooltip/CustomTooltip";
+import RateChart from "./components/RateChart";
+import RateChartModalContent from "./modals/RateChartModalContent";
 
 const osName = platform();
 const startupParameters = new URLSearchParams(window.location.search.replace('?', ''))
@@ -721,23 +723,6 @@ const App = () => {
 		setUserBalances(locBalances)
 	}
 
-	const tickFormatter = (value) => {
-		const date = new Date(value)
-		let month = date.getMonth() + 1
-		if (month < 10) {
-			month = "0" + month
-		}
-		return date.getDate() + "." + month
-	}
-
-	function scheme () {
-		if (document.body.getAttribute("scheme") === "client_light" || document.body.getAttribute("scheme") === "bright_light") {
-			return "light"
-		} else {
-			return "dark"
-		}
-	}
-
 
 	const modal = (
 		<ModalRoot
@@ -829,26 +814,11 @@ const App = () => {
 							</PanelHeaderButton>
 						}
 					>
-						Статистика рейтинга
+						График рейтинга
 					</ModalPageHeader>
 				}
 			>
-				<LineChart
-					width={document.documentElement.clientWidth}
-					height={300}
-					data={userBalances["rating_history"]}
-					margin={{
-						top: 5,
-						bottom: 5,
-						right: 5
-					}}
-				>
-					<XAxis dataKey="date" tickFormatter={tickFormatter} minTickGap={14} />
-					<YAxis width={50} type="number" domain={['dataMin - 10', 'dataMax + 10']} tickCount={100}/>
-					<Tooltip content={<CustomTooltip/>} />
-					<CartesianGrid strokeDasharray="3 3" stroke={scheme() === "dark" ? "#232324" : "#e0e0e0"} />
-					<Line type="monotone" dataKey="rating" stroke="#8884d8" dot={false} />
-				</LineChart>
+				<RateChartModalContent/>
 			</ModalPage>
 			<ModalCard
 				id={"ticketFromAddToFavorites"}
