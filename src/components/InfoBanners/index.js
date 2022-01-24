@@ -27,7 +27,7 @@ export default function InfoBanners(props) {
         <CardScroll>
             <Card  >
                 <Link target="_blank" rel="noreferrer"
-                      href="https://vk.me/join/AJQ1d0WO6BzyVMdzHKr5f5pu"
+                      href="https://vk.me/join/xRvStVq81bKZH5HUrtu_6rCFMXsNRgmu5Uw="
                 >
                     <div className="InfoBanner" >
                         <div className="InfoBanner__Icon__Before__Red" >
