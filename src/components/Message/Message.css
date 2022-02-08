@@ -24,24 +24,24 @@
 }
 
 .message.start .bubble-container .bubble {
-  /* margin-top: 10px; */
+  /*margin-top: 4px;*/
   border-top-left-radius: 20px;
 }
 
 .message.end .bubble-container .bubble {
   border-bottom-left-radius: 20px;
-  /* margin-bottom: 10px; */
+  margin-bottom: 4px;
 }
 
 .message.mine.start .bubble-container .bubble {
-  margin-top: 10px;
+  /*margin-top: 4px;*/
   border-top-right-radius: 20px;
 }
 
 .message.mine.end .bubble-container .bubble {
 
   border-bottom-right-radius: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .message .bubble-container .bubble {

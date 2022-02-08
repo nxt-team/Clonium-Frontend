@@ -1,10 +1,61 @@
-.phrase_container {
+.phrase{
     cursor: pointer;
-    transition: opacity .3s var(--ios-easing);
-    height: 24px;
-    margin: 6px 12px;
+    font-size: 14px;
+    padding: 5px 12px;
+    background-color: var(--float_button_background);
+    border-radius: 12px;
+    margin: 2px;
+}
+
+.phrase:active {
+    opacity: .6;
+}
+
+/*.phrase_container:active {*/
+/*    opacity: .6;*/
+/*}*/
+
+.phrase_disabled {
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 12px;
+    background-color: var(--float_button_background);
+    border-radius: 12px;
+    margin: 2px;
+    color: var(--text_secondary);
 }
 
 .phrase_group {
-    margin-bottom: 12px;
+    /*position: absolute;*/
+    /*left: 12px;*/
+    /*bottom: 12px;*/
+    /*right: 12px;*/
+    display: flex;
+    margin-left: 6px;
+    margin-right: 6px;
+    justify-content: center;
+    /*float: bottom;*/
+    /*flex-direction: row;*/
+    flex-wrap: wrap;
+}
+
+.Toaster__alert_close {
+    height: 0;
+    padding: 0;
+    border-width: 0;
+}
+
+.Toaster__alert {
+    height: 46px;
+}
+
+.Toaster__manager-bottom-left {
+    margin-bottom: var(--safe-area-inset-bottom);
+    z-index: 1 !important;
+}
+
+.phrase_lock_indicator {
+    position: relative;
+    top: -8px;
+    right: 12px;
 }

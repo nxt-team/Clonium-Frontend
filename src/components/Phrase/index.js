@@ -3,20 +3,38 @@ import './Phrase.css';
 
 export default function Phrase({text, map, phraseColor}) {
     if (text) {
-        let borderColor
+        let color
         if (phraseColor === 'blue') {
-            borderColor = '#00D8FF'
+            color = '#00D8FF'
         } else if (phraseColor === 'red') {
-            borderColor = '#FF79CB'
+            color = '#FF79CB'
         } else if (phraseColor === 'green') {
-            borderColor = '#2EE367'
+            color = '#2EE367'
         } else if (phraseColor === 'yellow') {
-            borderColor = '#FFB327'
+            color = '#FFB327'
         }
 
         return (
             <div className={"phrase_message_container"}>
-                <div className={"phrase_message"}>
+                <svg
+                    style={{marginLeft: 4, marginTop: 2}}
+                    width="22"
+                    height="22"
+                    viewBox="0 0 38 38"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <circle
+                        cx="19"
+                        cy="19"
+                        r="18"
+                        fill={color}
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    />
+                    <circle cx="19" cy="19" r="3" fill="#F5F5F5" />
+                </svg>
+                <div className={"phrase_message"} style={{border: "1px solid " + color}}>
                     {text}
                 </div>
             </div>

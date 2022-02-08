@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "isForDonuts": false,
+    "text": "Ух ты!"
+  },
+  {
+    "id": 2,
+    "isForDonuts": false,
+    "text": "Ой"
+  },
+  {
+    "id": 3,
+    "isForDonuts": false,
+    "text": "Удачи"
+  },
+  {
+    "id": 6,
+    "isForDonuts": false,
+    "text": "Не уходи!"
+  },
+  {
+    "id": 7,
+    "isForDonuts": false,
+    "text": "Помогите"
+  },
+  {
+    "id": 8,
+    "isForDonuts": false,
+    "text": "Сложно"
+  },
+  {
+    "id": 9,
+    "isForDonuts": true,
+    "text": "Чел, ты"
+  },
+  {
+    "id": 11,
+    "isForDonuts": true,
+    "text": "Алё, гараж!"
+  },
+  {
+    "id": 13,
+    "isForDonuts": true,
+    "text": "Помянем"
+  },
+  {
+    "id": 16,
+    "isForDonuts": true,
+    "text": "Бесишь!"
+  },
+  {
+    "id": 18,
+    "isForDonuts": true,
+    "text": "Мартышка"
+  },
+  {
+    "id": 21,
+    "isForDonuts": true,
+    "text": "Adios Amigos!"
+  },
+  {
+    "id": 24,
+    "isForDonuts": true,
+    "text": "Молодчик"
+  }
+]

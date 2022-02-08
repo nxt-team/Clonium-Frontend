@@ -3,12 +3,10 @@
     background: var(--content_tint_background);
     padding: 6px 12px;
     height: 24px;
+    margin: 0 0 4px 4px;
     width: max-content;
-    border: 1px solid #FF79CB;
 }
 
 .phrase_message_container {
-    position: absolute;
-    top: 220px;
-    left: 70px;
+    display: flex;
 }
