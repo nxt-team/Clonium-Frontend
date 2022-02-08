@@ -67,6 +67,12 @@ export function clickMap (secretId, fetchedUser, row, column) {
     })
 }
 
+export function sendPhrase (phrase_id) {
+    socket.emit("send message", {
+        "message_id": phrase_id
+    })
+}
+
 
 
 

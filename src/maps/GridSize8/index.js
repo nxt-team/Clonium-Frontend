@@ -3,7 +3,7 @@ import GameCell from "../../components/GameCell";
 
 export default function GridSize8({onCellClick, getCellContent, colorMotion, map, lastMotionCoords}) {
 
-    const cellSize = (document.documentElement.clientWidth - 16 - 12) / 8 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
+    const cellSize = (Math.min(document.documentElement.clientWidth, 500) - 16 - 12) / 8 // (ширина - отступы по бокам - (кол-во ячеек в ряду * 2)) / кол-во ячеек
     const cellStyle = {height: cellSize, width: cellSize}
 
     return (

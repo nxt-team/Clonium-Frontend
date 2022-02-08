@@ -39,7 +39,9 @@
     "react-dom": "^16.9.0",
     "react-gsap": "^2.2.1",
     "react-swipeable-views": "^0.14.0",
+    "recharts": "^2.1.8",
     "socket.io-client": "^4.1.2",
+    "toasted-notes": "^3.2.0",
     "webpack": "^4.42.0"
   },
   "browserslist": {

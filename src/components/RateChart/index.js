@@ -12,7 +12,6 @@ const tickFormatter = (value) => {
     return date.getDate() + "." + month
 }
 
-
 export default function RateChart ({rating_history}) {
     return (
         <LineChart

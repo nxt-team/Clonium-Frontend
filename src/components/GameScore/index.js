@@ -55,10 +55,10 @@ export default function GameScore({count, colors}) {
         <div className={'gameScore_container'} style={{display: "block", padding: "12px 8px"}} >
             <Progress value={value} id={"fight_progress"} className={colors[0] + "_progress"} style={{backgroundColor: colorsPalette[colors[1]]}}/>
             <div style={{display: "flex", justifyContent: "space-between"}}>
-                <div>
+                <div style={{marginLeft: 4}}>
                     {count(colors[0])}
                 </div>
-                <div>
+                <div style={{marginRight: 4}} >
                     {count(colors[1])}
                 </div>
             </div>

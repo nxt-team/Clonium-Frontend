@@ -24,7 +24,7 @@ import WaitingForStart from './views/main/WaitingForStart'
 import Customization from './views/main/Customization'
 import CreatingRoom from './views/creatingRoom/CreatingRoom'
 import Offline from './views/offline/offline'
-import Messenger from "./components/Messenger";
+import Messenger from "./components/Messanger";
 import FightResults from "./views/endFight/FightResults"
 import {
 	ModalPage,
@@ -136,7 +136,7 @@ const App = () => {
 	})
 	const [ online, setOnline] = useState(1)
 
-	function updateStatusPanel (newStatus) {
+	async function updateStatusPanel (newStatus) {
 		const status = newStatus.split('-')
 		console.log("status on front ", status[0])
 
@@ -155,8 +155,30 @@ const App = () => {
 		} else if (status[0] === "fight") {
 			mapName = status[1]
 			secretId = status[2]
-			map = JSON.parse(status[3])
-			setActivePanel("game")
+			screenSpinnerOn()
+
+			const fight = await getFight(secretId)
+
+			colorMotion = "red"
+			turnTime = fight["turn_time"]
+			map = fight["map"]
+			colors = ["red", "blue", "green", "yellow"]
+			colors = colors.splice(0, fight.max_user_number)
+			fightStart = fight.start
+			gameTime = fight.game_time
+			if(gameTime !== -1) {
+				gameTime += 30
+			}
+			userColor = status[3]
+			usersInFight = fight.users
+			startGameTimer = 15
+
+			if (turnTime) {
+				setLocalColor(colorMotion, 15)
+			}
+
+			setActivePanel("rejoinedGame")
+			screenSpinnerOff()
 		} else if (status[0] === "finish") {
 			const data = JSON.parse(status[1])
 			let s = newStatus
@@ -372,6 +394,25 @@ const App = () => {
 			}
 			let fetchUser = await bridge.send('VKWebAppGetUserInfo');
 			setUser(fetchUser)
+			// if (fetchUser.id % 2 === 1) {
+			// 	setPopout(
+			// 		<Alert
+			// 			actionsLayout="vertical"
+			// 			actions={[{
+			// 				title: 'Закрыть',
+			// 				autoclose: true,
+			// 				mode: 'cancel'
+			// 			}]}
+			// 			onClose={() => bridge.send("VKWebAppClose", {"status": "success"})}
+			// 		>
+			// 			<h2>Произошла ошибка</h2>
+			// 			<p>Сервер не отвечает. Возвращайся к нам через некоторое время</p>
+			// 		</Alert>
+			// 	)
+			//
+			// 	return 1
+			// }
+
 			let user = await init(fetchUser, window.location.hash)
 			console.log("INIT")
 			socket.connect()
@@ -1156,7 +1197,7 @@ const App = () => {
 		setActiveView("endFight")
 	}
 
-	async function goToEndFight (beatenPlayersColors) {
+	async function goToEndFight () {
 		// beatenPlayers = beatenPlayersColors
 
 		if (popout) {
@@ -1306,27 +1347,26 @@ const App = () => {
 	}
 
 	async function gameError () {
-		setPopout(
-			<Alert
-				actionsLayout="vertical"
-				actions={[{
-					title: 'Закрыть',
-					autoclose: true,
-					mode: 'cancel'
-				}]}
-				onClose={() => setPopout(null)}
-			>
-				<h2>Произошла ошибка!</h2>
-				<p>Не сворачивайте игру. В течение нескольких секунд произойдет автоматическая перезагрузка</p>
-			</Alert>
-		)
-		sendLogs(JSON.stringify(console.logs))
-		setTimeout(async () => {
-			doReconnectForRejoin()
-		}, 2000)
-
-		console.log("a")
-		console.log("a")
+		if (activePanel === "rejoinedGame") {
+			setPopout(
+				<Alert
+					actionsLayout="vertical"
+					actions={[{
+						title: 'Закрыть',
+						autoclose: true,
+						mode: 'cancel'
+					}]}
+					onClose={() => setPopout(null)}
+				>
+					<h2>Произошла ошибка!</h2>
+					<p>Не сворачивайте игру. В течение нескольких секунд произойдет автоматическая перезагрузка</p>
+				</Alert>
+			)
+			sendLogs(JSON.stringify(console.logs))
+			setTimeout(async () => {
+				doReconnectForRejoin()
+			}, 2000)
+		}
 
 	}
 
@@ -1442,6 +1482,8 @@ const App = () => {
 						changePopout={(newPopout) => setPopout(newPopout) }
 						startGameTimer={startGameTimer}
 						gameError={gameError}
+						setPopout={setPopout}
+						errorSnackBar={errorSnackBar}
 					/>
 					<Profile
 						id={'profile'}
