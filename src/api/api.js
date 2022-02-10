@@ -100,7 +100,7 @@ export async function init (fetchedUser, hash) {
         "referrals": result[0]["referrals"].length,
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
-        "rate": Math.round(result[0]["rating"])
+        "rate": Math.floor(result[0]["rating"])
     }
 }
 
@@ -132,7 +132,7 @@ export async function getUserBalances (fetchedUser) {
         "referrals": result[0]["referrals"].length,
         "achievements": result[0]["achievements"],
         "donut_end": result[0]["donut_end"],
-        "rate": Math.round(result[0]["rating"])
+        "rate": Math.floor(result[0]["rating"])
     }
 }
 

@@ -6,7 +6,7 @@ import PhrasesOpenButton from "../PhrasesOpenButton";
 import GradientLock from "../GradientLock";
 import {sendPhrase} from "../../api/socket";
 
-export default function PhraseButtons({arePhrases, checkAndSend}) {
+export default function PhraseButtons({arePhrases, checkAndSend, isDonut}) {
 
     let items = []
     if (arePhrases) {
@@ -15,7 +15,7 @@ export default function PhraseButtons({arePhrases, checkAndSend}) {
                 <>
                     <div
                         onClick={() => checkAndSend(phrase)}
-                        className={phrase["isForDonuts"] ? "phrase_disabled" : "phrase"}
+                        className={phrase["isForDonuts"] && !isDonut ? "phrase_disabled" : "phrase"}
                     >
                         {phrase["text"]}
                     </div>

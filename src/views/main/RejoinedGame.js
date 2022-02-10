@@ -93,6 +93,7 @@ const RejoinedGame = ({
     const [arePhrases, setArePhrases] = useState(false)
     const [sendingDisabled, setSendingDisabled] = useState(false)
     useEffect(() => {
+        socket.off("messages")
         socket.on("messages", (phrase) => {
             console.log(phrase)
             toaster.notify(<Phrase text={phrase[1]} phraseColor={phrase[0]} /> , {
@@ -168,8 +169,7 @@ const RejoinedGame = ({
                 gameError={gameError}
                 setPopout={setPopout}
             />
-            {!arePhrases &&
-                <>
+            <div style={arePhrases ? {opacity: 0} : {opacity: 1}}>
                 <div
                     style={{
                         marginBottom: 0,
@@ -212,13 +212,13 @@ const RejoinedGame = ({
                         onClick={() => leaveFight(fetchedUser)} mode="tertiary"
                     >Сдаться</Button>
                 </div>
-                </>
-            }
+            </div>
 
             <FixedLayout onClick={() => console.log("clicked #2")} vertical="bottom">
                 <PhraseButtons
                     arePhrases={arePhrases}
                     checkAndSend={checkAndSend}
+                    isDonut={userBalances["vk_donut"]}
                 />
                 <PhrasesOpenButton
                     onClick={() => !sendingDisabled && setArePhrases(!arePhrases)}

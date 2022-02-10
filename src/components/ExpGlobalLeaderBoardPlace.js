@@ -5,6 +5,7 @@ import {Icon20DonateCircleFillYellow, Icon28DonateCircleFillYellow} from '@vkont
 import {Icon201CircleFillGold, Icon202CircleFillSilver, Icon203CircleFillBronze} from "@vkontakte/icons";
 import ImgPlayIcon from "./ImgPlayIcon";
 import PlayIcon from "./playIcon";
+import TopDonutIcon from "./TopDonutIcon";
 
 const numericIndicator = {
     height: 20,
@@ -16,7 +17,7 @@ const numericIndicator = {
     boxShadow: '0 4px 24px 0 rgb(0 0 0 / 8%), 0 0 12px 0 rgb(0 0 0 / 8%)',
 }
 
-const ExpGlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, illumination, onClick, piece_avatar }) => {
+const ExpGlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, illumination, onClick, piece_avatar, vkDonut }) => {
 
     function getAvatar () {
         if (piece_avatar.length > 1) {
@@ -53,7 +54,12 @@ const ExpGlobalLeaderBoardPlace = ({ place, avaUrl, userName, exp, rank, illumin
                     <div className="GlobalPlace__indicator">
                         {place}
                     </div>
-                    <Avatar size={48} src={avaUrl} className="GlobalPlace__avatar" />
+                    <div className="avatar">
+                        <Avatar size={48} src={avaUrl} className="avatar__photo" />
+                        <div  className="avatar__indicator" >
+                            <TopDonutIcon vk_donut={vkDonut}/>
+                        </div>
+                    </div>
                 </div>
             }
             description={rank + " • " + exp + " опыта"}

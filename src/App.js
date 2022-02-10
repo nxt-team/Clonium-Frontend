@@ -289,7 +289,7 @@ const App = () => {
 									const now = new Date();
 									const fightStart = new Date(data[1])
 									const time = new Date(fightStart - now)
-									startCount = time.getSeconds() - 30
+									startCount = time.getSeconds() - 28
 									if (startCount === -30) {
 										startCount = 30
 									}
@@ -560,7 +560,7 @@ const App = () => {
 						const now = new Date();
 						const fightStart = new Date(data[1])
 						const time = new Date(fightStart - now)
-						startCount = time.getSeconds() - 30
+						startCount = time.getSeconds() - 28
 						newPanel = "waitingForTheFight"
 					} else if (data[0] === "fight") {
 						mapName = data[7]
@@ -732,9 +732,11 @@ const App = () => {
 	}
 
 	const addTicket = () => {
-		let locBalances = userBalances
-		locBalances["tickets"]++
-		setUserBalances(locBalances)
+		if (!userBalances["vk_donut"]) {
+			let locBalances = userBalances
+			locBalances["tickets"]++
+			setUserBalances(locBalances)
+		}
 	}
 
 
@@ -885,6 +887,7 @@ const App = () => {
 					title: 'Смотреть',
 					mode: 'primary',
 					action: () => {
+						console.log('action')
 						bridge.send("VKWebAppShowNativeAds", {ad_format: "reward"})
 							.then(async data => {
 								console.log(data)

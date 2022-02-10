@@ -244,7 +244,7 @@ const GameObject = ({
                 if (count(item) === 0) {
                     console.log("KILLED " + item)
 
-                    if (lastColorMotion === item) {
+                    if (lastColorMotion === item && colors.length > 2) {
                         changeColorMotion(lastColorMotion, false)
                     } else {
                         const colorIndex = colors.indexOf(item)
