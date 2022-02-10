@@ -299,7 +299,7 @@ export default function ProfileModalContent({closeModal, changeActiveModal, vk_i
                             <SimpleCell
                                 disabled={true}
                                 before={<Icon24CupOutline width={28} height={28}/>}
-                                after={Math.round(userData["rating"])}
+                                after={Math.floor(userData["rating"])}
                             >
                                 {rateCaption(userData["rating"])}
                             </SimpleCell>

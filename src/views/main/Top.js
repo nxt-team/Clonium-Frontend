@@ -131,7 +131,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                             changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
-                        rate={Math.round(item["rating"])}
+                        rate={Math.floor(item["rating"])}
                         place={index + 1}
                         rank={item["user_rank"]}
                         userName={item["username"]}
@@ -165,7 +165,7 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
                             changeActiveModal("profileModal")
                         }}
                         avaUrl={item["avatar"]}
-                        rate={Math.round(item["rating"])}
+                        rate={Math.floor(item["rating"])}
                         place={index + 1}
                         rank={item["user_rank"]}
                         userName={item["username"]}
@@ -304,9 +304,9 @@ const Top = ({ id, goToPage, changeActiveModal, fetchedUser, updateUserProfileVk
 
         } else if (slideIndex === 2) {
             if (globalTop[3]["position"] !== 0) {
-                return "рейтинг " + Math.round(globalTop[3]["rating"]) + " · " + globalTop[3]["position"] + " место"
+                return "рейтинг " + Math.floor(globalTop[3]["rating"]) + " · " + globalTop[3]["position"] + " место"
             } else {
-                return "рейтинг " + Math.round(globalTop[3]["rating"])
+                return "рейтинг " + Math.floor(globalTop[3]["rating"])
             }
         }
     }

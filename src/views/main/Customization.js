@@ -79,7 +79,13 @@ const Customization = ({ id, go, changeActiveModal, fetchedUser, imgLink }) => {
                     >
                         Вам не хватает прав доступа
                     </Placeholder>
-                    <SimpleCell onClick={showDonut} before={<Icon28CancelCircleFillRed/>} >Доступно с подпиской Clonium Pass</SimpleCell>
+                    <SimpleCell
+                        onClick={showDonut}
+                        before={<Icon28CancelCircleFillRed/>}
+                        style={{cursor: "pointer"}}
+                    >
+                        Доступно с подпиской Clonium Pass
+                    </SimpleCell>
                 </>
             )
         }

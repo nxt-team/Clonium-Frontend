@@ -73,7 +73,7 @@ const FightResults = ({ id, goToMainView, beatenPlayersColors, finishData, chang
         if (finishData[1] === "?") {
             return "?"
         } else {
-            return !finishData[4] ? Math.round(finishData[1]) * -1 : Math.round(finishData[1])
+            return !finishData[4] ? Math.floor(finishData[1]) * -1 : Math.floor(finishData[1])
         }
     }
 
